@@ -1,0 +1,48 @@
+server:
+  port: 8081
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain
+spring:
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+  datasource:
+    driver-class-name: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:postgresql://127.0.0.1:5432/gamma
+    username: gamma
+    password: gamma
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    generate-ddl: true
+  session:
+    store-type: none
+logging:
+  level: 
+    root: WARN
+    org:
+      springframework:
+        security: WARN
+        web: WARN    
+      hibernate: WARN  
+jwt:
+  subject: GAMMA
+  tokenName: x-auth-token
+  secret: TLKJGA_Secret
+  expiration: 3600
+  tokenHead: "gamma.tl."
+  access_token:
+    expiration: 86400
+  refresh_token:
+    expiration: 3600
+  route:
+    authentication:
+      path: auth
+      refresh: refresh
+      register: "auth/register"      

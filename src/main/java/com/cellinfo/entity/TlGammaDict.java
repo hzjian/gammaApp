@@ -1,0 +1,59 @@
+package com.cellinfo.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+
+/**
+ * The persistent class for the tl_gamma_dict database table.
+ * 
+ */
+@Entity
+@Table(name="tl_gamma_dict")
+@NamedQuery(name="TlGammaDict.findAll", query="SELECT t FROM TlGammaDict t")
+public class TlGammaDict implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name="dict_id", nullable=false)
+	private String dictId;
+
+	@Column(name="dict_name", length=64)
+	private String dictName;
+	
+	@Column(name="dict_desc", length=512)
+	private String dictDesc;
+
+	public TlGammaDict() {
+	}
+
+	public String getDictDesc() {
+		return this.dictDesc;
+	}
+
+	public void setDictDesc(String dictDesc) {
+		this.dictDesc = dictDesc;
+	}
+
+	public String getDictId() {
+		return this.dictId;
+	}
+
+	public void setDictId(String dictId) {
+		this.dictId = dictId;
+	}
+
+	public String getDictName() {
+		return this.dictName;
+	}
+
+	public void setDictName(String dictName) {
+		this.dictName = dictName;
+	}
+
+}

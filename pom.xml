@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.cellinfo</groupId>
+	<artifactId>ActivitiApp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>ActivitiApp</name>
+	<description>Demo project for Spring Boot</description>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.9.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<geotools.version>17.4</geotools.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>  
+		    <groupId>org.springframework.boot</groupId>  
+		    <artifactId>spring-boot-starter-aop</artifactId>  
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web-services</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		    <version>42.1.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-spatial</artifactId>
+		    <version>5.2.12.Final</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.googlecode.log4jdbc</groupId>
+		    <artifactId>log4jdbc</artifactId>
+		    <version>1.2</version> 
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1 -->
+		<dependency>
+		    <groupId>org.bgee.log4jdbc-log4j2</groupId>
+		    <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+		    <version>1.16</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>io.jsonwebtoken</groupId>
+		    <artifactId>jjwt</artifactId>
+		    <version>0.9.0</version>
+		</dependency> 
+
+		<!-- https://mvnrepository.com/artifact/org.geotools/gt-api -->
+		<dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-main</artifactId>
+		    <version>18.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.geotools/gt-geojson -->
+		<dependency>
+		    <groupId>org.geotools</groupId>
+		    <artifactId>gt-geojson</artifactId>
+		    <version>18.2</version>
+		</dependency>
+		
+		<dependency> 
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi-ooxml</artifactId>
+		    <version>3.17</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>  
+    	<repository>  
+	        <!-- Maven 自带的中央仓库使用的Id为central 如果其他的仓库声明也是用该Id  就会覆盖中央仓库的配置 --> 
+	        <id>boundlessgeo</id>  
+	        <name>boundlessgeo</name>  
+	        <url>https://repo.boundlessgeo.com/main/</url>  
+	        <layout>default</layout>  
+	        <releases>  
+	            <enabled>true</enabled>  
+	        </releases>  
+	        <snapshots>  
+	            <enabled>false</enabled>  
+	        </snapshots>  
+	    </repository>  
+	    <repository>
+	        <id>geotools</id>  
+	        <name>geotools</name>  
+	        <url>http://download.osgeo.org/webdav/geotools</url>  
+	        <layout>default</layout>  
+	        <releases>  
+	            <enabled>true</enabled>  
+	        </releases>  
+	        <snapshots>  
+	            <enabled>false</enabled>  
+	        </snapshots>  
+	    </repository>
+	</repositories>  
+</project>
