@@ -2,11 +2,36 @@ package com.cellinfo.service;
 
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import io.jsonwebtoken.Jwts;
 
 @Service
 public class UtilService {
 
+    @Value("${jwt.secret}")
+    private String secret;
+    
+	@Value("${jwt.tokenName}")
+	private String tokenName;
+	    
+	@Value("${jwt.tokenHead}")
+	private String tokenHead;
+	
+	
+	public String getCurrentUser(HttpServletRequest request) {	
+		String currentUser ="";
+		String token = request.getHeader(this.tokenName);
+		if (!StringUtils.isEmpty(token) && token.startsWith(this.tokenHead)) {
+			token = token.substring(this.tokenHead.length());
+			currentUser = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        } 
+		return currentUser;
+	}
 	
 	private static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",  
             "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",  

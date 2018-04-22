@@ -30,7 +30,7 @@ logging:
       springframework:
         security: WARN
         web: WARN    
-      hibernate: WARN  
+      hibernate: INFO  
 jwt:
   subject: GAMMA
   tokenName: x-auth-token

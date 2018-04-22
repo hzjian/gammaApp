@@ -12,14 +12,12 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,10 +34,9 @@ import com.cellinfo.entity.TlGammaGroup;
 import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysUserService;
+import com.cellinfo.service.UtilService;
 import com.cellinfo.util.ReturnDesc;
 import com.cellinfo.utils.ResultUtil;
-
-import io.jsonwebtoken.Jwts;
 
 /**
  * 用户管理
@@ -54,20 +51,15 @@ public class SysAdminController {
 
 	private final static Logger logger = LoggerFactory.getLogger(SysAdminController.class);
 	
-	@Value("${jwt.tokenName}")
-	private String tokenName;
-	    
-	@Value("${jwt.tokenHead}")
-	private String tokenHead;
+	@Autowired
+	private UtilService utilService;
 	
 	@Autowired
 	private SysUserService sysUserService;
 	
 	@Autowired
 	private SysGroupService sysGroupService;
-	
-    @Value("${jwt.secret}")
-    private String secret;
+
 	
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	
@@ -76,11 +68,9 @@ public class SysAdminController {
 		Map<String, String> tMap = new HashMap<String, String>();
 		//String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		String token = request.getHeader(this.tokenName);
-		if (!StringUtils.isEmpty(token) && token.startsWith(this.tokenHead)) {
-			token = token.substring(this.tokenHead.length());
-			String currentUser = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-			
+		String currentUser = this.utilService.getCurrentUser(request);
+		if (currentUser!=null && currentUser.length()>0) {
+
 			logger.info("currentUser=="+currentUser);
 			TlGammaUser user = this.sysUserService.findOne(currentUser);
 			logger.info("user=="+user);

@@ -34,7 +34,7 @@ public class TlGammaLayerPolygon implements Serializable {
 	private Polygon kernelGeom;
 
 	@Column(name="kernel_id")
-	private Long kernelId;
+	private String kernelId;
 	
 	@Column(name="group_guid")
 	private String groupGuid;
@@ -42,8 +42,8 @@ public class TlGammaLayerPolygon implements Serializable {
 	@Column(name="kernel_classid")
 	private String kernelClassid;
 	
-	@Column(name="user_guid")
-	private String userGuid;
+	@Column(name="user_name")
+	private String userName;
 	
 	@Column(name="task_guid")
 	private String taskGuid;
@@ -77,15 +77,6 @@ public class TlGammaLayerPolygon implements Serializable {
 	public void setKernelGuid(String kernelGuid) {
 		this.kernelGuid = kernelGuid;
 	}
-
-	public Long getKernelId() {
-		return this.kernelId;
-	}
-
-	public void setKernelId(Long kernelId) {
-		this.kernelId = kernelId;
-	}
-
 	/**
 	 * @return the groupGuid
 	 */
@@ -113,21 +104,6 @@ public class TlGammaLayerPolygon implements Serializable {
 	public void setKernelClassid(String kernelClassid) {
 		this.kernelClassid = kernelClassid;
 	}
-
-	/**
-	 * @return the userGuid
-	 */
-	public String getUserGuid() {
-		return userGuid;
-	}
-
-	/**
-	 * @param userGuid the userGuid to set
-	 */
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
-	}
-
 	/**
 	 * @return the taskGuid
 	 */
@@ -154,6 +130,34 @@ public class TlGammaLayerPolygon implements Serializable {
 	 */
 	public void setKernelAnno(String kernelAnno) {
 		this.kernelAnno = kernelAnno;
+	}
+
+	/**
+	 * @return the kernelId
+	 */
+	public String getKernelId() {
+		return kernelId;
+	}
+
+	/**
+	 * @param kernelId the kernelId to set
+	 */
+	public void setKernelId(String kernelId) {
+		this.kernelId = kernelId;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	

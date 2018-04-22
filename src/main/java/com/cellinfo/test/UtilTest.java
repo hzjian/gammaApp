@@ -4,15 +4,14 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.cellinfo.enums.FieldType;
-
 public class UtilTest {
 
 	
 	@Test
 	public void testenum()
 	{
-		System.out.println(FieldType.INTEGER);
+		for(int i=0;i<1000;i++)
+			System.out.println(generateShortUuid());
 	}
 	
 	public void getUUID()
@@ -40,6 +39,6 @@ public class UtilTest {
 	        int x = Integer.parseInt(str, 16);  
 	        shortBuffer.append(chars[x % 0x3E]);  
 	    }  
-	    return shortBuffer.toString().toUpperCase();
+	    return shortBuffer.toString();
 	}
 }

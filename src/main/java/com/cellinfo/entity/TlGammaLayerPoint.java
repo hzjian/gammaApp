@@ -26,7 +26,7 @@ public class TlGammaLayerPoint implements Serializable {
 	private String kernelGuid;
 	
 	@Column(name="kernel_id")
-	private Long kernelId;
+	private String kernelId;
 
 	@Column(name="geom_style", length=256)
 	private String geomStyle;
@@ -40,8 +40,8 @@ public class TlGammaLayerPoint implements Serializable {
 	@Column(name="kernel_classid")
 	private String kernelClassid;
 	
-	@Column(name="user_guid")
-	private String userGuid;
+	@Column(name="user_name")
+	private String userName;
 	
 	@Column(name="task_guid")
 	private String taskGuid;
@@ -76,14 +76,7 @@ public class TlGammaLayerPoint implements Serializable {
 		this.kernelGuid = kernelGuid;
 	}
 
-	public Long getKernelId() {
-		return this.kernelId;
-	}
-
-	public void setKernelId(Long kernelId) {
-		this.kernelId = kernelId;
-	}
-
+	
 	/**
 	 * @return the groupGuid
 	 */
@@ -112,18 +105,34 @@ public class TlGammaLayerPoint implements Serializable {
 		this.kernelClassid = kernelClassid;
 	}
 
+
+
 	/**
-	 * @return the userGuid
+	 * @return the kernelId
 	 */
-	public String getUserGuid() {
-		return userGuid;
+	public String getKernelId() {
+		return kernelId;
 	}
 
 	/**
-	 * @param userGuid the userGuid to set
+	 * @param kernelId the kernelId to set
 	 */
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
+	public void setKernelId(String kernelId) {
+		this.kernelId = kernelId;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**

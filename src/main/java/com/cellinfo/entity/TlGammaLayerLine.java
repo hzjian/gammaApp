@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
 
 
 /**
@@ -28,11 +28,11 @@ public class TlGammaLayerLine implements Serializable {
 	@Column(name="geom_style", length=256)
 	private String geomStyle;
 
-	@Column(name="kernel_geom")
-	private Geometry kernelGeom;
+	@Column(name="kernel_geom",columnDefinition = "geometry(LineString,3857)")
+	private LineString kernelGeom;
 
 	@Column(name="kernel_id")
-	private Long kernelId;
+	private String kernelId;
 
 	@Column(name="group_guid")
 	private String groupGuid;
@@ -40,8 +40,8 @@ public class TlGammaLayerLine implements Serializable {
 	@Column(name="kernel_classid")
 	private String kernelClassid;
 	
-	@Column(name="user_guid")
-	private String userGuid;
+	@Column(name="user_name")
+	private String userName;
 	
 	@Column(name="task_guid")
 	private String taskGuid;
@@ -59,12 +59,18 @@ public class TlGammaLayerLine implements Serializable {
 	public void setGeomStyle(String geomStyle) {
 		this.geomStyle = geomStyle;
 	}
-
-	public Geometry getKernelGeom() {
-		return this.kernelGeom;
+	
+	/**
+	 * @return the kernelGeom
+	 */
+	public LineString getKernelGeom() {
+		return kernelGeom;
 	}
 
-	public void setKernelGeom(Geometry kernelGeom) {
+	/**
+	 * @param kernelGeom the kernelGeom to set
+	 */
+	public void setKernelGeom(LineString kernelGeom) {
 		this.kernelGeom = kernelGeom;
 	}
 
@@ -75,15 +81,6 @@ public class TlGammaLayerLine implements Serializable {
 	public void setKernelGuid(String kernelGuid) {
 		this.kernelGuid = kernelGuid;
 	}
-
-	public Long getKernelId() {
-		return this.kernelId;
-	}
-
-	public void setKernelId(Long kernelId) {
-		this.kernelId = kernelId;
-	}
-
 	/**
 	 * @return the groupGuid
 	 */
@@ -113,20 +110,6 @@ public class TlGammaLayerLine implements Serializable {
 	}
 
 	/**
-	 * @return the userGuid
-	 */
-	public String getUserGuid() {
-		return userGuid;
-	}
-
-	/**
-	 * @param userGuid the userGuid to set
-	 */
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
-	}
-
-	/**
 	 * @return the taskGuid
 	 */
 	public String getTaskGuid() {
@@ -152,6 +135,34 @@ public class TlGammaLayerLine implements Serializable {
 	 */
 	public void setKernelAnno(String kernelAnno) {
 		this.kernelAnno = kernelAnno;
+	}
+
+	/**
+	 * @return the kernelId
+	 */
+	public String getKernelId() {
+		return kernelId;
+	}
+
+	/**
+	 * @param kernelId the kernelId to set
+	 */
+	public void setKernelId(String kernelId) {
+		this.kernelId = kernelId;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	
