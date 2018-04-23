@@ -11,4 +11,5 @@ public class ReturnDesc {
 	public static final String ALTER_TASK_DATA_TABLE_ERROR = "修改任务数据表字段出错";
 	public static final String GROUP_NAME_IS_EXIST = "该组织已存在";
 	public static final String GROUP_NAME_IS_NOT_EXIST = "该组织不存在";
+	public static final String KERNEL_NAME_IS_EXIST = "该核心对象的名称已存在";
 }

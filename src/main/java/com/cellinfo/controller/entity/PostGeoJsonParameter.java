@@ -1,10 +1,12 @@
 package com.cellinfo.controller.entity;
 
+import java.util.Map;
+
 public class PostGeoJsonParameter {
 
 	private String featype = "POINT";
 	private String taskGuid;
-	private String geoJson;
+	private Map<String,Object> geoJson;
 	/**
 	 * @return the featype
 	 */
@@ -20,20 +22,24 @@ public class PostGeoJsonParameter {
 	/**
 	 * @return the geoJson
 	 */
-	public String getGeoJson() {
-		return geoJson;
-	}
-	/**
-	 * @param geoJson the geoJson to set
-	 */
-	public void setGeoJson(String geoJson) {
-		this.geoJson = geoJson;
-	}
+
 	/**
 	 * @return the taskGuid
 	 */
 	public String getTaskGuid() {
 		return taskGuid;
+	}
+	/**
+	 * @return the geoJson
+	 */
+	public Map<String, Object> getGeoJson() {
+		return geoJson;
+	}
+	/**
+	 * @param geoJson the geoJson to set
+	 */
+	public void setGeoJson(Map<String, Object> geoJson) {
+		this.geoJson = geoJson;
 	}
 	/**
 	 * @param taskGuid the taskGuid to set

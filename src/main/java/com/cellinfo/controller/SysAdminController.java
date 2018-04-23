@@ -31,8 +31,10 @@ import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaGroup;
+import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.service.SysGroupService;
+import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysUserService;
 import com.cellinfo.service.UtilService;
 import com.cellinfo.util.ReturnDesc;
@@ -59,6 +61,9 @@ public class SysAdminController {
 	
 	@Autowired
 	private SysGroupService sysGroupService;
+	
+	@Autowired
+	private SysKernelService sysKernelService;
 
 	
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
@@ -236,6 +241,61 @@ public class SysAdminController {
 	public Result<String> updateGroup(@RequestBody @Valid String groupGuid) {
 
 		return ResultUtil.success(this.sysGroupService.deleteGroup(groupGuid));
+	}
+	
+	
+	@PostMapping(value = "/kernels")
+	public Result<Page<TlGammaGroup>> kernelList(@RequestBody RequestParameter para, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		logger.info("kernels");
+		int pageNumber = para.getPage();
+		int pageSize = para.getPageSize();
+
+		Sort sort = null;
+		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
+			sort = new Sort(Direction.ASC, para.getSortField());
+		} else {
+			sort = new Sort(Direction.DESC, para.getSortField());
+		}
+
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(pageInfo);
+		return ResultUtil.success(mList);
+	}
+	
+	@PostMapping(value = "/kernel/add")
+	public Result<TlGammaKernel> addKernel(@RequestBody @Valid TlGammaKernel kernel, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		Iterable<TlGammaGroup> kernellist = this.sysGroupService.getByName(kernel.getKernelClassname());
+		if(kernellist!=null && kernellist.iterator().hasNext())
+		{
+			return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
+		}
+		kernel.setKernelClassid(UUID.randomUUID().toString());
+		return ResultUtil.success(this.sysKernelService.addGroupKernel(kernel));
+	}
+	
+	@PostMapping(value = "/kernel/update")
+	public Result<TlGammaKernel> updateKernel(@RequestBody @Valid TlGammaKernel kernel, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		TlGammaKernel refKernel = this.sysKernelService.getByKernelClassid(kernel.getKernelClassid());
+		if(refKernel!=null && refKernel.getKernelClassid().length()>1)
+		{
+			return ResultUtil.success(this.sysKernelService.updateGroupKernel(kernel));
+		}
+		return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_NOT_EXIST);
+	}
+	
+	@PostMapping(value = "/kernel/delete")
+	public Result<String> updateKernel(@RequestBody @Valid String kernelGuid) {
+
+		return ResultUtil.success(this.sysKernelService.deleteGroupKernel(kernelGuid));
 	}
 	
 }

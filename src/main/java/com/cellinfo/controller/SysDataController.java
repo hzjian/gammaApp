@@ -11,6 +11,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import org.geotools.geojson.geom.GeometryJSON;
+import org.json.JSONObject;
+import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +88,8 @@ public class SysDataController {
 			
 			feaMap.put("type", "Feature");
 			//feaMap.put("geometry",eachGeom.getKernelGeom().toString());
-			//feaMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(eachGeom.getKernelGeom())));
-			feaMap.put("geometry", new GeometryJSON(10).toString(eachGeom.getKernelGeom()));
+			feaMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(eachGeom.getKernelGeom())));
+			//feaMap.put("geometry", new GeometryJSON(10).toString(eachGeom.getKernelGeom()));
 			feaMap.put("properties", propMap);
 			geoList.add(feaMap);
 	
@@ -106,11 +108,13 @@ public class SysDataController {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 		
-		try {
-			Geometry geom = new GeometryJSON(10).read(para.getGeoJson());
+		try {			
+			JSONObject jobject = new JSONObject();
+			String jsonStr = JSONValue.toJSONString(para.getGeoJson());
+			Geometry geom = new GeometryJSON(10).read(jsonStr);
 			geom.setSRID(4326);
-			switch(para.getFeatype()) {
-				case "POINT" :
+			switch(para.getFeatype().toUpperCase()) {
+				case "MARKER" :
 					TlGammaLayerPoint point = new TlGammaLayerPoint();
 					point.setKernelGuid(UUID.randomUUID().toString());
 					point.setTaskGuid(para.getTaskGuid());
@@ -120,7 +124,7 @@ public class SysDataController {
 					point.setKernelId(this.utilService.generateShortUuid());
 					this.sysBusdataService.savePontGeom(point);
 					break;
-				case "LINE" :
+				case "POLYLINE" :
 					TlGammaLayerLine line = new TlGammaLayerLine();
 					line.setKernelGuid(UUID.randomUUID().toString());
 					line.setTaskGuid(para.getTaskGuid());
