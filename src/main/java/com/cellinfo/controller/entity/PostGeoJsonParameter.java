@@ -6,6 +6,7 @@ public class PostGeoJsonParameter {
 
 	private String featype = "POINT";
 	private String taskGuid;
+	private String feaGuid;
 	private Map<String,Object> geoJson;
 	/**
 	 * @return the featype
@@ -46,6 +47,18 @@ public class PostGeoJsonParameter {
 	 */
 	public void setTaskGuid(String taskGuid) {
 		this.taskGuid = taskGuid;
+	}
+	/**
+	 * @return the feaGuid
+	 */
+	public String getFeaGuid() {
+		return feaGuid;
+	}
+	/**
+	 * @param feaGuid the feaGuid to set
+	 */
+	public void setFeaGuid(String feaGuid) {
+		this.feaGuid = feaGuid;
 	}
 	
 	

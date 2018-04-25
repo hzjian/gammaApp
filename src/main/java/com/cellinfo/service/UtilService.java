@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.cellinfo.security.TokenField;
+import com.cellinfo.security.UserInfo;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
 @Service
@@ -22,16 +26,28 @@ public class UtilService {
 	@Value("${jwt.tokenHead}")
 	private String tokenHead;
 	
+	public UserInfo getCurrentUser(HttpServletRequest request) {
+		
+    	String token = request.getHeader(this.tokenName);
+    	if (!StringUtils.isEmpty(token) && token.startsWith(this.tokenHead)) {
+    		String auth_token = token.substring(this.tokenHead.length());
+	        try {
+	            final Claims claims = Jwts.parser()
+	                    .setSigningKey(secret)
+	                    .parseClaimsJws(auth_token)
+	                    .getBody();
+	            String username = claims.getSubject();
+	            String groupid = claims.get(TokenField.CLAIM_KEY_GROUP_GUID).toString();
+
 	
-	public String getCurrentUser(HttpServletRequest request) {	
-		String currentUser ="";
-		String token = request.getHeader(this.tokenName);
-		if (!StringUtils.isEmpty(token) && token.startsWith(this.tokenHead)) {
-			token = token.substring(this.tokenHead.length());
-			currentUser = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-        } 
-		return currentUser;
-	}
+	            return  new UserInfo(username,groupid);
+	        } catch (Exception e) {
+	            throw e;
+	        }
+    	}
+        return null;
+    }
+	
 	
 	private static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",  
             "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",  

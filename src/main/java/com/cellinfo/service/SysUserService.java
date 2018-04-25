@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -82,6 +83,11 @@ public class SysUserService implements UserDetailsService {
 		// TODO Auto-generated method stub
 		this.tlGammaUserRepository.delete(user);
 		
+	}
+
+	public Page<TlGammaUser> getGroupMember(Pageable pageable, String groupGuid) {
+		// TODO Auto-generated method stub
+		return this.tlGammaUserRepository.findByGroupGuid(groupGuid,pageable);
 	}
 
 }

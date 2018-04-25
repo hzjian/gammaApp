@@ -3,10 +3,12 @@ package com.cellinfo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 
 import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.repository.TlGammaKernelRepository;
 
+@Service
 public class SysKernelService {
 
 	@Autowired

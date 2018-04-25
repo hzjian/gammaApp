@@ -32,12 +32,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public final class JwtTokenHandler {
 
 	public static final String ROLE_REFRESH_TOKEN = "ROLE_REFRESH_TOKEN";
-
-    private static final String CLAIM_KEY_AUTHORITIES = "scope";
-    private static final String CLAIM_KEY_ACCOUNT_ENABLED = "enabled";
-    private static final String CLAIM_KEY_ACCOUNT_NON_LOCKED = "non_locked";
-    private static final String CLAIM_KEY_ACCOUNT_NON_EXPIRED = "non_expired";
-    private static final String CLAIM_KEY_SUBJECT = "sub";
     
     @Autowired
     private SysUserService userService;
@@ -70,11 +64,15 @@ public final class JwtTokenHandler {
     public String createTokenForUser(UserDetails user) {
         final ZonedDateTime afterOneWeek = ZonedDateTime.now().plusWeeks(1);
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_AUTHORITIES, user.getAuthorities());
-        claims.put(CLAIM_KEY_ACCOUNT_ENABLED, user.isEnabled());
-        claims.put(CLAIM_KEY_ACCOUNT_NON_LOCKED, user.isAccountNonLocked());
-        claims.put(CLAIM_KEY_ACCOUNT_NON_EXPIRED, user.isAccountNonExpired());
-        claims.put(CLAIM_KEY_SUBJECT, user.getUsername());
+        claims.put(TokenField.CLAIM_KEY_AUTHORITIES, user.getAuthorities());
+        claims.put(TokenField.CLAIM_KEY_ACCOUNT_ENABLED, user.isEnabled());
+        claims.put(TokenField.CLAIM_KEY_ACCOUNT_NON_LOCKED, user.isAccountNonLocked());
+        claims.put(TokenField.CLAIM_KEY_ACCOUNT_NON_EXPIRED, user.isAccountNonExpired());
+        claims.put(TokenField.CLAIM_KEY_SUBJECT, user.getUsername());
+        if( user instanceof TlGammaUser)
+        {
+        	claims.put(TokenField.CLAIM_KEY_GROUP_GUID, ((TlGammaUser)user).getGroupGuid());
+        }
         return Jwts.builder()
                 .setSubject(user.getUsername())
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -89,11 +87,11 @@ public final class JwtTokenHandler {
         try {
             final Claims claims = getClaimsFromToken(token);
             String username = claims.getSubject();
-            List roles = (List) claims.get(CLAIM_KEY_AUTHORITIES);
+            List roles = (List) claims.get(TokenField.CLAIM_KEY_AUTHORITIES);
             Collection<? extends GrantedAuthority> authorities = parseArrayToAuthorities(roles);
-            boolean account_enabled = (Boolean) claims.get(CLAIM_KEY_ACCOUNT_ENABLED);
-            boolean account_non_locked = (Boolean) claims.get(CLAIM_KEY_ACCOUNT_NON_LOCKED);
-            boolean account_non_expired = (Boolean) claims.get(CLAIM_KEY_ACCOUNT_NON_EXPIRED);
+            boolean account_enabled = (Boolean) claims.get(TokenField.CLAIM_KEY_ACCOUNT_ENABLED);
+            boolean account_non_locked = (Boolean) claims.get(TokenField.CLAIM_KEY_ACCOUNT_NON_LOCKED);
+            boolean account_non_expired = (Boolean) claims.get(TokenField.CLAIM_KEY_ACCOUNT_NON_EXPIRED);
 
             user = new TlGammaUser(username, "password", account_enabled, account_non_expired, account_non_locked, authorities);
         } catch (Exception e) {
@@ -179,16 +177,17 @@ public final class JwtTokenHandler {
     public String generateAccessToken(UserDetails userDetails) {
     	TlGammaUser user = (TlGammaUser) userDetails;
         Map<String, Object> claims = generateClaims(user);
-        claims.put(CLAIM_KEY_AUTHORITIES, authoritiesToArray(user.getAuthorities()));
+        claims.put(TokenField.CLAIM_KEY_AUTHORITIES, authoritiesToArray(user.getAuthorities()));
         return generateAccessToken(user.getUsername(), claims);
     }
 
     private Map<String, Object> generateClaims(TlGammaUser user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put(CLAIM_KEY_SUBJECT, user.getUserName());
-        claims.put(CLAIM_KEY_ACCOUNT_ENABLED, user.isEnabled());
-        claims.put(CLAIM_KEY_ACCOUNT_NON_LOCKED, user.isAccountNonLocked());
-        claims.put(CLAIM_KEY_ACCOUNT_NON_EXPIRED, user.isAccountNonExpired());
+        claims.put(TokenField.CLAIM_KEY_SUBJECT, user.getUserName());
+        claims.put(TokenField.CLAIM_KEY_ACCOUNT_ENABLED, user.isEnabled());
+        claims.put(TokenField.CLAIM_KEY_ACCOUNT_NON_LOCKED, user.isAccountNonLocked());
+        claims.put(TokenField.CLAIM_KEY_ACCOUNT_NON_EXPIRED, user.isAccountNonExpired());
+        claims.put(TokenField.CLAIM_KEY_GROUP_GUID, user.getGroupGuid());
         return claims;
     }
 
@@ -219,7 +218,7 @@ public final class JwtTokenHandler {
         Map<String, Object> claims = generateClaims(user);
         // 只授于更新 token 的权限
         String roles[] = new String[]{ROLE_REFRESH_TOKEN};
-        claims.put(CLAIM_KEY_AUTHORITIES, roles);
+        claims.put(TokenField.CLAIM_KEY_AUTHORITIES, roles);
         return generateRefreshToken(user.getUsername(), claims);
     }
 

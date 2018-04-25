@@ -32,6 +32,9 @@ public class TlGammaKernel implements Serializable {
 	@Column(name="kernel_classname", length=256)
 	private String kernelClassname;
 
+	@Column(name="geom_type", length=16)
+	private String geomType;
+	
 	@Column(name="service_name", length=64)
 	private String serviceName;
 
@@ -78,4 +81,20 @@ public class TlGammaKernel implements Serializable {
 		this.serviceName = serviceName;
 	}
 
+	/**
+	 * @return the geomType
+	 */
+	public String getGeomType() {
+		return geomType;
+	}
+
+	/**
+	 * @param geomType the geomType to set
+	 */
+	public void setGeomType(String geomType) {
+		this.geomType = geomType;
+	}
+
+	
+	
 }
