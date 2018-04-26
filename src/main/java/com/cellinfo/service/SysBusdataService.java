@@ -72,13 +72,13 @@ public class SysBusdataService {
 			case "POLYGON":
 				geoList = this.getPolygonGeojsonList(maxLoadelementNum, filterGeom);
 				break;
-		}
-		return geoList;
+		}		return geoList;
 	}
 	
-	private  List<Map<String, Object>> getPointGeojsonList(int maxLoadelementNum,Geometry filterGeom) {		
+	private  List<Map<String, Object>> getPointGeojsonList(int maxLoadelementNum,Geometry filterGeom) {	
+		PageRequest pageInfo = new PageRequest(0, maxLoadelementNum);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
-		List<TlGammaLayerPoint> pointlist = this.tlGammaLayerPointRepository.getDataByFilter(filterGeom, maxLoadelementNum);
+		List<TlGammaLayerPoint> pointlist = this.tlGammaLayerPointRepository.getDataByFilter(filterGeom, pageInfo);
 
 		for (TlGammaLayerPoint eachGeom : pointlist) {
 			Map<String, Object> feaMap = new HashMap<String, Object>();
@@ -96,9 +96,10 @@ public class SysBusdataService {
 	}
 	
 
-	private  List<Map<String, Object>> getLineGeojsonList(int maxLoadelementNum,Geometry filterGeom) {		
+	private  List<Map<String, Object>> getLineGeojsonList(int maxLoadelementNum,Geometry filterGeom) {	
+		PageRequest pageInfo = new PageRequest(0, maxLoadelementNum);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
-		List<TlGammaLayerLine> linelist = this.tlGammaLayerLineRepository.getDataByFilter(filterGeom, maxLoadelementNum);
+		List<TlGammaLayerLine> linelist = this.tlGammaLayerLineRepository.getDataByFilter(filterGeom, pageInfo);
 
 		for (TlGammaLayerLine eachGeom : linelist) {
 			Map<String, Object> feaMap = new HashMap<String, Object>();
@@ -115,9 +116,10 @@ public class SysBusdataService {
 		return geoList;
 	}
 	
-	private  List<Map<String, Object>> getPolygonGeojsonList(int maxLoadelementNum,Geometry filterGeom) {		
+	private  List<Map<String, Object>> getPolygonGeojsonList(int maxLoadelementNum,Geometry filterGeom) {	
+		PageRequest pageInfo = new PageRequest(0, maxLoadelementNum);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
-		List<TlGammaLayerPolygon> polygonlist = this.tlGammaLayerPolygonRepository.getDataByFilter(filterGeom, maxLoadelementNum);
+		List<TlGammaLayerPolygon> polygonlist = this.tlGammaLayerPolygonRepository.getDataByFilter(filterGeom, pageInfo);
 
 		for (TlGammaLayerPolygon eachGeom : polygonlist) {
 			Map<String, Object> feaMap = new HashMap<String, Object>();

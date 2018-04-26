@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import com.cellinfo.entity.Result;
 import com.cellinfo.exception.ControllerException;
 import com.cellinfo.exception.ServiceException;
-import com.cellinfo.util.ExceptionDesc;
+import com.cellinfo.utils.ExceptionDesc;
 import com.cellinfo.utils.ResultUtil;
 
 import io.jsonwebtoken.ExpiredJwtException;

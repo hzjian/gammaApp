@@ -1,4 +1,4 @@
-package com.cellinfo.util;
+package com.cellinfo.utils;
 
 //异常代码	异常描述	应用业务场景描述
 

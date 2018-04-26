@@ -1,22 +1,26 @@
 package com.cellinfo.controller.entity;
 
+import java.util.Map;
+
 public class SpatialQueryParameter {
 
-	private String queryRange;
+	private Map<String,Object> queryRange;
 	
 	private String classId;
+
+
 
 	/**
 	 * @return the queryRange
 	 */
-	public String getQueryRange() {
+	public Map<String, Object> getQueryRange() {
 		return queryRange;
 	}
 
 	/**
 	 * @param queryRange the queryRange to set
 	 */
-	public void setQueryRange(String queryRange) {
+	public void setQueryRange(Map<String, Object> queryRange) {
 		this.queryRange = queryRange;
 	}
 

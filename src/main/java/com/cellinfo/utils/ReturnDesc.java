@@ -1,4 +1,4 @@
-package com.cellinfo.util;
+package com.cellinfo.utils;
 
 public class ReturnDesc {
 

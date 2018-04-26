@@ -41,8 +41,8 @@ import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysUserService;
 import com.cellinfo.service.UtilService;
-import com.cellinfo.util.ReturnDesc;
 import com.cellinfo.utils.ResultUtil;
+import com.cellinfo.utils.ReturnDesc;
 
 /**
  * 用户管理

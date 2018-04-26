@@ -35,8 +35,11 @@ import com.cellinfo.entity.TlGammaLayerLine;
 import com.cellinfo.entity.TlGammaLayerPoint;
 import com.cellinfo.entity.TlGammaLayerPolygon;
 import com.cellinfo.entity.TlGammaTask;
+import com.cellinfo.entity.ViewTaskAttr;
+import com.cellinfo.entity.ViewTaskKernel;
 import com.cellinfo.security.UserInfo;
 import com.cellinfo.service.SysBusdataService;
+import com.cellinfo.service.SysEnviService;
 import com.cellinfo.service.SysTaskService;
 import com.cellinfo.service.UtilService;
 import com.cellinfo.utils.ResultUtil;
@@ -62,6 +65,9 @@ public class SysDataController {
 	@Autowired
 	private UtilService utilService;
 	
+	@Autowired
+	private SysEnviService sysEnviService;
+	
 	
 	@PostMapping(value = "/userTaskList")
 	public Result<List<Map<String, Object>>> userTaskList(HttpServletRequest request,@RequestBody RequestParameter para) {
@@ -80,7 +86,6 @@ public class SysDataController {
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("key", eachTask.getTaskGuid());
 			tMap.put("taskName",eachTask.getTaskName());
-			tMap.put("classId", "0fd5f2e6-2bb9-423b-bd97-790940f9997e");
 			tMap.put("userName", eachTask.getUserName());
 			if(eachTask.getTaskTimestart() != null)
 			{
@@ -89,6 +94,34 @@ public class SysDataController {
 				tMap.put("statDate",tsStr);
 			}
 			tMap.put("geomType", eachTask.getGeomType());
+			////task kernel list 
+			List<ViewTaskKernel> vTaskKernal =  this.sysTaskService.getTaskKernel(eachTask.getTaskGuid());
+			if( vTaskKernal!= null && vTaskKernal.size()>0)
+				tMap.put("classId", vTaskKernal.get(0).getId().getKernelClassid());
+			
+			//// task attr list
+			
+			List<ViewTaskAttr> vTaskAttr =  this.sysTaskService.getTaskAttr(eachTask.getTaskGuid());
+			if( vTaskAttr!= null && vTaskAttr.size()>0)
+			{
+				List<Object> aList =  new LinkedList<Object>();
+				for(ViewTaskAttr attr : vTaskAttr)
+				{
+					Map<String, Object> aMap = new HashMap<String, Object>();
+					aMap.put("attrname", attr.getAttrName());
+					aMap.put("attrtype", attr.getAttrType());
+					if(attr.getAttrEnum()!= null && attr.getAttrEnum().length()>1)
+					{
+						aMap.put("attrenum", attr.getAttrEnum());
+						aMap.put("enums", sysEnviService.getDictItems(attr.getAttrEnum()));
+					}
+					aList.add(aMap);
+				}
+				tMap.put("items", aList);
+			}
+			
+			tMap.put("classId", "0fd5f2e6-2bb9-423b-bd97-790940f9997e");
+			
 			taskInfoList.add(tMap);
 		}
 		return ResultUtil.success(taskInfoList);
@@ -106,8 +139,7 @@ public class SysDataController {
 			String rangeStr = JSONValue.toJSONString(para.getQueryRange());
 			Geometry filterGeom = new GeometryJSON(10).read(rangeStr);
 			filterGeom.setSRID(4326);
-			
-			geoList = this.sysBusdataService.getTaskData(MAX_LOADELEMENT_NUM,para.getClassId(),filterGeom);
+				geoList = this.sysBusdataService.getTaskData(MAX_LOADELEMENT_NUM,para.getClassId(),filterGeom);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

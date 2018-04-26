@@ -1,14 +1,14 @@
-package com.cellinfo.util;
+package com.cellinfo.utils;
 
-public class FuncDesc {
+public class ModuleDesc {
 
-	public final static String ADD = "新增";
-	public final static String IMPORTDATA = "数据导入";
-	public final static String IMPORTQUERY = "导入查询";
+	public final static String COLLECT_TASK_MANAGER_CONTROLLER = "采集任务管理";
+	
+	public final static String SYSTEM_LOGIN = "登录模块";
+	public final static String IMPORT_TASK_DATA = "导入任务初始数据";
 
 	public final static String OPERLOG = "操作日志";
 
-	public final static String DEVICEMGR = "设备管理";
 
 
 	public final static String DEPTMGR = "部门机构设置 ";
@@ -19,7 +19,8 @@ public class FuncDesc {
 	public static final String SCRIPTFILE = "脚本管理";
 	public static final String USERMANAGE="用户管理";
 	public static final String CHANGEPASSWORD="密码修改";
-	public static final String LONGIN="登录";
-
+	public static final String DATACLEAR="数据清理";
+	public static final String DATACLEAR_APPLY="数据清理申请";
+	public static final String DATACLEAR_DETAIL="数据清理_详情";
 
 }

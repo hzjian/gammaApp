@@ -24,7 +24,7 @@ import com.cellinfo.entity.TlGammaLog;
 import com.cellinfo.security.JwtTokenHandler;
 import com.cellinfo.service.SysLogService;
 import com.cellinfo.service.SysUserService;
-import com.cellinfo.util.ExceptionDesc;
+import com.cellinfo.utils.ExceptionDesc;
 import com.cellinfo.utils.ResultUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

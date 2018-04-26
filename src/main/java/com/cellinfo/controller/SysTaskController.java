@@ -23,8 +23,8 @@ import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.service.SysTaskService;
-import com.cellinfo.util.ReturnDesc;
 import com.cellinfo.utils.ResultUtil;
+import com.cellinfo.utils.ReturnDesc;
 
 @ServiceLog(moduleName = "任务操作")
 @PreAuthorize("hasRole('ROLE_ADMIN')")  
