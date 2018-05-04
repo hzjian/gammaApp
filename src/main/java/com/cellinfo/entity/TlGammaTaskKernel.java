@@ -22,8 +22,8 @@ public class TlGammaTaskKernel implements Serializable {
 	@Id
 	private Long id;
 	
-	@Column(name="kernel_classid")
-	private String kernelClassid;
+	@Column(name="kernel_guid")
+	private String kernelGuid;
 
 	@Column(name="task_guid", nullable=false)
 	private String taskGuid;
@@ -47,22 +47,19 @@ public class TlGammaTaskKernel implements Serializable {
 		this.id = id;
 	}
 
-
-
-
 	/**
-	 * @return the kernelClassid
+	 * @return the kernelGuid
 	 */
-	public String getKernelClassid() {
-		return kernelClassid;
+	public String getKernelGuid() {
+		return kernelGuid;
 	}
 
 
 	/**
-	 * @param kernelClassid the kernelClassid to set
+	 * @param kernelGuid the kernelGuid to set
 	 */
-	public void setKernelClassid(String kernelClassid) {
-		this.kernelClassid = kernelClassid;
+	public void setKernelGuid(String kernelGuid) {
+		this.kernelGuid = kernelGuid;
 	}
 
 

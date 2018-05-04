@@ -30,9 +30,6 @@ public class TlGammaTask implements Serializable {
 	@Column(name="geom_layername", length=128)
 	private String geomLayername;
 
-	@Column(name="geom_type", length=128)
-	private String geomType;
-
 	@Column(name="group_guid")
 	private String groupGuid;
 
@@ -74,14 +71,6 @@ public class TlGammaTask implements Serializable {
 
 	public void setGeomLayername(String geomLayername) {
 		this.geomLayername = geomLayername;
-	}
-
-	public String getGeomType() {
-		return this.geomType;
-	}
-
-	public void setGeomType(String geomType) {
-		this.geomType = geomType;
 	}
 
 	public String getGroupGuid() {

@@ -8,13 +8,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.cellinfo.entity.TlGammaTask;
+import com.cellinfo.entity.TlGammaTaskUser;
 import com.cellinfo.entity.ViewTaskAttr;
 import com.cellinfo.entity.ViewTaskKernel;
 import com.cellinfo.repository.TlGammaTaskAttrRepository;
 import com.cellinfo.repository.TlGammaTaskKernelRepository;
 import com.cellinfo.repository.TlGammaTaskRepository;
+import com.cellinfo.repository.TlGammaTaskUserRepository;
 import com.cellinfo.repository.ViewTaskAttrRepository;
 import com.cellinfo.repository.ViewTaskKernelRepository;
+
 
 @Service
 public class SysTaskService {
@@ -33,6 +36,9 @@ public class SysTaskService {
 	
 	@Autowired
 	private ViewTaskAttrRepository viewTaskAttrRepository;
+	
+	@Autowired
+	private TlGammaTaskUserRepository tlGammaTaskUserRepository;
 	
 	public Page<TlGammaTask> getAll(PageRequest pageInfo) {
 		// TODO Auto-generated method stub
@@ -75,6 +81,10 @@ public class SysTaskService {
 
 	public List<ViewTaskAttr> getTaskAttr(String taskGuid){
 		return this.viewTaskAttrRepository.getByTaskGuid(taskGuid);
+	}
+	
+	public void saveTaskUser(TlGammaTaskUser entity) {
+		this.tlGammaTaskUserRepository.save(entity);
 	}
 	
 }

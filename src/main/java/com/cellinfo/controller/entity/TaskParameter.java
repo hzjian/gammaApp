@@ -2,61 +2,137 @@ package com.cellinfo.controller.entity;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class TaskParameter {
 
-	@JsonProperty(value = "taskId")
-	private String taskId;
+	private String taskname;
+	//@JsonProperty(value = "taskGuid")
+	private String taskGuid;
 	
-	@JsonProperty(value = "taskFields")
-	private List<TaskField> taskFields;
+	private String taskdesc;
 	
-	@JsonProperty(value = "taskGeoType")
-	private String taskGeoType;
+	private String startdatestr;
 	
+	private String enddatestr;
+	
+	private List<FieldParameter> fieldlist;
+	
+	private List<KernelParameter> kernellist;
+	
+	private List<UserParameter> userlist;
+
 	/**
-	 * @return the taskId
+	 * @return the taskGuid
 	 */
-	public String getTaskId() {
-		return taskId;
+	public String getTaskGuid() {
+		return taskGuid;
 	}
 
 	/**
-	 * @param taskId the taskId to set
+	 * @param taskGuid the taskGuid to set
 	 */
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
+	public void setTaskGuid(String taskGuid) {
+		this.taskGuid = taskGuid;
 	}
 
 	/**
-	 * @return the taskFields
+	 * @return the startdatestr
 	 */
-	public List<TaskField> getTaskFields() {
-		return taskFields;
+	public String getStartdatestr() {
+		return startdatestr;
 	}
 
 	/**
-	 * @param taskFields the taskFields to set
+	 * @param startdatestr the startdatestr to set
 	 */
-	public void setTaskFields(List<TaskField> taskFields) {
-		this.taskFields = taskFields;
+	public void setStartdatestr(String startdatestr) {
+		this.startdatestr = startdatestr;
 	}
 
 	/**
-	 * @return the taskGeoType
+	 * @return the enddatestr
 	 */
-	public String getTaskGeoType() {
-		return taskGeoType;
+	public String getEnddatestr() {
+		return enddatestr;
 	}
 
 	/**
-	 * @param taskGeoType the taskGeoType to set
+	 * @param enddatestr the enddatestr to set
 	 */
-	public void setTaskGeoType(String taskGeoType) {
-		this.taskGeoType = taskGeoType;
+	public void setEnddatestr(String enddatestr) {
+		this.enddatestr = enddatestr;
 	}
 
+	/**
+	 * @return the fieldlist
+	 */
+	public List<FieldParameter> getFieldlist() {
+		return fieldlist;
+	}
 
+	/**
+	 * @param fieldlist the fieldlist to set
+	 */
+	public void setFieldlist(List<FieldParameter> fieldlist) {
+		this.fieldlist = fieldlist;
+	}
+
+	/**
+	 * @return the kernellist
+	 */
+	public List<KernelParameter> getKernellist() {
+		return kernellist;
+	}
+
+	/**
+	 * @param kernellist the kernellist to set
+	 */
+	public void setKernellist(List<KernelParameter> kernellist) {
+		this.kernellist = kernellist;
+	}
+
+	/**
+	 * @return the userlist
+	 */
+	public List<UserParameter> getUserlist() {
+		return userlist;
+	}
+
+	/**
+	 * @param userlist the userlist to set
+	 */
+	public void setUserlist(List<UserParameter> userlist) {
+		this.userlist = userlist;
+	}
+
+	/**
+	 * @return the taskname
+	 */
+	public String getTaskname() {
+		return taskname;
+	}
+
+	/**
+	 * @param taskname the taskname to set
+	 */
+	public void setTaskname(String taskname) {
+		this.taskname = taskname;
+	}
+
+	/**
+	 * @return the taskdesc
+	 */
+	public String getTaskdesc() {
+		return taskdesc;
+	}
+
+	/**
+	 * @param taskdesc the taskdesc to set
+	 */
+	public void setTaskdesc(String taskdesc) {
+		this.taskdesc = taskdesc;
+	}
+	
+	
+	
 	
 }

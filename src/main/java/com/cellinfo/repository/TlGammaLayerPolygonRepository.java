@@ -12,6 +12,6 @@ import com.vividsolutions.jts.geom.Geometry;
 public interface TlGammaLayerPolygonRepository extends PagingAndSortingRepository<TlGammaLayerPolygon, String>{
 
 
-	@Query("select a from TlGammaLayerPolygon a  where within(a.kernelGeom , ?1) = true ") 
+	@Query("select a from TlGammaLayerPolygon a  where intersects(a.kernelGeom , ?1) = true ") 
 	public List<TlGammaLayerPolygon> getDataByFilter(Geometry ptGeom,Pageable pageable);
 }

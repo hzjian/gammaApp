@@ -28,8 +28,8 @@ public class ViewTaskKernel implements Serializable {
 	@Column(name="kernel_classname", length=256)
 	private String kernelClassname;
 	
-	@Column(name="service_name", length=64)
-	private String serviceName;
+	@Column(name="kernel_guid")
+	private String kernelGuid;
 	
 	public ViewTaskKernel() {
 	}
@@ -77,17 +77,19 @@ public class ViewTaskKernel implements Serializable {
 	}
 
 	/**
-	 * @return the serviceName
+	 * @return the kernelGuid
 	 */
-	public String getServiceName() {
-		return serviceName;
+	public String getKernelGuid() {
+		return kernelGuid;
 	}
 
 	/**
-	 * @param serviceName the serviceName to set
+	 * @param kernelGuid the kernelGuid to set
 	 */
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
+	public void setKernelGuid(String kernelGuid) {
+		this.kernelGuid = kernelGuid;
 	}
+
+	
 
 }

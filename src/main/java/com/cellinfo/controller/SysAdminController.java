@@ -275,7 +275,6 @@ public class SysAdminController {
 			tMap.put("key", eachKernel.getKernelClassid());
 			tMap.put("name", eachKernel.getKernelClassname());
 			tMap.put("descinfo", eachKernel.getKernelClassdesc());
-			tMap.put("sname", eachKernel.getServiceName());
 			list.add(tMap);
 		}
 		
@@ -292,7 +291,6 @@ public class SysAdminController {
 			tmpKernel.setKernelClassid(UUID.randomUUID().toString());
 		tmpKernel.setGroupGuid("");
 		tmpKernel.setKernelClassdesc(kernel.getDescinfo());
-		tmpKernel.setServiceName(kernel.getSname());
 		tmpKernel.setKernelClassname(kernel.getName());
 		
 		Iterable<TlGammaGroup> kernellist = this.sysGroupService.getByName(tmpKernel.getKernelClassname());

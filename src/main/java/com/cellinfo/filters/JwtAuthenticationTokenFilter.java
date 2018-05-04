@@ -104,6 +104,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 			e.printStackTrace();
 		    new ObjectMapper().writeValue(response.getWriter(), ResultUtil.error(402,e.toString()));  
 		    try {
+		    	String errstr = e.getMessage();
+		    	errstr = errstr.substring(0, errstr.length()<500? errstr.length() : 500);
 		    	TlGammaLog syslog = new TlGammaLog();
 				syslog.setModuleName("*");
 				syslog.setOprateName("*");

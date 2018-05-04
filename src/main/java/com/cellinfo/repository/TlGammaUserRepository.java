@@ -18,4 +18,6 @@ public interface TlGammaUserRepository extends PagingAndSortingRepository<TlGamm
 	//@Query("select u from TlGammaUser u where u.roleId <> 'ROLE_ADMIN'")
 	public Page<TlGammaUser> findByGroupGuid(String groupGuid ,Pageable pageable);
 
+	public List<TlGammaUser> findByGroupGuid(String groupGuid);
+
 }

@@ -93,7 +93,7 @@ public class SysDataController {
 			    String tsStr = sdf.format(eachTask.getTaskTimestart());  
 				tMap.put("statDate",tsStr);
 			}
-			tMap.put("geomType", eachTask.getGeomType());
+			//tMap.put("geomType", eachTask.getGeomType());
 			////task kernel list 
 			List<ViewTaskKernel> vTaskKernal =  this.sysTaskService.getTaskKernel(eachTask.getTaskGuid());
 			if( vTaskKernal!= null && vTaskKernal.size()>0)

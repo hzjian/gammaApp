@@ -29,6 +29,10 @@ public class TlGammaDict implements Serializable {
 	@Column(name="dict_desc", length=512)
 	private String dictDesc;
 
+	@Column(name="group_guid", length=36)
+	private String groupGuid;
+
+	
 	public TlGammaDict() {
 	}
 
@@ -55,5 +59,20 @@ public class TlGammaDict implements Serializable {
 	public void setDictName(String dictName) {
 		this.dictName = dictName;
 	}
+
+	/**
+	 * @return the groupGuid
+	 */
+	public String getGroupGuid() {
+		return groupGuid;
+	}
+
+	/**
+	 * @param groupGuid the groupGuid to set
+	 */
+	public void setGroupGuid(String groupGuid) {
+		this.groupGuid = groupGuid;
+	}
+	
 
 }

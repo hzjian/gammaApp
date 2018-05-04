@@ -1,18 +1,30 @@
 package com.cellinfo.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.cellinfo.entity.TlGammaGroup;
+import com.cellinfo.entity.TlGammaKernel;
+import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.repository.TlGammaGroupRepository;
+import com.cellinfo.repository.TlGammaKernelRepository;
+import com.cellinfo.repository.TlGammaUserRepository;
 
 @Service
 public class SysGroupService {
 
 	@Autowired
 	private TlGammaGroupRepository tlGammaGroupRepository;
+	
+	@Autowired
+	private TlGammaUserRepository tlGammaUserRepository;
+	
+	@Autowired
+	private TlGammaKernelRepository tlGammaKernelRepository;
 	
 	public TlGammaGroup addGroup(TlGammaGroup entity)
 	{
@@ -50,5 +62,16 @@ public class SysGroupService {
 	public Iterable<TlGammaGroup> getByName(String groupName) {
 		// TODO Auto-generated method stub
 		return this.tlGammaGroupRepository.findByGroupName(groupName);
+	}
+	
+	
+	public List<TlGammaUser> getUserByGroup(String groupGuid)
+	{
+		return this.tlGammaUserRepository.findByGroupGuid( groupGuid);
+	}
+	
+	public List<TlGammaKernel> getKernelClassByGroup(String groupGuid)
+	{
+		return this.tlGammaKernelRepository.findByGroupGuid( groupGuid);
 	}
 }

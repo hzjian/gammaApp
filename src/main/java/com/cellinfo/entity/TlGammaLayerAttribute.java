@@ -47,6 +47,9 @@ public class TlGammaLayerAttribute implements Serializable {
 	@Column(name="user_guid")
 	private String userGuid;
 
+	@Column(name="update_time")
+	private Timestamp updateTime;
+	
 	public TlGammaLayerAttribute() {
 	}
 
@@ -122,4 +125,21 @@ public class TlGammaLayerAttribute implements Serializable {
 		this.userGuid = userGuid;
 	}
 
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	
+	
+	
 }

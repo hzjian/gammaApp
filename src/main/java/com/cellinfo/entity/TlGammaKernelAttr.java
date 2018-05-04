@@ -38,11 +38,28 @@ public class TlGammaKernelAttr implements Serializable {
 	@Column(name="attr_sum", length=128)
 	private String attrSum;
 
+	/**
+	 * STRING
+	 * INTEGER
+	 * NUMBER
+	 * DATETIME
+	 */
+
 	@Column(name="attr_type", length=20)
 	private String attrType;
 
 	@Column(name="kernel_classid", nullable=false)
 	private String kernelClassid;
+	
+	/**
+	 * 属性字段众筹等级
+	 * TASKGRADE 不同任务保留多份数据
+	 * USERGRADE 不同用户保留多份数据
+	 */
+	@Column(name="attr_fgrade")
+	private String attrFgrade;
+	
+	
 
 	public TlGammaKernelAttr() {
 	}
@@ -111,4 +128,17 @@ public class TlGammaKernelAttr implements Serializable {
 		this.kernelClassid = kernelClassid;
 	}
 
+	/**
+	 * @return the attrFgrade
+	 */
+	public String getAttrFgrade() {
+		return attrFgrade;
+	}
+
+	/**
+	 * @param attrFgrade the attrFgrade to set
+	 */
+	public void setAttrFgrade(String attrFgrade) {
+		this.attrFgrade = attrFgrade;
+	}
 }
