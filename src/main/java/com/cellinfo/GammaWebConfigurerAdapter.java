@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-public class ActivitiAppWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter{
+public class GammaWebConfigurerAdapter extends WebMvcConfigurerAdapter{
 	
 	
 	@Override
@@ -32,16 +32,4 @@ public class ActivitiAppWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter{
 		return viewResolver;
 		
 	}
-
-	/*
-	@Override  
-    public void addCorsMappings(CorsRegistry registry) {  
-        registry.addMapping("/**")  
-                .allowedOrigins("*")  
-                .allowCredentials(true)  
-                .allowedMethods("GET", "POST", "DELETE", "PUT")
-                .allowedHeaders("*")
-                .maxAge(3600);
-    }
-    */
 }
