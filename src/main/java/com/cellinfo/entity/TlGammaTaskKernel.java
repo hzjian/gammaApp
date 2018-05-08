@@ -27,7 +27,13 @@ public class TlGammaTaskKernel implements Serializable {
 
 	@Column(name="task_guid", nullable=false)
 	private String taskGuid;
+	
+	@Column(name="kernel_classid")
+	private String kernelClassid;
 
+	@Column(name="kernel_status")
+	private String kernelStatus;
+	
 	public TlGammaTaskKernel() {
 	}
 
@@ -71,4 +77,38 @@ public class TlGammaTaskKernel implements Serializable {
 		this.taskGuid = taskGuid;
 	}
 
+
+	/**
+	 * @return the kernelClassid
+	 */
+	public String getKernelClassid() {
+		return kernelClassid;
+	}
+
+
+	/**
+	 * @param kernelClassid the kernelClassid to set
+	 */
+	public void setKernelClassid(String kernelClassid) {
+		this.kernelClassid = kernelClassid;
+	}
+
+
+	/**
+	 * @return the kernelStatus
+	 */
+	public String getKernelStatus() {
+		return kernelStatus;
+	}
+
+
+	/**
+	 * @param kernelStatus the kernelStatus to set
+	 */
+	public void setKernelStatus(String kernelStatus) {
+		this.kernelStatus = kernelStatus;
+	}
+	
+	
+	
 }

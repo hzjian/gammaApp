@@ -2,6 +2,7 @@ package com.cellinfo.config;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 import com.cellinfo.filters.JwtAuthenticationTokenFilter;
 import com.cellinfo.filters.StatelessLoginFilter;
@@ -39,6 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private TokenAuthenticationService tokenAuthenticationService;
 
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+	   // Do any additional configuration here
+	   return builder.build();
+	}
+	
 	@Bean
 	public JwtAuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
         return new JwtAuthenticationTokenFilter();
@@ -90,16 +98,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 禁用缓存
     	httpSecurity.headers().cacheControl();
     	
-    	//httpSecurity.addFilterBefore(corsFilter(),UsernamePasswordAuthenticationFilter.class);
-    	
     	httpSecurity.addFilterBefore(
                 new StatelessLoginFilter("/service/auth/login", tokenAuthenticationService, userService,sysLogService, authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class);
 		
     	httpSecurity.addFilterBefore(authenticationTokenFilterBean(),  UsernamePasswordAuthenticationFilter.class);
 
-
-    	
+   	
     }
     
     @Autowired

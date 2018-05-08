@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -21,10 +23,11 @@ public class TlGammaLayerAttribute implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name="attr_double")
-	private double attrDouble;
+	private Double attrDouble;
 
 	@Column(name="attr_guid")
 	private String attrGuid;
@@ -44,12 +47,12 @@ public class TlGammaLayerAttribute implements Serializable {
 	@Column(name="task_guid")
 	private String taskGuid;
 
-	@Column(name="user_guid")
-	private String userGuid;
-
+	@Column(name="user_name")
+	private String userName;
+	
 	@Column(name="update_time")
 	private Timestamp updateTime;
-	
+
 	public TlGammaLayerAttribute() {
 	}
 
@@ -61,15 +64,15 @@ public class TlGammaLayerAttribute implements Serializable {
 		this.id = id;
 	}
 
-	public double getAttrDouble() {
+	public Double getAttrDouble() {
 		return this.attrDouble;
 	}
 
-	public void setAttrDouble(double attrDouble) {
+	public void setAttrDouble(Double attrDouble) {
 		this.attrDouble = attrDouble;
 	}
 
-	public Object getAttrGuid() {
+	public String getAttrGuid() {
 		return this.attrGuid;
 	}
 
@@ -101,7 +104,7 @@ public class TlGammaLayerAttribute implements Serializable {
 		this.attrTime = attrTime;
 	}
 
-	public Object getKernelGuid() {
+	public String getKernelGuid() {
 		return this.kernelGuid;
 	}
 
@@ -109,7 +112,7 @@ public class TlGammaLayerAttribute implements Serializable {
 		this.kernelGuid = kernelGuid;
 	}
 
-	public Object getTaskGuid() {
+	public String getTaskGuid() {
 		return this.taskGuid;
 	}
 
@@ -117,12 +120,18 @@ public class TlGammaLayerAttribute implements Serializable {
 		this.taskGuid = taskGuid;
 	}
 
-	public String getUserGuid() {
-		return this.userGuid;
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	/**
@@ -139,7 +148,4 @@ public class TlGammaLayerAttribute implements Serializable {
 		this.updateTime = updateTime;
 	}
 
-	
-	
-	
 }

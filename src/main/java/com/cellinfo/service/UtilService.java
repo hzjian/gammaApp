@@ -16,8 +16,7 @@ import io.jsonwebtoken.Jwts;
 
 @Service
 public class UtilService {
-
-    @Value("${jwt.secret}")
+   @Value("${jwt.secret}")
     private String secret;
     
 	@Value("${jwt.tokenName}")
@@ -47,8 +46,6 @@ public class UtilService {
     	}
         return null;
     }
-	
-	
 	private static String[] chars = new String[] { "a", "b", "c", "d", "e", "f",  
             "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",  
             "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5",  
@@ -59,6 +56,17 @@ public class UtilService {
 	public String generateShortUuid() {  
 	    StringBuffer shortBuffer = new StringBuffer();  
 	    String uuid = UUID.randomUUID().toString().replace("-", "");  
+	    for (int i = 0; i < 8; i++) {  
+	        String str = uuid.substring(i * 4, i * 4 + 4);  
+	        int x = Integer.parseInt(str, 16);  
+	        shortBuffer.append(chars[x % 0x3E]);  
+	    }  
+	    return shortBuffer.toString().toUpperCase();
+	}
+	
+	public String generateShortUuid(String id) {  
+	    StringBuffer shortBuffer = new StringBuffer();  
+	    String uuid = id.replace("-", "");  
 	    for (int i = 0; i < 8; i++) {  
 	        String str = uuid.substring(i * 4, i * 4 + 4);  
 	        int x = Integer.parseInt(str, 16);  

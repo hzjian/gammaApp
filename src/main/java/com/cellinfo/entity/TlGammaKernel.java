@@ -14,7 +14,7 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="tl_gamma_group_kernel")
+@Table(name="tl_gamma_kernel")
 @NamedQuery(name="TlGammaKernel.findAll", query="SELECT t FROM TlGammaKernel t")
 public class TlGammaKernel implements Serializable {
 	private static final long serialVersionUID = 1L;

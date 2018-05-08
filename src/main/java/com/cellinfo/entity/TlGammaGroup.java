@@ -43,6 +43,9 @@ public class TlGammaGroup implements Serializable {
 
 	@Column(name="group_status")
 	private Integer groupStatus;
+	
+	@Column(name="group_service", length=256)
+	private String groupService;
 
 	public TlGammaGroup() {
 	}
@@ -109,6 +112,20 @@ public class TlGammaGroup implements Serializable {
 
 	public void setGroupStatus(Integer groupStatus) {
 		this.groupStatus = groupStatus;
+	}
+
+	/**
+	 * @return the groupService
+	 */
+	public String getGroupService() {
+		return groupService;
+	}
+
+	/**
+	 * @param groupService the groupService to set
+	 */
+	public void setGroupService(String groupService) {
+		this.groupService = groupService;
 	}
 
 }

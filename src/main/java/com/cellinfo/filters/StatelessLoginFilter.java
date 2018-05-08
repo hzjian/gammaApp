@@ -84,6 +84,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         Map<String, String> tokenMap = new HashMap<String, String>();
         tokenMap.put("userName", authenticatedUser.getUsername());
         tokenMap.put("x-auth-token", tokenAuthenticationService.addJwtTokenToHeader(response, userAuthentication));
+        //添加路由
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

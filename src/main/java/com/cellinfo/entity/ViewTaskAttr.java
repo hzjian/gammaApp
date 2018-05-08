@@ -34,6 +34,11 @@ public class ViewTaskAttr implements Serializable {
 	@Column(name="attr_enum")
 	private String attrEnum;
 	
+	@Column(name="attr_isedit")
+	private String attrIsedit;
+	
+	@Column(name="attr_fgrade")
+	private String attrFgrade;
 	
 	public ViewTaskAttr() {
 	}
@@ -118,4 +123,37 @@ public class ViewTaskAttr implements Serializable {
 		this.attrEnum = attrEnum;
 	}
 
+
+	/**
+	 * @return the attrIsedit
+	 */
+	public String getAttrIsedit() {
+		return attrIsedit;
+	}
+
+
+	/**
+	 * @param attrIsedit the attrIsedit to set
+	 */
+	public void setAttrIsedit(String attrIsedit) {
+		this.attrIsedit = attrIsedit;
+	}
+
+
+	/**
+	 * @return the attrFgrade
+	 */
+	public String getAttrFgrade() {
+		return attrFgrade;
+	}
+
+
+	/**
+	 * @param attrFgrade the attrFgrade to set
+	 */
+	public void setAttrFgrade(String attrFgrade) {
+		this.attrFgrade = attrFgrade;
+	}
+
+	
 }

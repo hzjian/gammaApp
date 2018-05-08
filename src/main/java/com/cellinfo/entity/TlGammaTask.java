@@ -15,7 +15,7 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="tl_gamma_group_task")
+@Table(name="tl_gamma_task")
 @NamedQuery(name="TlGammaTask.findAll", query="SELECT t FROM TlGammaTask t")
 public class TlGammaTask implements Serializable {
 	private static final long serialVersionUID = 1L;

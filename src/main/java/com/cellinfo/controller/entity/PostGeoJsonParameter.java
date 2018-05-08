@@ -7,6 +7,8 @@ public class PostGeoJsonParameter {
 	private String featype = "POINT";
 	private String taskGuid;
 	private String feaGuid;
+	private String feaClassid;
+	private String feasid;
 	private Map<String,Object> geoJson;
 	/**
 	 * @return the featype
@@ -60,6 +62,32 @@ public class PostGeoJsonParameter {
 	public void setFeaGuid(String feaGuid) {
 		this.feaGuid = feaGuid;
 	}
+	
+	/**
+	 * @return the feaClassid
+	 */
+	public String getFeaClassid() {
+		return feaClassid;
+	}
+	/**
+	 * @param feaClassid the feaClassid to set
+	 */
+	public void setFeaClassid(String feaClassid) {
+		this.feaClassid = feaClassid;
+	}
+	/**
+	 * @return the feasid
+	 */
+	public String getFeasid() {
+		return feasid;
+	}
+	/**
+	 * @param feasid the feasid to set
+	 */
+	public void setFeasid(String feasid) {
+		this.feasid = feasid;
+	}
+	
 	
 	
 	

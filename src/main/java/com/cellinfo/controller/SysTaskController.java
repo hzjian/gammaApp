@@ -43,13 +43,14 @@ import com.cellinfo.utils.ResultUtil;
 import com.cellinfo.utils.ReturnDesc;
 /**
  * 组织内部的任务管理
- * 任务创建 ，分配等操作
- * 
+ * 任务创建 
+ * 任务列表
+ * 数据分类（数据按空间过虑，按字段过滤，生成子类）
  * @author zhangjian
  *
  */
 @ServiceLog(moduleName = "任务操作")
-@PreAuthorize("hasRole('ROLE_ADMIN')")  
+@PreAuthorize("hasRole('ROLE_USER')")  
 @RestController
 @RequestMapping("/service/task")
 public class SysTaskController {
@@ -190,7 +191,7 @@ public class SysTaskController {
 				for(UserParameter user : taskParam.getUserlist()) {
 					TlGammaTaskUser taskUser = new TlGammaTaskUser();
 					taskUser.setTaskGuid(taskGuid);
-					taskUser.setUserGuid(user.getUserguid());
+					taskUser.setUserGuid(user.getUserGuid());
 					this.sysTaskService.saveTaskUser(taskUser);
 				}
 			}

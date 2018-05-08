@@ -7,6 +7,11 @@ public class RequestParameter {
 	//ASC, DESC
 	private String sortDirection;
 	private String sortField;
+	
+	private String skey;
+	
+	private Integer status = -1;
+	
 	/**
 	 * @return the page
 	 */
@@ -54,6 +59,30 @@ public class RequestParameter {
 	 */
 	public void setSortField(String sortField) {
 		this.sortField = sortField;
+	}
+	/**
+	 * @return the skey
+	 */
+	public String getSkey() {
+		return skey;
+	}
+	/**
+	 * @param skey the skey to set
+	 */
+	public void setSkey(String skey) {
+		this.skey = skey;
+	}
+	/**
+	 * @return the status
+	 */
+	public Integer getStatus() {
+		return status;
+	}
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	
