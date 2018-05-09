@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cellinfo.entity.TlGammaTask;
@@ -86,5 +87,19 @@ public class SysTaskService {
 	public void saveTaskUser(TlGammaTaskUser entity) {
 		this.tlGammaTaskUserRepository.save(entity);
 	}
+
+	public Page<TlGammaTask> getTaskByGroupGuid(String groupGuid,Pageable pageable) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskRepository.findByGroupGuid(groupGuid,pageable);
+	}
 	
+	public Page<TlGammaTask> getTaskByUsername(String userName,Pageable pageable) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskRepository.findByUserName(userName,pageable);
+	}
+
+	public Page<TlGammaTask> getByUserName(String userName,Pageable pageable) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskRepository.findByUserName(userName,pageable);
+	}
 }

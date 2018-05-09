@@ -3,62 +3,111 @@ package com.cellinfo.controller.entity;
 public class FieldParameter {
 
 	
-	private String key;
-	private String fieldname;
+	private String fieldGuid;
+	private String fieldName;
+	private String fieldAlias;
 	/**
 	 * STRING
 	 * INTEGER
 	 * NUMBER
 	 * DATETIME
 	 */
-	private String fieldtype;
-	private String isedit;
+	private String fieldType;
+	private String isEdit;
+	
 	/**
-	 * @return the key
+	 * 属性字段众筹等级
+	 * TASKGRADE 不同任务保留多份数据
+	 * USERGRADE 不同用户保留多份数据
 	 */
-	public String getKey() {
-		return key;
+	private String fieldGrade;
+	private String fieldEnum;
+	
+	/**
+	 * @return the fieldGuid
+	 */
+	public String getFieldGuid() {
+		return fieldGuid;
 	}
 	/**
-	 * @param key the key to set
+	 * @param fieldGuid the fieldGuid to set
 	 */
-	public void setKey(String key) {
-		this.key = key;
+	public void setFieldGuid(String fieldGuid) {
+		this.fieldGuid = fieldGuid;
 	}
 	/**
-	 * @return the fieldname
+	 * @return the fieldName
 	 */
-	public String getFieldname() {
-		return fieldname;
+	public String getFieldName() {
+		return fieldName;
 	}
 	/**
-	 * @param fieldname the fieldname to set
+	 * @param fieldName the fieldName to set
 	 */
-	public void setFieldname(String fieldname) {
-		this.fieldname = fieldname;
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 	/**
-	 * @return the fieldtype
+	 * @return the fieldType
 	 */
-	public String getFieldtype() {
-		return fieldtype;
+	public String getFieldType() {
+		return fieldType;
 	}
 	/**
-	 * @param fieldtype the fieldtype to set
+	 * @param fieldType the fieldType to set
 	 */
-	public void setFieldtype(String fieldtype) {
-		this.fieldtype = fieldtype;
+	public void setFieldType(String fieldType) {
+		this.fieldType = fieldType;
 	}
 	/**
-	 * @return the isedit
+	 * @return the isEdit
 	 */
-	public String getIsedit() {
-		return isedit;
+	public String getIsEdit() {
+		return isEdit;
 	}
 	/**
-	 * @param isedit the isedit to set
+	 * @param isEdit the isEdit to set
 	 */
-	public void setIsedit(String isedit) {
-		this.isedit = isedit;
+	public void setIsEdit(String isEdit) {
+		this.isEdit = isEdit;
 	}
+	/**
+	 * @return the fieldGrade
+	 */
+	public String getFieldGrade() {
+		return fieldGrade;
+	}
+	/**
+	 * @param fieldGrade the fieldGrade to set
+	 */
+	public void setFieldGrade(String fieldGrade) {
+		this.fieldGrade = fieldGrade;
+	}
+	/**
+	 * @return the fieldEnum
+	 */
+	public String getFieldEnum() {
+		return fieldEnum;
+	}
+	/**
+	 * @param fieldEnum the fieldEnum to set
+	 */
+	public void setFieldEnum(String fieldEnum) {
+		this.fieldEnum = fieldEnum;
+	}
+	/**
+	 * @return the fieldAlias
+	 */
+	public String getFieldAlias() {
+		return fieldAlias;
+	}
+	/**
+	 * @param fieldAlias the fieldAlias to set
+	 */
+	public void setFieldAlias(String fieldAlias) {
+		this.fieldAlias = fieldAlias;
+	}
+	
+	
+	
 }

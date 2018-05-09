@@ -70,6 +70,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
     }
 
     private TlGammaUser toUser(HttpServletRequest request) throws IOException {
+    	logger.warn(request.getInputStream().toString());
         return new ObjectMapper().readValue(request.getInputStream(), TlGammaUser.class);
     }
 

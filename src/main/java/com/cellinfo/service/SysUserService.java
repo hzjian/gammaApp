@@ -46,8 +46,8 @@ public class SysUserService implements UserDetailsService {
      * @param id
      * @return
      */
-    public TlGammaUser findOne(String userId) {
-        return tlGammaUserRepository.findOne(userId);
+    public TlGammaUser findOne(String userName) {
+        return tlGammaUserRepository.findOne(userName);
     }
     
     public Page<TlGammaUser> getAll(PageRequest pageInfo) {

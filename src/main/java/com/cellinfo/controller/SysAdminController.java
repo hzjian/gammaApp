@@ -250,7 +250,7 @@ public class SysAdminController {
 		{
 			// todo
 		}
-		if(para.getStatus()>0)
+		if(para.getIkey()>0)
 		{
 			//todo
 		}

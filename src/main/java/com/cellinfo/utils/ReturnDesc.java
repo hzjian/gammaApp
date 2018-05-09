@@ -12,4 +12,6 @@ public class ReturnDesc {
 	public static final String GROUP_NAME_IS_EXIST = "该组织已存在";
 	public static final String GROUP_NAME_IS_NOT_EXIST = "该组织不存在";
 	public static final String KERNEL_NAME_IS_EXIST = "该核心对象的名称已存在";
+	public static final String USER_NAME_IS_NOT_EXIST = "该用户名不存在";
+	public static final String KERNEL_IS_NOT_EXIST="该核心对象类别不存在";
 }

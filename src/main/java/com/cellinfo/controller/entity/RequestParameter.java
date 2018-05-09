@@ -10,7 +10,7 @@ public class RequestParameter {
 	
 	private String skey;
 	
-	private Integer status = -1;
+	private Integer ikey;
 	
 	/**
 	 * @return the page
@@ -73,18 +73,16 @@ public class RequestParameter {
 		this.skey = skey;
 	}
 	/**
-	 * @return the status
+	 * @return the ikey
 	 */
-	public Integer getStatus() {
-		return status;
+	public Integer getIkey() {
+		return ikey;
 	}
 	/**
-	 * @param status the status to set
+	 * @param ikey the ikey to set
 	 */
-	public void setStatus(Integer status) {
-		this.status = status;
+	public void setIkey(Integer ikey) {
+		this.ikey = ikey;
 	}
-
-	
 	
 }

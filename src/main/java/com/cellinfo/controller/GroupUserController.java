@@ -1,6 +1,7 @@
 package com.cellinfo.controller;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,21 +42,22 @@ import com.cellinfo.service.SysTaskService;
 import com.cellinfo.service.UtilService;
 import com.cellinfo.utils.ResultUtil;
 import com.cellinfo.utils.ReturnDesc;
+
 /**
+ *  数据分类
+ *  任务管理(创建任务，用户任务列表，查询任务)
  * 组织内部的任务管理
  * 任务创建 
  * 任务列表
  * 数据分类（数据按空间过虑，按字段过滤，生成子类）
  * @author zhangjian
- *
  */
-@ServiceLog(moduleName = "任务操作")
-@PreAuthorize("hasRole('ROLE_USER')")  
+@ServiceLog(moduleName = "组织管理接口")
+@PreAuthorize("hasRole('ROLE_GROUP_ADMIN') OR hasRole('ROLE_USER')")  
 @RestController
-@RequestMapping("/service/task")
-public class SysTaskController {
-
-	private final static Logger logger = LoggerFactory.getLogger(SysTaskController.class);
+@RequestMapping("/service/user")
+public class GroupUserController {
+	private final static Logger logger = LoggerFactory.getLogger(GroupUserController.class);
 	
 	@Autowired
 	private UtilService utilService;
@@ -66,65 +68,57 @@ public class SysTaskController {
 	@Autowired
 	private SysGroupService sysGroupService;
 	
+	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");   
 	
-	
-	@PostMapping(value = "/closedtasks")
-	public Result<Page<TlGammaTask>> groupList(@RequestBody RequestParameter para, BindingResult bindingResult) {
+	@PostMapping(value = "/tasks")
+	public Result<List<TaskParameter>> userTasks(HttpServletRequest request,@RequestBody RequestParameter para, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		logger.info("userList");
 		int pageNumber = para.getPage();
 		int pageSize = para.getPageSize();
-
-		Sort sort = null;
-		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
-			sort = new Sort(Direction.ASC, para.getSortField());
+		Sort sort = null; 
+		String sortField ="userName";
+		if (para.getSortDirection()!=null && para.getSortDirection().equalsIgnoreCase("ASC")) {
+			sort = new Sort(Direction.ASC, sortField);
 		} else {
-			sort = new Sort(Direction.DESC, para.getSortField());
+			sort = new Sort(Direction.DESC, sortField);
 		}
-
 		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaTask> mList = this.sysTaskService.getTaskList(pageInfo);
-		return ResultUtil.success(mList);
+		Page<TlGammaTask> tasklist = this.sysTaskService.getByUserName(cUser.getUserName(),pageInfo);
+		List<TaskParameter> rtasks  = new LinkedList<TaskParameter>();
+		for(TlGammaTask task : tasklist)
+		{
+			TaskParameter tpara = new TaskParameter();
+			tpara.setEnddatestr(df.format(task.getTaskTimeend()));
+			tpara.setStartdatestr(df.format(task.getTaskTimestart()));
+			tpara.setTaskGuid(task.getTaskGuid());
+			tpara.setTaskname(task.getTaskName());
+			rtasks.add(tpara);
+		}
+		return ResultUtil.success(rtasks);
 	}
 	
-	@PostMapping(value = "/add")
-	public Result<TlGammaTask> addGroup(@RequestBody @Valid TlGammaTask task, BindingResult bindingResult) {
+	@PostMapping(value = "/task/query")
+	public Result<TaskParameter> queryTaskInfo(HttpServletRequest request,@RequestBody String taskGuid, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		Iterable<TlGammaTask> tasklist = this.sysTaskService.getByName(task.getTaskName());
-		if(tasklist!=null && tasklist.iterator().hasNext())
-		{
-			return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_EXIST);
-		}
-		task.setTaskGuid(UUID.randomUUID().toString());
-		return ResultUtil.success(this.sysTaskService.addTask(task));
-	}
-	
-	@PostMapping(value = "/update")
-	public Result<TlGammaTask> updateGroup(@RequestBody @Valid TlGammaTask task, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
-		TlGammaTask refTask = this.sysTaskService.getByGUID(task.getTaskGuid());
-		if(refTask!=null && refTask.getGroupGuid().length()>1)
-		{
-			return ResultUtil.success(this.sysTaskService.updateTask(task));
-		}
-		return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_NOT_EXIST);
-	}
-	
-	@PostMapping(value = "/delete")
-	public Result<String> updateGroup(@RequestBody @Valid String taskGuid) {
+		TlGammaTask realTask = this.sysTaskService.getByGUID(taskGuid);
+		TaskParameter tpara = new TaskParameter();
 
-		this.sysTaskService.deleteTask(taskGuid);
-		
-		return ResultUtil.success("success");
+		tpara.setEnddatestr(df.format(realTask.getTaskTimeend()));
+		tpara.setStartdatestr(df.format(realTask.getTaskTimestart()));
+		tpara.setTaskGuid(realTask.getTaskGuid());
+		tpara.setTaskname(realTask.getTaskName());
+
+
+		return ResultUtil.success(tpara);
 	}
 
-	@PostMapping(value = "/initTaskData")
+	@PostMapping(value = "/task/initdata")
 	public Result<Map<String,Object>> initTaskData(HttpServletRequest request) {
 		Map<String,Object> resList = new HashMap<String ,Object>();
 		
@@ -157,7 +151,7 @@ public class SysTaskController {
 
 
 	@Transactional
-	@PostMapping(value = "/createTask")
+	@PostMapping(value = "/task/create")
 	public Result<Map<String,Object>> createTask(HttpServletRequest request,
 			@RequestBody @Valid TaskParameter taskParam, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -176,7 +170,7 @@ public class SysTaskController {
 			task.setTaskTimeend(Timestamp.valueOf(taskParam.getEnddatestr()));
 			if(taskParam.getKernellist()!=null && taskParam.getKernellist().size()>0)
 			{
-				task.setKernelClassid(taskParam.getKernellist().get(0).getClassid());
+				task.setKernelClassid(taskParam.getKernellist().get(0).getClassGuid());
 			}
 			
 			this.sysTaskService.addTask(task);
@@ -202,5 +196,40 @@ public class SysTaskController {
 		return ResultUtil.success(resList);
 	}
 	
+	@PostMapping(value = "/task/update")
+	public Result<TlGammaTask> updateGroup(@RequestBody @Valid TlGammaTask task, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		TlGammaTask refTask = this.sysTaskService.getByGUID(task.getTaskGuid());
+		if(refTask!=null && refTask.getGroupGuid().length()>1)
+		{
+			return ResultUtil.success(this.sysTaskService.updateTask(task));
+		}
+		return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_NOT_EXIST);
+	}
 	
+	
+
+	
+	@PostMapping(value = "/closedtasks")
+	public Result<Page<TlGammaTask>> groupList(@RequestBody RequestParameter para, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		logger.info("userList");
+		int pageNumber = para.getPage();
+		int pageSize = para.getPageSize();
+
+		Sort sort = null;
+		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
+			sort = new Sort(Direction.ASC, para.getSortField());
+		} else {
+			sort = new Sort(Direction.DESC, para.getSortField());
+		}
+
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		Page<TlGammaTask> mList = this.sysTaskService.getTaskList(pageInfo);
+		return ResultUtil.success(mList);
+	}
 }
