@@ -4,24 +4,12 @@ import java.util.Map;
 
 public class PostGeoJsonParameter {
 
-	private String featype = "POINT";
 	private String taskGuid;
 	private String feaGuid;
 	private String feaClassid;
 	private String feasid;
 	private Map<String,Object> geoJson;
-	/**
-	 * @return the featype
-	 */
-	public String getFeatype() {
-		return featype;
-	}
-	/**
-	 * @param featype the featype to set
-	 */
-	public void setFeatype(String featype) {
-		this.featype = featype;
-	}
+
 	/**
 	 * @return the geoJson
 	 */

@@ -33,9 +33,6 @@ public class ViewTaskPoint implements Serializable{
 
 	@Column(name="kernel_geom",columnDefinition = "geometry(Point,4326)")
 	private Point kernelGeom;
-
-	@Column(name="group_guid")
-	private String groupGuid;
 	
 	@Column(name="kernel_classid")
 	private String kernelClassid;
@@ -77,21 +74,6 @@ public class ViewTaskPoint implements Serializable{
 
 	public void setKernelGuid(String kernelGuid) {
 		this.kernelGuid = kernelGuid;
-	}
-
-	
-	/**
-	 * @return the groupGuid
-	 */
-	public String getGroupGuid() {
-		return groupGuid;
-	}
-
-	/**
-	 * @param groupGuid the groupGuid to set
-	 */
-	public void setGroupGuid(String groupGuid) {
-		this.groupGuid = groupGuid;
 	}
 
 	/**

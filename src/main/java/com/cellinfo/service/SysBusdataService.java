@@ -172,9 +172,9 @@ public class SysBusdataService {
 	}
 	
 	
-	public void saveAttribute(List<TlGammaLayerAttribute> entities)
+	public  Iterable<TlGammaLayerAttribute> saveAttribute(List<TlGammaLayerAttribute> entities)
 	{
-		this.tlGammaLayerAttributeRepository.save(entities);
+		return this.tlGammaLayerAttributeRepository.save(entities);
 	}
 	public List<TlGammaLayerAttribute> getKernelAttrById(String kernerlGuid,String attrGuid)
 	{

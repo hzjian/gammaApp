@@ -1,4 +1,4 @@
-package com.cellinfo;
+package com.cellinfo.bak;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import com.cellinfo.GammaAppApplication;
 import com.cellinfo.controller.entity.FieldParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;

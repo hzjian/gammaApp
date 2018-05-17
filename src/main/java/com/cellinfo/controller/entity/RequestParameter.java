@@ -1,6 +1,6 @@
 package com.cellinfo.controller.entity;
 
-public class RequestParameter {
+public class RequestParameter implements GammaParameter{
 
 	private Integer page;
 	private Integer pageSize;
@@ -11,6 +11,8 @@ public class RequestParameter {
 	private String skey;
 	
 	private Integer ikey;
+	
+	private String groupGuid;
 	
 	/**
 	 * @return the page
@@ -84,5 +86,27 @@ public class RequestParameter {
 	public void setIkey(Integer ikey) {
 		this.ikey = ikey;
 	}
+	/**
+	 * @return the groupGuid
+	 */
+	public String getGroupGuid() {
+		return groupGuid;
+	}
+	/**
+	 * @param groupGuid the groupGuid to set
+	 */
+	public void setGroupGuid(String groupGuid) {
+		this.groupGuid = groupGuid;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "page:"+this.page+"skey "+this.skey;
+	}
+	
+	
 	
 }

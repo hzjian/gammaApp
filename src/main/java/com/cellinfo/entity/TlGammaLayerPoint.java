@@ -33,9 +33,6 @@ public class TlGammaLayerPoint implements Serializable{
 
 	@Column(name="kernel_geom")
 	private Geometry kernelGeom;
-
-	@Column(name="group_guid")
-	private String groupGuid;
 	
 	@Column(name="kernel_classid")
 	private String kernelClassid;
@@ -46,7 +43,7 @@ public class TlGammaLayerPoint implements Serializable{
 	@Column(name="task_guid")
 	private String taskGuid;
 	
-	@Column(name="kernel_anno")
+	@Column(name="kernel_anno", length=256)
 	private String kernelAnno;
 	
 	public TlGammaLayerPoint() {
@@ -74,21 +71,6 @@ public class TlGammaLayerPoint implements Serializable{
 
 	public void setKernelGuid(String kernelGuid) {
 		this.kernelGuid = kernelGuid;
-	}
-
-	
-	/**
-	 * @return the groupGuid
-	 */
-	public String getGroupGuid() {
-		return groupGuid;
-	}
-
-	/**
-	 * @param groupGuid the groupGuid to set
-	 */
-	public void setGroupGuid(String groupGuid) {
-		this.groupGuid = groupGuid;
 	}
 
 	/**

@@ -9,4 +9,6 @@ import com.cellinfo.entity.TlGammaDictItem;
 public interface TlGammaDictItemRepository extends CrudRepository<TlGammaDictItem, Long>{
 
 	public  List<TlGammaDictItem> findByDictId(String dictId);
+	
+	public int deleteByDictId(String dictId);
 }

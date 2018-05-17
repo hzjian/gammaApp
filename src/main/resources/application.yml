@@ -25,7 +25,7 @@ spring:
     store-type: none
 logging:
   level: 
-    root: WARN
+    root: warn
     org:
       springframework:
         security: WARN

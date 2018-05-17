@@ -28,8 +28,8 @@ public class TlGammaTaskUser implements Serializable {
 	@Column(name="task_guid")
 	private String taskGuid;
 
-	@Column(name="user_guid")
-	private String userGuid;
+	@Column(name="user_name")
+	private String userName;
 
 	public TlGammaTaskUser() {
 	}
@@ -42,12 +42,19 @@ public class TlGammaTaskUser implements Serializable {
 		this.taskGuid = taskGuid;
 	}
 
-	public String getUserGuid() {
-		return this.userGuid;
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
+	
 }

@@ -23,14 +23,20 @@ public class TlGammaKernelExt implements Serializable {
 	@Column(name="ext_guid", nullable=false)
 	private String extGuid;
 	
-	@Column(name="ext_name")
+	@Column(name="ext_name",length=128)
 	private String extName;
 
-	@Column(name="kernel_classid")
+	@Column(name="kernel_classid",length=50)
 	private String kernelClassid;
 
-	@Column(name="ext_desc")
+	@Column(name="ext_desc",length=256)
 	private String extDesc;
+	
+	/**
+	 * 用户创建自定义标签
+	 */
+	@Column(name="user_name", length=64)
+	private String userName;
 	
 
 	public TlGammaKernelExt() {
@@ -90,6 +96,20 @@ public class TlGammaKernelExt implements Serializable {
 	 */
 	public void setExtDesc(String extDesc) {
 		this.extDesc = extDesc;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 }

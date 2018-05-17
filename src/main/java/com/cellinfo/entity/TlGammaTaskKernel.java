@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -19,7 +21,9 @@ import javax.persistence.Table;
 public class TlGammaTaskKernel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
+	@SequenceGenerator(name="seq_taskkernel_log", sequenceName="seq_taskkernel_log")
+	@Id 
+	@GeneratedValue(generator="seq_taskkernel_log")
 	private Long id;
 	
 	@Column(name="kernel_guid")
@@ -27,9 +31,6 @@ public class TlGammaTaskKernel implements Serializable {
 
 	@Column(name="task_guid", nullable=false)
 	private String taskGuid;
-	
-	@Column(name="kernel_classid")
-	private String kernelClassid;
 
 	@Column(name="kernel_status")
 	private String kernelStatus;
@@ -37,6 +38,10 @@ public class TlGammaTaskKernel implements Serializable {
 	public TlGammaTaskKernel() {
 	}
 
+	public TlGammaTaskKernel(String taskGuid,String kernelGuid) {
+		this.taskGuid = taskGuid;
+		this.kernelGuid= kernelGuid;
+	}
 	
 	/**
 	 * @return the id
@@ -76,24 +81,6 @@ public class TlGammaTaskKernel implements Serializable {
 	public void setTaskGuid(String taskGuid) {
 		this.taskGuid = taskGuid;
 	}
-
-
-	/**
-	 * @return the kernelClassid
-	 */
-	public String getKernelClassid() {
-		return kernelClassid;
-	}
-
-
-	/**
-	 * @param kernelClassid the kernelClassid to set
-	 */
-	public void setKernelClassid(String kernelClassid) {
-		this.kernelClassid = kernelClassid;
-	}
-
-
 	/**
 	 * @return the kernelStatus
 	 */

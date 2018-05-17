@@ -14,4 +14,10 @@ public class ReturnDesc {
 	public static final String KERNEL_NAME_IS_EXIST = "该核心对象的名称已存在";
 	public static final String USER_NAME_IS_NOT_EXIST = "该用户名不存在";
 	public static final String KERNEL_IS_NOT_EXIST="该核心对象类别不存在";
+	public static final String DICT_NAME_IS_EXIST = "该字典名称已存在";
+	public static final String UNKNOW_ERROR = "未知错误";
+	public static final String INPUT_PARAMETER_ERROR = "输入参数无效";
+	public static final Object EXECUTION_SUCCESS = "操作成功";
+	public static final String GROUP_IS_NOT_EXIST = "该组织不存在";
+	public static final String KERNEL_CLASS_SHOULD_NOT_NULL = "核心对象类别不能为空";
 }

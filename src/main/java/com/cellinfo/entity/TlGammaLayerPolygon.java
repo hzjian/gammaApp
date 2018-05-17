@@ -9,7 +9,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.MultiPolygon;
 
 
 /**
@@ -30,14 +30,11 @@ public class TlGammaLayerPolygon implements Serializable {
 	@Column(name="geom_style", length=256)
 	private String geomStyle;
 
-	@Column(name="kernel_geom",columnDefinition = "geometry(Polygon,3857)")
-	private Polygon kernelGeom;
+	@Column(name="kernel_geom",columnDefinition = "geometry(MultiPolygon,4326)")
+	private MultiPolygon kernelGeom;
 
 	@Column(name="kernel_id")
 	private String kernelId;
-	
-	@Column(name="group_guid")
-	private String groupGuid;
 	
 	@Column(name="kernel_classid")
 	private String kernelClassid;
@@ -48,7 +45,7 @@ public class TlGammaLayerPolygon implements Serializable {
 	@Column(name="task_guid")
 	private String taskGuid;
 	
-	@Column(name="kernel_anno")
+	@Column(name="kernel_anno", length=256)
 	private String kernelAnno;
 
 	public TlGammaLayerPolygon() {
@@ -62,11 +59,11 @@ public class TlGammaLayerPolygon implements Serializable {
 		this.geomStyle = geomStyle;
 	}
 
-	public Polygon getKernelGeom() {
+	public MultiPolygon getKernelGeom() {
 		return this.kernelGeom;
 	}
 
-	public void setKernelGeom(Polygon kernelGeom) {
+	public void setKernelGeom(MultiPolygon kernelGeom) {
 		this.kernelGeom = kernelGeom;
 	}
 
@@ -76,19 +73,6 @@ public class TlGammaLayerPolygon implements Serializable {
 
 	public void setKernelGuid(String kernelGuid) {
 		this.kernelGuid = kernelGuid;
-	}
-	/**
-	 * @return the groupGuid
-	 */
-	public String getGroupGuid() {
-		return groupGuid;
-	}
-
-	/**
-	 * @param groupGuid the groupGuid to set
-	 */
-	public void setGroupGuid(String groupGuid) {
-		this.groupGuid = groupGuid;
 	}
 
 	/**

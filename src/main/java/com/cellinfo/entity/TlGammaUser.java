@@ -44,6 +44,9 @@ public class TlGammaUser implements Serializable , UserDetails{
 
 	@Column(name="user_guid", nullable=false)
 	private String userGuid;
+	
+	@Column(name="user_email", length=64)
+	private String userEmail;
 
 	@Id
 	@Column(name="user_name", length=64)
@@ -194,5 +197,21 @@ public class TlGammaUser implements Serializable , UserDetails{
 		// TODO Auto-generated method stub
 		return this.accEnabled == 1? true:false;
 	}
+
+	/**
+	 * @return the userEmail
+	 */
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	/**
+	 * @param userEmail the userEmail to set
+	 */
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+	
+	
 
 }

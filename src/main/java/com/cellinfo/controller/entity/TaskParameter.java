@@ -1,24 +1,48 @@
 package com.cellinfo.controller.entity;
 
-import java.util.List;
+public class TaskParameter implements GammaParameter{
 
-public class TaskParameter {
+	private String taskName;
 
-	private String taskname;
-	//@JsonProperty(value = "taskGuid")
 	private String taskGuid;
 	
-	private String taskdesc;
+	private String taskDesc;
 	
-	private String startdatestr;
+	private String startDate;
 	
-	private String enddatestr;
+	private String endDate;
 	
-	private List<FieldParameter> fieldlist;
+	private String classid;
 	
-	private List<KernelParameter> kernellist;
+	private String extGuid;
 	
-	private List<UserParameter> userlist;
+	private FieldParameter field;
+		
+	private String refExtGuid;
+	
+	private UserParameter user;
+	
+	private String refClassid;
+	
+	private String fileId;
+	
+	private String busPassword;
+	
+	private Integer kernelAdd;
+
+	/**
+	 * @return the taskName
+	 */
+	public String getTaskName() {
+		return taskName;
+	}
+
+	/**
+	 * @param taskName the taskName to set
+	 */
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
 
 	/**
 	 * @return the taskGuid
@@ -35,104 +59,171 @@ public class TaskParameter {
 	}
 
 	/**
-	 * @return the startdatestr
+	 * @return the taskDesc
 	 */
-	public String getStartdatestr() {
-		return startdatestr;
+	public String getTaskDesc() {
+		return taskDesc;
 	}
 
 	/**
-	 * @param startdatestr the startdatestr to set
+	 * @param taskDesc the taskDesc to set
 	 */
-	public void setStartdatestr(String startdatestr) {
-		this.startdatestr = startdatestr;
+	public void setTaskDesc(String taskDesc) {
+		this.taskDesc = taskDesc;
 	}
 
 	/**
-	 * @return the enddatestr
+	 * @return the startDate
 	 */
-	public String getEnddatestr() {
-		return enddatestr;
+	public String getStartDate() {
+		return startDate;
 	}
 
 	/**
-	 * @param enddatestr the enddatestr to set
+	 * @param startDate the startDate to set
 	 */
-	public void setEnddatestr(String enddatestr) {
-		this.enddatestr = enddatestr;
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
 	}
 
 	/**
-	 * @return the fieldlist
+	 * @return the endDate
 	 */
-	public List<FieldParameter> getFieldlist() {
-		return fieldlist;
+	public String getEndDate() {
+		return endDate;
 	}
 
 	/**
-	 * @param fieldlist the fieldlist to set
+	 * @param endDate the endDate to set
 	 */
-	public void setFieldlist(List<FieldParameter> fieldlist) {
-		this.fieldlist = fieldlist;
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
 	/**
-	 * @return the kernellist
+	 * @return the classid
 	 */
-	public List<KernelParameter> getKernellist() {
-		return kernellist;
+	public String getClassid() {
+		return classid;
 	}
 
 	/**
-	 * @param kernellist the kernellist to set
+	 * @param classid the classid to set
 	 */
-	public void setKernellist(List<KernelParameter> kernellist) {
-		this.kernellist = kernellist;
+	public void setClassid(String classid) {
+		this.classid = classid;
 	}
 
 	/**
-	 * @return the userlist
+	 * @return the extGuid
 	 */
-	public List<UserParameter> getUserlist() {
-		return userlist;
+	public String getExtGuid() {
+		return extGuid;
 	}
 
 	/**
-	 * @param userlist the userlist to set
+	 * @param extGuid the extGuid to set
 	 */
-	public void setUserlist(List<UserParameter> userlist) {
-		this.userlist = userlist;
+	public void setExtGuid(String extGuid) {
+		this.extGuid = extGuid;
 	}
 
 	/**
-	 * @return the taskname
+	 * @return the field
 	 */
-	public String getTaskname() {
-		return taskname;
+	public FieldParameter getField() {
+		return field;
 	}
 
 	/**
-	 * @param taskname the taskname to set
+	 * @param field the field to set
 	 */
-	public void setTaskname(String taskname) {
-		this.taskname = taskname;
+	public void setField(FieldParameter field) {
+		this.field = field;
 	}
 
 	/**
-	 * @return the taskdesc
+	 * @return the refExtGuid
 	 */
-	public String getTaskdesc() {
-		return taskdesc;
+	public String getRefExtGuid() {
+		return refExtGuid;
 	}
 
 	/**
-	 * @param taskdesc the taskdesc to set
+	 * @param refExtGuid the refExtGuid to set
 	 */
-	public void setTaskdesc(String taskdesc) {
-		this.taskdesc = taskdesc;
+	public void setRefExtGuid(String refExtGuid) {
+		this.refExtGuid = refExtGuid;
 	}
-	
-	
-	
-	
+
+	/**
+	 * @return the user
+	 */
+	public UserParameter getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(UserParameter user) {
+		this.user = user;
+	}
+
+	/**
+	 * @return the refClassid
+	 */
+	public String getRefClassid() {
+		return refClassid;
+	}
+
+	/**
+	 * @param refClassid the refClassid to set
+	 */
+	public void setRefClassid(String refClassid) {
+		this.refClassid = refClassid;
+	}
+
+	/**
+	 * @return the fileId
+	 */
+	public String getFileId() {
+		return fileId;
+	}
+
+	/**
+	 * @param fileId the fileId to set
+	 */
+	public void setFileId(String fileId) {
+		this.fileId = fileId;
+	}
+
+	/**
+	 * @return the busPassword
+	 */
+	public String getBusPassword() {
+		return busPassword;
+	}
+
+	/**
+	 * @param busPassword the busPassword to set
+	 */
+	public void setBusPassword(String busPassword) {
+		this.busPassword = busPassword;
+	}
+
+	/**
+	 * @return the kernelAdd
+	 */
+	public Integer getKernelAdd() {
+		return kernelAdd;
+	}
+
+	/**
+	 * @param kernelAdd the kernelAdd to set
+	 */
+	public void setKernelAdd(Integer kernelAdd) {
+		this.kernelAdd = kernelAdd;
+	}
+
 }

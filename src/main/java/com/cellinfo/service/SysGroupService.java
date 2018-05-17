@@ -49,6 +49,11 @@ public class SysGroupService {
 		return "删除组织成功";
 	}
 	
+	public Page<TlGammaGroup> queryGroupListByName(String skey,PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.tlGammaGroupRepository.filterByGroupNameLike(skey,pageInfo);
+	}
+	
 	public Page<TlGammaGroup> getGroupList(PageRequest pageInfo) {
 		// TODO Auto-generated method stub
 		return this.tlGammaGroupRepository.findAll(pageInfo);
@@ -73,5 +78,15 @@ public class SysGroupService {
 	public List<TlGammaKernel> getKernelClassByGroup(String groupGuid)
 	{
 		return this.tlGammaKernelRepository.findByGroupGuid( groupGuid);
+	}
+
+	public List<TlGammaGroup> findByGroupName(String groupname) {
+		// TODO Auto-generated method stub
+		return this.tlGammaGroupRepository.findByGroupName(groupname);
+	}
+
+	public TlGammaGroup findOne(String groupGuid) {
+		// TODO Auto-generated method stub
+		return this.tlGammaGroupRepository.findOne(groupGuid);
 	}
 }

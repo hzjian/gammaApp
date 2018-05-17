@@ -27,17 +27,17 @@ public class TlGammaTask implements Serializable {
 	@Column(name="business_password", length=256)
 	private String businessPassword;
 
-	@Column(name="geom_layername", length=128)
-	private String geomLayername;
-
 	@Column(name="group_guid")
 	private String groupGuid;
 
 	@Column(name="kernel_classid", nullable=false)
 	private String kernelClassid;
 
-	@Column(name="kernel_isadd")
-	private Integer kernelIsadd;
+	/**
+	 * 该任务能否新建核心对象
+	 */
+	@Column(name="kernel_add")
+	private Integer kernelAdd;
 
 	@Column(name="task_name", length=256)
 	private String taskName;
@@ -47,9 +47,6 @@ public class TlGammaTask implements Serializable {
 
 	@Column(name="task_timestart")
 	private Timestamp taskTimestart;
-
-	@Column(name="user_guid")
-	private String userGuid;
 
 	@Column(name="user_name", length=64)
 	private String userName;
@@ -64,15 +61,6 @@ public class TlGammaTask implements Serializable {
 	public void setBusinessPassword(String businessPassword) {
 		this.businessPassword = businessPassword;
 	}
-
-	public String getGeomLayername() {
-		return this.geomLayername;
-	}
-
-	public void setGeomLayername(String geomLayername) {
-		this.geomLayername = geomLayername;
-	}
-
 	public String getGroupGuid() {
 		return this.groupGuid;
 	}
@@ -88,13 +76,19 @@ public class TlGammaTask implements Serializable {
 	public void setKernelClassid(String kernelClassid) {
 		this.kernelClassid = kernelClassid;
 	}
-
-	public Integer getKernelIsadd() {
-		return this.kernelIsadd;
+	
+	/**
+	 * @return the kernelAdd
+	 */
+	public Integer getKernelAdd() {
+		return kernelAdd;
 	}
 
-	public void setKernelIsadd(Integer kernelIsadd) {
-		this.kernelIsadd = kernelIsadd;
+	/**
+	 * @param kernelAdd the kernelAdd to set
+	 */
+	public void setKernelAdd(Integer kernelAdd) {
+		this.kernelAdd = kernelAdd;
 	}
 
 	public String getTaskGuid() {
@@ -127,14 +121,6 @@ public class TlGammaTask implements Serializable {
 
 	public void setTaskTimestart(Timestamp taskTimestart) {
 		this.taskTimestart = taskTimestart;
-	}
-
-	public String getUserGuid() {
-		return this.userGuid;
-	}
-
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
 	}
 
 	public String getUserName() {

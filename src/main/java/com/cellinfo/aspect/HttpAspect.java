@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -25,6 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
+import com.cellinfo.controller.entity.GammaParameter;
 import com.cellinfo.entity.TlGammaLog;
 import com.cellinfo.security.JwtTokenHandler;
 import com.cellinfo.service.SysLogService;
@@ -53,26 +53,26 @@ public class HttpAspect {
     public void log() {
     }
 
-//    @Before("log()")
-//    public void doBefore(JoinPoint joinPoint) {
-//        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-//        HttpServletRequest request = attributes.getRequest();
-//
-//        //url
-//        logger.info("url={}", request.getRequestURL());
-//
-//        //method
-//        logger.info("method={}", request.getMethod());
-//
-//        //ip
-//        logger.info("ip={}", request.getRemoteAddr());
-//
-//        //类方法
-//        logger.info("class_method={}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-//
-//        //参数
-//        logger.info("args={}", joinPoint.getArgs());
-//    }
+    @Before("log()")
+    public void doBefore(JoinPoint joinPoint) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+
+        //url
+        logger.warn("url={}", request.getRequestURL());
+
+        //method
+        logger.warn("method={}", request.getMethod());
+
+        //ip
+        logger.warn("ip={}", request.getRemoteAddr());
+
+        //类方法
+        logger.warn("class_method={}", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
+
+        //参数
+        logger.warn("args={}", joinPoint.getArgs());
+    }
 
 //    @After("log()")
 //    public void doAfter() {
@@ -102,13 +102,7 @@ public class HttpAspect {
 //        logger.info("ARGS : " + Arrays.toString(joinPoint.getArgs()));  
   
     }  
-  
-//    @AfterReturning(returning = "ret", pointcut = "log()")  
-//    public void webCallAfterReturning(Object ret) throws Throwable {  
-//         //处理完请求，返回内容  
-//        logger.info("RESPONSE : " + ret);  
-//        logger.info("SPEND TIME : " + (System.currentTimeMillis() - startTime.get()));  
-//    }  
+    
 	// 方法执行的前后调用
 	@Around("log()")
 	public Object around(ProceedingJoinPoint pjp) throws Throwable {
@@ -134,7 +128,14 @@ public class HttpAspect {
 					if (servLog.moduleName() != null)
 						servName = servLog.moduleName();
 				}
-
+				for(Object arg :pjp.getArgs())
+				{
+					if(arg instanceof GammaParameter)
+					{
+						operDesc+= arg.toString();
+					}
+				}
+				
 				OperLog operAnno = method.getAnnotation(OperLog.class);
 				if (operAnno.funcName() != null)
 					funcName = operAnno.funcName();
@@ -155,11 +156,15 @@ public class HttpAspect {
 				}
 				syslog.setModuleName(servName);
 				syslog.setOprateName(funcName);
-				
 				syslog.setUserName(userName);
 				syslog.setIpStr(ipStr);
 				syslog.setUrlStr(urlStr);
-				syslog.setLogTime(new Timestamp(System.currentTimeMillis()));			
+				syslog.setLogTime(new Timestamp(System.currentTimeMillis()));
+				if(operDesc.length()>500)
+					syslog.setOprateDesc(operDesc.substring(0,500));
+				else
+					syslog.setOprateDesc(operDesc);
+				sysLogService.save(syslog);
 			} else {
 				logger.debug("不满足日志记录条件");
 			}
@@ -169,18 +174,6 @@ public class HttpAspect {
 		}
 
 		Object obj = pjp.proceed();
-		
-		try {
-			HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
-			operDesc += "output:"+response.getOutputStream().toString();
-			if(operDesc.length()>1000)
-				operDesc = 	operDesc.substring(0,1000);
-			syslog.setOprateDesc(operDesc);
-			sysLogService.save(syslog);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		return obj;
 	}
 

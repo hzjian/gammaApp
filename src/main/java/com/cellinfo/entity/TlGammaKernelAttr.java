@@ -43,9 +43,10 @@ public class TlGammaKernelAttr implements Serializable {
 	 * INTEGER
 	 * NUMBER
 	 * DATETIME
+	 * GEOMETRY
 	 */
 
-	@Column(name="attr_type", length=20)
+	@Column(name="attr_type", length=64)
 	private String attrType;
 
 	@Column(name="kernel_classid", nullable=false)

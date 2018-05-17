@@ -1,16 +1,18 @@
 package com.cellinfo.controller.entity;
 
-public class UserParameter {
-	
-	private String userGuid;
-	
+public class UserParameter implements GammaParameter{
+
 	private String userName;
 	
 	private String userPassword;
 	
 	private String groupGuid;
 	
+	private String groupName;
+	
 	private String userCnname;
+	
+	private String userEmail;
 
 	/**
 	 * @return the userName
@@ -69,19 +71,41 @@ public class UserParameter {
 	}
 
 	/**
-	 * @return the userGuid
+	 * @return the userEmail
 	 */
-	public String getUserGuid() {
-		return userGuid;
+	public String getUserEmail() {
+		return userEmail;
 	}
 
 	/**
-	 * @param userGuid the userGuid to set
+	 * @param userEmail the userEmail to set
 	 */
-	public void setUserGuid(String userGuid) {
-		this.userGuid = userGuid;
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
 	}
-	
+
+	/**
+	 * @return the groupName
+	 */
+	public String getGroupName() {
+		return groupName;
+	}
+
+	/**
+	 * @param groupName the groupName to set
+	 */
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "userName:"+this.userName+" groupGuid:"+this.groupGuid;
+	}
 	
 	
 }

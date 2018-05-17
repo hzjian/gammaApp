@@ -1,9 +1,11 @@
 package com.cellinfo.controller;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -20,14 +23,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
+import com.cellinfo.controller.entity.GroupParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
@@ -37,6 +40,8 @@ import com.cellinfo.security.UserInfo;
 import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysUserService;
 import com.cellinfo.service.UtilService;
+import com.cellinfo.utils.FuncDesc;
+import com.cellinfo.utils.OperDesc;
 import com.cellinfo.utils.ResultUtil;
 import com.cellinfo.utils.ReturnDesc;
 
@@ -67,6 +72,8 @@ public class SysAdminController {
 	
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	
+	private final static String DEFAULT_PASSWORD = "PASSWORD";
+	
 	@PostMapping(value = "/curUserInfo")
 	public Result<Map<String, String>> getCurrentUserInfo(HttpServletRequest request) {
 		Map<String, String> tMap = new HashMap<String, String>();
@@ -92,65 +99,100 @@ public class SysAdminController {
 	 * 
 	 * @return
 	 */
+	@OperLog(funcName = FuncDesc.GROUP_ADMIN_USER_LIST, methodName = OperDesc.QUERY)
 	@PostMapping(value = "/users")
-	public Result<Page<TlGammaUser>> userList(@RequestBody RequestParameter para, BindingResult bindingResult) {
+	public Result<Page<UserParameter>> userList(@RequestBody RequestParameter para, BindingResult bindingResult) {
+		
+		List<UserParameter> mlist = new LinkedList<UserParameter>();
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 		logger.info("userList");
 		int pageNumber = para.getPage();
 		int pageSize = para.getPageSize();
-		
-		//todo
 
 		Sort sort = null;
+		String sortField ="userName";
+		
 		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
-			sort = new Sort(Direction.ASC, para.getSortField());
+			sort = new Sort(Direction.ASC, sortField);
 		} else {
-			sort = new Sort(Direction.DESC, para.getSortField());
+			sort = new Sort(Direction.DESC, sortField);
+		}
+		String filterStr ="";
+		if(para.getSkey()!=null&&para.getSkey().length()>0)
+		{
+			filterStr = para.getSkey();
 		}
 
 		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaUser> mList = this.sysUserService.getAll(pageInfo);
-		return ResultUtil.success(mList);
+		Page<TlGammaUser> tmpList = this.sysUserService.getGroupAdminUsers(filterStr,pageInfo);
+		
+		if(filterStr!="" && para.getGroupGuid()!= null)
+		{
+			tmpList = this.sysUserService.getGroupAdminUsers(filterStr,para.getGroupGuid(),pageInfo);
+		}
+		
+		mlist = tmpList.getContent().stream().map(item -> {
+			UserParameter tmp = new UserParameter();
+			tmp.setGroupGuid(item.getGroupGuid());
+			tmp.setUserCnname(item.getUserCnname());
+			if(item.getGroupGuid()!=null)
+			{
+				TlGammaGroup group = this.sysGroupService.findOne(item.getGroupGuid());
+				tmp.setGroupName(group.getGroupName());
+			}
+			tmp.setUserName(item.getUsername());
+			return tmp;
+		}).collect(Collectors.toList());
+		Page<UserParameter> userPage = new PageImpl<UserParameter>(mlist,pageInfo,tmpList.getTotalElements());
+		
+		return ResultUtil.success(userPage);
 	}
 
 	/**
 	 * 验证用户名是否存在
 	 */
-	public void testUsername ()
-	{
-		
+	@PostMapping(value = "/user/testname")
+	public Result<TlGammaUser> testGroupMemberName(HttpServletRequest request,@RequestBody @Valid String membername, BindingResult bindingResult) {	
+		TlGammaUser kuser = this.sysUserService.findOne(membername);
+		if(kuser!=null )
+		{
+			return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
+		}
+		return ResultUtil.success(membername);
 	}
 	
 	/**
-	 * 
+	 * 添加用户
 	 * @param user
 	 * @param bindingResult
 	 * @return
 	 */
 	@Transactional
-	@PostMapping(value = "/addUser")
-	public Result<TlGammaUser> addUser(@RequestBody @Valid UserParameter user, BindingResult bindingResult) {
+	@PostMapping(value = "/user/save")
+	public Result<UserParameter> addUser(@RequestBody @Valid UserParameter user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaUser realUser = this.sysUserService.findOne(user.getUserName());
-		if(realUser!=null && realUser.getUsername().length()>1)
-		{
+		TlGammaUser kuser = this.sysUserService.findOne(user.getUserName());
+		if(kuser != null)
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_EXIST);
-		}
-			
-		realUser = new TlGammaUser();
-		realUser.setUserCnname(user.getUserCnname());
-		realUser.setGroupGuid(user.getGroupGuid());
-		realUser.setUserName(user.getUserName());
-		realUser.setUserGuid(UUID.randomUUID().toString());
-		realUser.setRoleId("ROLE_GROUP_ADMIN");
-
-		if(!user.getUserPassword().equalsIgnoreCase(realUser.getUserPassword()) )
-			realUser.setUserPassword(encoder.encode(user.getUserPassword()));
-		return ResultUtil.success(this.sysUserService.save(realUser));
+		
+		TlGammaUser tmpUser = new TlGammaUser();
+		tmpUser.setUserGuid(UUID.randomUUID().toString());
+		tmpUser.setGroupGuid(user.getGroupGuid());
+		tmpUser.setRoleId("ROLE_GROUP_ADMIN");
+		tmpUser.setUserEmail(user.getUserEmail());
+		tmpUser.setUserCnname(user.getUserCnname());
+		tmpUser.setUserName(user.getUserName());
+		tmpUser.setUserPassword(encoder.encode(user.getUserPassword()));
+		UserParameter resUser= new UserParameter();
+		TlGammaUser saveUser = this.sysUserService.save(tmpUser);
+		//resUser.setUserGuid(saveUser.getUserGuid());
+		resUser.setUserName(saveUser.getUsername());
+		resUser.setUserCnname(saveUser.getUserCnname());
+		return ResultUtil.success(resUser);
 	}
 	/**
 	 * 添加组织管理员用户，修改用户信息
@@ -159,73 +201,78 @@ public class SysAdminController {
 	 * @return
 	 */
 	@Transactional
-	@PostMapping(value = "/updateUser")
-	public Result<TlGammaUser> updateUser(@RequestBody @Valid UserParameter user, BindingResult bindingResult) {
+	@PostMapping(value = "/user/update")
+	public Result<UserParameter> updateUser(@RequestBody @Valid UserParameter user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaUser realUser = this.sysUserService.findOne(user.getUserName());
-		if(realUser!=null && realUser.getUsername().length()>1)
+		if(user.getUserName()!= null)
 		{
-			realUser = new TlGammaUser();
-			realUser.setUserCnname(user.getUserCnname());
-			realUser.setRoleId("ROLE_GROUP_ADMIN");
-
-			if(! user.getUserPassword().equalsIgnoreCase(realUser.getUserPassword()) )
-				realUser.setUserPassword(encoder.encode(user.getUserPassword()));
-			return ResultUtil.success(this.sysUserService.save(realUser));
-		}			
-		return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_EXIST);
-	}
+			TlGammaUser realUser = this.sysUserService.findOne(user.getUserName());
+			if(realUser!=null && realUser.getUsername().length()>1)
+			{
+				if(user.getUserCnname()!=null)
+					realUser.setUserCnname(user.getUserCnname());
+				if(user.getUserEmail()!=null)
+					realUser.setUserEmail(user.getUserEmail());
+				realUser.setRoleId("ROLE_GROUP_ADMIN");
 	
-//	
-//	@PostMapping(value = "/deleteUser")
-//	public Result deleteUser(@RequestBody @Valid TlGammaUser user, BindingResult bindingResult) {
-//		if (bindingResult.hasErrors()) {
-//			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-//		} 
-//		this.sysUserService.delete(user);
-//		return ResultUtil.success();
-//	}
+				if(user.getUserPassword()!=null && !user.getUserPassword().equalsIgnoreCase(DEFAULT_PASSWORD))
+					realUser.setUserPassword(encoder.encode(user.getUserPassword()));	
+				
+				UserParameter resUser= new UserParameter();
+				TlGammaUser saveUser = this.sysUserService.save(realUser);
+				//resUser.setUserGuid(saveUser.getUserGuid());
+				resUser.setUserName(saveUser.getUsername());
+				resUser.setUserEmail(saveUser.getUserEmail());
+				resUser.setUserCnname(saveUser.getUserCnname());
+				return ResultUtil.success(resUser);
+			}	
+		}
+		return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_NOT_EXIST);
+	}
 	
 	/**
 	 * 
 	 * @param userId
 	 * @return
 	 */
-	@GetMapping(value = "/users/{id}")
-	public Result<TlGammaUser> userFindOne(@PathVariable("id") String userId) {
-		return ResultUtil.success(sysUserService.findOne(userId));
-	}
+	@GetMapping(value = "/user/query")
+	public Result<UserParameter> userFindOne( @RequestBody @Valid String userName) {
+		
+		TlGammaUser  realuser = sysUserService.findOne(userName);
+		if(realuser == null)
+			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_NOT_EXIST);
+		
+		UserParameter user = new UserParameter();
+		user.setGroupGuid(realuser.getGroupGuid());
+		user.setUserCnname(realuser.getUserCnname());
+		user.setUserName(user.getUserName());
 
-	// 更新
-	@PostMapping(value = "/updateuser/{id}")
-	public TlGammaUser userUpdate(@PathVariable("id") String id, @RequestParam("userCnname") String userCnname,
-			@RequestParam("userPassword") String userPassword) {
-		TlGammaUser user = new TlGammaUser();
-		user.setUserName(id);
-		user.setUserCnname(userCnname);
-		user.setUserPassword(userPassword);
-		return sysUserService.save(user);
-	}
-
-	// 删除
-	@PostMapping(value = "/deleteuser/{id}")
-	public void userDelete(@PathVariable("id") String id) {
-		sysUserService.delete(id);
-	}
-
-	@GetMapping(value = "/users/cnname/{cnname}")
-	public List<TlGammaUser> userListByAge(@PathVariable("cnname") String cnname) {
-		return sysUserService.findByUserCnname(cnname);
-	}
-
-	@GetMapping(value = "users/getEnabled/{id}")
-	public void getEnabled(@PathVariable("id") String userId) throws Exception {
-		sysUserService.getEnabled(userId);
+		return ResultUtil.success(user);
 	}
 	
 	
+	@GetMapping(value = "/group/query")
+	public Result<GroupParameter> groupFindOne( @RequestBody @Valid String groupGuid) {
+		
+		TlGammaGroup  group = this.sysGroupService.findOne(groupGuid);
+		if(group == null)
+			return ResultUtil.error(400, ReturnDesc.GROUP_IS_NOT_EXIST);
+		
+		GroupParameter refgroup = new GroupParameter();
+		refgroup.setGroupGuid(group.getGroupGuid());
+		refgroup.setGroupAddress(group.getGroupAddress());
+		refgroup.setGroupCode(group.getGroupCode());
+		refgroup.setGroupEmail(group.getGroupEmail());
+		refgroup.setGroupName(group.getGroupName());
+		refgroup.setGroupPhone(group.getGroupPhone());
+		refgroup.setGroupPic(group.getGroupPic());
+		refgroup.setGroupService(group.getGroupService());
+		refgroup.setGroupStatus(group.getGroupStatus());
+
+		return ResultUtil.success(refgroup);
+	}
 	@PostMapping(value = "/groups")
 	public Result<Page<TlGammaGroup>> groupList(@RequestBody RequestParameter para, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -236,7 +283,7 @@ public class SysAdminController {
 		int pageSize = para.getPageSize();
 		
 		String sortField = "groupName";
-		if(para.getSortField().equalsIgnoreCase("name"))
+		if(para.getSortField()!= null && para.getSortField().equalsIgnoreCase("name"))
 			sortField = "groupName";
 
 		Sort sort = null;
@@ -245,18 +292,14 @@ public class SysAdminController {
 		} else {
 			sort = new Sort(Direction.DESC, sortField);
 		}
-
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		String filterStr ="";
 		if(para.getSkey()!=null&&para.getSkey().length()>0)
 		{
-			// todo
-		}
-		if(para.getIkey()>0)
-		{
-			//todo
+			filterStr = para.getSkey();
 		}
 		
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaGroup> mList = this.sysGroupService.getGroupList(pageInfo);
+		Page<TlGammaGroup> mList = this.sysGroupService.queryGroupListByName(filterStr,pageInfo);
 		return ResultUtil.success(mList);
 	}
 	/**
@@ -265,8 +308,8 @@ public class SysAdminController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@PostMapping(value = "/group/add")
-	public Result<TlGammaGroup> addGroup(@RequestBody @Valid TlGammaGroup group, BindingResult bindingResult) {
+	@PostMapping(value = "/group/save")
+	public Result<TlGammaGroup> addGroup(@RequestBody @Valid GroupParameter group, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -275,8 +318,18 @@ public class SysAdminController {
 		{
 			return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_EXIST);
 		}
-		group.setGroupGuid(UUID.randomUUID().toString());
-		return ResultUtil.success(this.sysGroupService.addGroup(group));
+		TlGammaGroup refgroup = new TlGammaGroup();
+		refgroup.setGroupGuid(UUID.randomUUID().toString());
+		refgroup.setGroupAddress(group.getGroupAddress());
+		refgroup.setGroupCode(group.getGroupCode());
+		refgroup.setGroupEmail(group.getGroupEmail());
+		refgroup.setGroupName(group.getGroupName());
+		refgroup.setGroupPhone(group.getGroupPhone());
+		refgroup.setGroupPic(group.getGroupPic());
+		refgroup.setGroupService(group.getGroupService());
+		refgroup.setGroupStatus(group.getGroupStatus());
+		
+		return ResultUtil.success(this.sysGroupService.addGroup(refgroup));
 	}
 	/**
 	 * 验证组织名是否存在
@@ -286,29 +339,43 @@ public class SysAdminController {
 	@PostMapping(value = "/group/testname")
 	public Result<String> testGroupName(@RequestBody String groupname) {
 		Map<String ,String > status = new HashMap<String,String>();
-		
-		///////
-		return ResultUtil.success("ok");
+		List<TlGammaGroup> gList = this.sysGroupService.findByGroupName(groupname);
+		if(gList!=null && gList.size()>0 )
+		{
+			return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
+		}
+		return ResultUtil.success(groupname);
 	}
 	
 	@PostMapping(value = "/group/update")
-	public Result<TlGammaGroup> updateGroup(@RequestBody @Valid TlGammaGroup group, BindingResult bindingResult) {
+	public Result<TlGammaGroup> updateGroup(@RequestBody @Valid GroupParameter group, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 		TlGammaGroup refgroup = this.sysGroupService.getByGUID(group.getGroupGuid());
 		if(refgroup!=null && refgroup.getGroupGuid().length()>1)
 		{
-			return ResultUtil.success(this.sysGroupService.updateGroup(group));
+			if(group.getGroupAddress()!=null)
+				refgroup.setGroupAddress(group.getGroupAddress());
+			if(group.getGroupCode()!=null)
+				refgroup.setGroupCode(group.getGroupCode());
+			if(group.getGroupEmail()!=null)
+				refgroup.setGroupEmail(group.getGroupEmail());
+			if(group.getGroupName()!=null)
+				refgroup.setGroupName(group.getGroupName());
+			if(group.getGroupPhone()!=null)
+				refgroup.setGroupPhone(group.getGroupPhone());
+			if(group.getGroupPic()!=null)
+				refgroup.setGroupPic(group.getGroupPic());
+			if(group.getGroupService()!=null)
+				refgroup.setGroupService(group.getGroupService());
+			if(group.getGroupStatus()!=null)
+				refgroup.setGroupStatus(group.getGroupStatus());
+			
+			return ResultUtil.success(this.sysGroupService.updateGroup(refgroup));
 		}
 		return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_NOT_EXIST);
 	}
-	
-//	@PostMapping(value = "/group/delete")
-//	public Result<String> updateGroup(@RequestBody @Valid String groupGuid) {
-//
-//		return ResultUtil.success(this.sysGroupService.deleteGroup(groupGuid));
-//	}
 	
 	///添加验证组织服务接口功能
 	public boolean testService(String serviceUrl)

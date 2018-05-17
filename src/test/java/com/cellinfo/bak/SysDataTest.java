@@ -1,4 +1,4 @@
-package com.cellinfo;
+package com.cellinfo.bak;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.cellinfo.GammaAppApplication;
 import com.cellinfo.controller.entity.FieldParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.entity.Result;

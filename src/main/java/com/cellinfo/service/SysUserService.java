@@ -49,11 +49,6 @@ public class SysUserService implements UserDetailsService {
     public TlGammaUser findOne(String userName) {
         return tlGammaUserRepository.findOne(userName);
     }
-    
-    public Page<TlGammaUser> getAll(PageRequest pageInfo) {
-		// TODO Auto-generated method stub
-		return this.tlGammaUserRepository.findAll(pageInfo);
-	}
 
 	public List<TlGammaUser> findByUserCnname(String cnname) {
 		// TODO Auto-generated method stub
@@ -90,4 +85,13 @@ public class SysUserService implements UserDetailsService {
 		return this.tlGammaUserRepository.findByGroupGuid(groupGuid,pageable);
 	}
 
+	public Page<TlGammaUser> getGroupAdminUsers(String sKey, PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.tlGammaUserRepository.getGroupAdminUsers(sKey,pageInfo);
+	}
+
+	public Page<TlGammaUser> getGroupAdminUsers(String sKey,String groupGuid ,PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.tlGammaUserRepository.getGroupAdminUsers(sKey,groupGuid,pageInfo);
+	}
 }

@@ -56,9 +56,9 @@ public class SysTaskService {
 		return this.tlGammaTaskRepository.save(task);
 	}
 
-	public TlGammaTask getByGUID(String taskGUID) {
+	public TlGammaTask getByGuid(String taskGuid) {
 		// TODO Auto-generated method stub
-		return this.tlGammaTaskRepository.findOne(taskGUID);
+		return this.tlGammaTaskRepository.findOne(taskGuid);
 	}
 
 	public void deleteTask(String taskGuid) {

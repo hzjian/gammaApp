@@ -8,7 +8,7 @@ public class SpatialQueryParameter {
 	
 	private String classId;
 	
-	private String taskId;
+	private String taskGuid;
 	/**
 	 * @return the queryRange
 	 */
@@ -38,16 +38,17 @@ public class SpatialQueryParameter {
 	}
 
 	/**
-	 * @return the taskId
+	 * @return the taskGuid
 	 */
-	public String getTaskId() {
-		return taskId;
+	public String getTaskGuid() {
+		return taskGuid;
 	}
 
 	/**
-	 * @param taskId the taskId to set
+	 * @param taskGuid the taskGuid to set
 	 */
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
+	public void setTaskGuid(String taskGuid) {
+		this.taskGuid = taskGuid;
 	}
+
 }

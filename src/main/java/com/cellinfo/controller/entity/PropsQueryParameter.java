@@ -2,7 +2,7 @@ package com.cellinfo.controller.entity;
 
 public class PropsQueryParameter {
 	private String guid;
-	private String taskid;
+	private String taskGuid;
 	/**
 	 * @return the guid
 	 */
@@ -16,17 +16,18 @@ public class PropsQueryParameter {
 		this.guid = guid;
 	}
 	/**
-	 * @return the taskid
+	 * @return the taskGuid
 	 */
-	public String getTaskid() {
-		return taskid;
+	public String getTaskGuid() {
+		return taskGuid;
 	}
 	/**
-	 * @param taskid the taskid to set
+	 * @param taskGuid the taskGuid to set
 	 */
-	public void setTaskid(String taskid) {
-		this.taskid = taskid;
+	public void setTaskGuid(String taskGuid) {
+		this.taskGuid = taskGuid;
 	}
+
 	
 	
 }

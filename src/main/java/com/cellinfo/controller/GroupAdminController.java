@@ -36,7 +36,6 @@ import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.security.UserInfo;
-import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysTaskService;
 import com.cellinfo.service.SysUserService;
@@ -68,9 +67,6 @@ public class GroupAdminController {
 	private SysUserService sysUserService;
 	
 	@Autowired
-	private SysGroupService sysGroupService;
-	
-	@Autowired
 	private SysKernelService sysKernelService;
 	
 	@Autowired
@@ -97,7 +93,6 @@ public class GroupAdminController {
 			tMap.put("usercnname", user.getUserCnname());
 			
 			return ResultUtil.success(tMap);
-			
         } 
 		return ResultUtil.error(400, ReturnDesc.USER_INFO_IS_ILLEGAL);
 	}
@@ -131,7 +126,6 @@ public class GroupAdminController {
 			tMap.put("descInfo", eachKernel.getKernelClassdesc());
 			list.add(tMap);
 		}
-		
 		
 		return ResultUtil.success(list);
 	}
@@ -173,8 +167,14 @@ public class GroupAdminController {
 			attr.setAttrFgrade(field.getFieldGrade());
 			entities.add(attr);
 		}
+		KernelParameter resKernel = new KernelParameter();
 		this.sysKernelService.saveKernelAttr(entities);
-		return ResultUtil.success(this.sysKernelService.addGroupKernel(tmpKernel));
+		TlGammaKernel saveKernel = this.sysKernelService.addGroupKernel(tmpKernel);
+		resKernel.setClassGuid(saveKernel.getKernelClassid());
+		resKernel.setClassName(saveKernel.getKernelClassname());
+		resKernel.setGeomType(saveKernel.getGeomType());
+		resKernel.setDescInfo(saveKernel.getKernelClassdesc());
+		return ResultUtil.success(resKernel);
 	}
 	
 	@PostMapping(value = "/kernel/query")
@@ -240,8 +240,14 @@ public class GroupAdminController {
 			attr.setAttrFgrade(field.getFieldGrade());
 			entities.add(attr);
 		}
+		KernelParameter resKernel = new KernelParameter();
 		this.sysKernelService.saveKernelAttr(entities);
-		return ResultUtil.success(this.sysKernelService.addGroupKernel(tmpKernel));
+		TlGammaKernel saveKernel = this.sysKernelService.addGroupKernel(tmpKernel);
+		resKernel.setClassGuid(saveKernel.getKernelClassid());
+		resKernel.setClassName(saveKernel.getKernelClassname());
+		resKernel.setGeomType(saveKernel.getGeomType());
+		resKernel.setDescInfo(saveKernel.getKernelClassdesc());
+		return ResultUtil.success(resKernel);
 	}
 	
 	@PostMapping(value = "/kernel/delete")
@@ -278,6 +284,7 @@ public class GroupAdminController {
 			tMap.put("userGuid", eachUser.getUserGuid());
 			tMap.put("userName", eachUser.getUserName());
 			tMap.put("userCnname", eachUser.getUserCnname());
+			tMap.put("userEmail",eachUser.getUserEmail());
 			tMap.put("password", DEFAULT_PASSWORD);
 			list.add(tMap);
 		}
@@ -306,9 +313,10 @@ public class GroupAdminController {
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_EXIST);
 		
 		TlGammaUser tmpUser = new TlGammaUser();
-		if(member.getUserGuid()== null || member.getUserGuid().trim().length()<5)
-			tmpUser.setUserGuid(UUID.randomUUID().toString());
+
+		tmpUser.setUserGuid(UUID.randomUUID().toString());
 		tmpUser.setGroupGuid(cUser.getGroupGuid());
+		tmpUser.setUserEmail(member.getUserName());
 		tmpUser.setRoleId("ROLE_USER");
 		tmpUser.setUserCnname(member.getUserCnname());
 		tmpUser.setUserName(member.getUserName());
@@ -325,9 +333,11 @@ public class GroupAdminController {
 		TlGammaUser kuser = this.sysUserService.findOne(member.getUserName());
 		if(kuser == null)
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_NOT_EXIST);
-		
-		kuser.setUserCnname(member.getUserCnname());
-		if(!member.getUserPassword().equalsIgnoreCase(DEFAULT_PASSWORD))
+		if(member.getUserCnname()!=null)
+			kuser.setUserCnname(member.getUserCnname());
+		if(member.getUserEmail()!=null)
+			kuser.setUserEmail(member.getUserEmail());
+		if(member.getUserPassword()!=null && !member.getUserPassword().equalsIgnoreCase(DEFAULT_PASSWORD))
 			kuser.setUserPassword(encoder.encode(member.getUserPassword()));	
 
 		return ResultUtil.success(this.sysUserService.save(kuser));
@@ -336,7 +346,7 @@ public class GroupAdminController {
 	@PostMapping(value = "/member/delete")
 	public Result<String> deleteGroupMember(@RequestBody @Valid String username) {
 		this.sysUserService.delete(username);
-		return ResultUtil.success("ok");
+		return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
 	}
 	
 	//组织任务查看
@@ -377,9 +387,48 @@ public class GroupAdminController {
 		return ResultUtil.success(list);
 	}
 	
-	//组织用户相关任务查看
+	//组织用户创建任务查看
 	@PostMapping(value = "/usertasklist")
 	public Result<List<Map<String, Object>>>  userTaskList(HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
+	{
+		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		int pageNumber = para.getPage();
+		int pageSize = para.getPageSize();
+
+		Sort sort = null; 
+		String sortField ="userName";
+		
+		if (para.getSortDirection()!=null && para.getSortDirection().equalsIgnoreCase("ASC")) {
+			sort = new Sort(Direction.ASC, sortField);
+		} else {
+			sort = new Sort(Direction.DESC, sortField);
+		}
+		
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		Page<TlGammaTask> mList = this.sysTaskService.getTaskByUsername(para.getSkey(),pageInfo);
+		for (TlGammaTask eachTask : mList) {
+			Map<String, Object> tMap = new HashMap<String, Object>(); 
+			tMap.put("taskGuid", eachTask.getTaskGuid());
+			tMap.put("taskName", eachTask.getTaskName());
+			if(eachTask.getTaskTimestart()!= null)
+				tMap.put("startDate", df.format(eachTask.getTaskTimestart()));
+			if(eachTask.getTaskTimeend()!= null)
+				tMap.put("endDate", df.format(eachTask.getTaskTimeend()));
+			tMap.put("userName", eachTask.getUserName());
+			list.add(tMap);
+		}
+
+		return ResultUtil.success(list);
+	}
+	
+	//组织用户参与任务查看
+	// TODO
+	@PostMapping(value = "/parttasklist")
+	public Result<List<Map<String, Object>>>  partTaskList(HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
 	{
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);

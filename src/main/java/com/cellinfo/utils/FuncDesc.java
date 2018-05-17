@@ -20,6 +20,7 @@ public class FuncDesc {
 	public static final String USERMANAGE="用户管理";
 	public static final String CHANGEPASSWORD="密码修改";
 	public static final String LONGIN="登录";
+	public static final String GROUP_ADMIN_USER_LIST = "组织管理 员用户列表";
 
 
 }

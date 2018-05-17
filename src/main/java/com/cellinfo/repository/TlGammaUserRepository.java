@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.cellinfo.entity.TlGammaUser;
@@ -19,5 +20,11 @@ public interface TlGammaUserRepository extends PagingAndSortingRepository<TlGamm
 	public Page<TlGammaUser> findByGroupGuid(String groupGuid ,Pageable pageable);
 
 	public List<TlGammaUser> findByGroupGuid(String groupGuid);
+
+	@Query("select u from TlGammaUser u where u.userName like %?1% and u.roleId = 'ROLE_GROUP_ADMIN'")
+	public Page<TlGammaUser> getGroupAdminUsers(String nameFilter,Pageable pageInfo);
+	
+	@Query("select u from TlGammaUser u where u.userName like %?1% and u.groupGuid = ?2 and u.roleId = 'ROLE_GROUP_ADMIN'")
+	public Page<TlGammaUser> getGroupAdminUsers(String nameFilter,String groupGuid,Pageable pageInfo);
 
 }

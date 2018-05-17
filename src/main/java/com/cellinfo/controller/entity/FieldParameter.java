@@ -9,7 +9,7 @@ public class FieldParameter {
 	/**
 	 * STRING
 	 * INTEGER
-	 * NUMBER
+	 * DOUBLE
 	 * DATETIME
 	 */
 	private String fieldType;

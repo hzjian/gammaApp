@@ -9,10 +9,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 
-/**
- * The persistent class for the tl_gamma_group_kernel database table.
- * 
- */
 @Entity
 @Table(name="tl_gamma_kernel_filter")
 @NamedQuery(name="TlGammaKernelFilter.findAll", query="SELECT t FROM TlGammaKernelFilter t")
@@ -29,11 +25,42 @@ public class TlGammaKernelFilter implements Serializable {
 	@Column(name="ext_guid")
 	private String extGuid;
 	
+	@Column(name="attr_field", length=64)
+	private String attrField;
+	
+	/**
+	 * STRING
+	 * INTEGER
+	 * NUMBER
+	 * DATETIME
+	 * GEOMETRY
+	 */
+
+	@Column(name="attr_type", length=64)
+	private String attrType;
+	
+	/**
+	 * INTEGER
+	 * DOUBLE
+	 * DATETIME
+			 * MORETHAN
+			 * LESSTHAN
+			 * BETWEEN
+	 * 
+	 * GEOMETRY
+			 * WITHIN
+			 * 
+     *	STRING
+     		 * LIKE
+	 */
 	@Column(name="filter_type")
 	private String filterType;
 	
-	@Column(name="filter_refvalue")
-	private String filterRefvalue;
+	@Column(name="min_value")
+	private String minValue;
+	
+	@Column(name="max_value")
+	private String maxValue;
 
 	public TlGammaKernelFilter() {
 	}
@@ -95,17 +122,60 @@ public class TlGammaKernelFilter implements Serializable {
 	}
 
 	/**
-	 * @return the filterRefvalue
+	 * @return the attrField
 	 */
-	public String getFilterRefvalue() {
-		return filterRefvalue;
+	public String getAttrField() {
+		return attrField;
 	}
 
 	/**
-	 * @param filterRefvalue the filterRefvalue to set
+	 * @param attrField the attrField to set
 	 */
-	public void setFilterRefvalue(String filterRefvalue) {
-		this.filterRefvalue = filterRefvalue;
+	public void setAttrField(String attrField) {
+		this.attrField = attrField;
 	}
 
+	/**
+	 * @return the attrType
+	 */
+	public String getAttrType() {
+		return attrType;
+	}
+
+	/**
+	 * @param attrType the attrType to set
+	 */
+	public void setAttrType(String attrType) {
+		this.attrType = attrType;
+	}
+
+	/**
+	 * @return the minValue
+	 */
+	public String getMinValue() {
+		return minValue;
+	}
+
+	/**
+	 * @param minValue the minValue to set
+	 */
+	public void setMinValue(String minValue) {
+		this.minValue = minValue;
+	}
+
+	/**
+	 * @return the maxValue
+	 */
+	public String getMaxValue() {
+		return maxValue;
+	}
+
+	/**
+	 * @param maxValue the maxValue to set
+	 */
+	public void setMaxValue(String maxValue) {
+		this.maxValue = maxValue;
+	}
+
+	
 }

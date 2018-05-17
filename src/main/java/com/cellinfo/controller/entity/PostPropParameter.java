@@ -5,8 +5,8 @@ import java.util.List;
 public class PostPropParameter {
 	
 	private String guid;
-	private String taskid;
-	private String username;
+	private String taskGuid;
+	private String userName;
 	
 	private List<PropItem> props;
 
@@ -39,30 +39,32 @@ public class PostPropParameter {
 	}
 
 	/**
-	 * @return the taskid
+	 * @return the taskGuid
 	 */
-	public String getTaskid() {
-		return taskid;
+	public String getTaskGuid() {
+		return taskGuid;
 	}
 
 	/**
-	 * @param taskid the taskid to set
+	 * @param taskGuid the taskGuid to set
 	 */
-	public void setTaskid(String taskid) {
-		this.taskid = taskid;
+	public void setTaskGuid(String taskGuid) {
+		this.taskGuid = taskGuid;
 	}
 
 	/**
-	 * @return the username
+	 * @return the userName
 	 */
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
-	 * @param username the username to set
+	 * @param userName the userName to set
 	 */
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
+
+	
 }

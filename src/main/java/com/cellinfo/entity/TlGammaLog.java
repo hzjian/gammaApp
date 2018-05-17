@@ -6,9 +6,9 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -22,8 +22,9 @@ import javax.persistence.Table;
 public class TlGammaLog implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(name="seq_gamma_log", sequenceName="seq_gamma_log")
+	@Id 
+	@GeneratedValue(generator="seq_gamma_log")
 	private Long id;
 
 	@Column(name="ip_str", length=32)
@@ -35,16 +36,16 @@ public class TlGammaLog implements Serializable {
 	@Column(name="module_name", length=32)
 	private String moduleName;
 
-	@Column(name="oprate_desc", length=64)
+	@Column(name="oprate_desc", length=512)
 	private String oprateDesc;
 
 	@Column(name="oprate_name", length=32)
 	private String oprateName;
 
-	@Column(name="url_str", length=32)
+	@Column(name="url_str", length=128)
 	private String urlStr;
 
-	@Column(name="user_name")
+	@Column(name="user_name", length=64)
 	private String userName;
 
 	public TlGammaLog() {

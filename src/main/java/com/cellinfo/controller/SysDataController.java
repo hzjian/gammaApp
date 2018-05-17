@@ -19,6 +19,7 @@ import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,9 +46,19 @@ import com.cellinfo.service.UtilService;
 import com.cellinfo.utils.ResultUtil;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
+/**
+ * 用户任务列表
+ * 执行任务
+ * 绘图操作
+ * 搜索
+ * 定位
+ * @author zhangjian
+ */
+
+@PreAuthorize("hasRole('ROLE_USER')")  
 @RestController
 @RequestMapping("/service/data")
 public class SysDataController {
@@ -91,7 +102,7 @@ public class SysDataController {
 			Geometry filterGeom = new GeometryJSON(10).read(rangeStr);
 			filterGeom.setSRID(4326);
 			TlGammaKernel kernel = this.sysEnviService.getKernelById(para.getClassId());
-			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskId(),0,kernel.getGeomType(),filterGeom);
+			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskGuid(),0,kernel.getGeomType(),filterGeom);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +118,7 @@ public class SysDataController {
 			Geometry filterGeom = new GeometryJSON(10).read(rangeStr);
 			filterGeom.setSRID(4326);
 			TlGammaKernel kernel = this.sysEnviService.getKernelById(para.getClassId());
-			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskId(),1,kernel.getGeomType(),filterGeom);
+			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskGuid(),1,kernel.getGeomType(),filterGeom);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -142,14 +153,13 @@ public class SysDataController {
 	public Result<List<Map<String, Object>>> queryPropData( @RequestBody PropsQueryParameter  propParam) {
 		List<Map<String, Object>> propValueList =  new LinkedList<Map<String, Object>>();
 		try {
-			List<ViewTaskAttr> taskAttrList = this.sysBusdataService.getTaskProps(propParam.getTaskid());
+			List<ViewTaskAttr> taskAttrList = this.sysBusdataService.getTaskProps(propParam.getTaskGuid());
 			List<TlGammaLayerAttribute> propsList = this.sysBusdataService.getKernelAttrByGuid(propParam.getGuid());
 			
 			propValueList = taskAttrList.parallelStream().map(taskAttr ->{
 				Map<String, Object> fieldMap = new HashMap<String ,Object >();
-				fieldMap.put("guid", propParam.getGuid());
-				fieldMap.put("attrid", taskAttr.getId().getAttrGuid());
-				fieldMap.put("attrname", taskAttr.getAttrName());
+				fieldMap.put("attrGuid", taskAttr.getId().getAttrGuid());
+				fieldMap.put("attrName", taskAttr.getAttrName());
 				
 				List<Map<String,String>> attrValues= propsList.parallelStream().filter((attr)->
 							attr.getKernelGuid().equalsIgnoreCase(propParam.getGuid()) && 
@@ -171,13 +181,15 @@ public class SysDataController {
 							fMap.put("value", attr.getAttrTime().toString());
 							break;	
 					}
-					fMap.put("username", attr.getUserName());
-					fMap.put("updatetime", attr.getUpdateTime().toString());
+					//增加按任务分组
+					//按用户分组
+					fMap.put("userName", attr.getUserName());
+					fMap.put("updateTime", attr.getUpdateTime().toString());
 					return fMap;
 				})
 				.collect(Collectors.toList());
 				
-				fieldMap.put("attrvalue", attrValues);
+				fieldMap.put("attrValue", attrValues);
 				return fieldMap;
 			}).collect(Collectors.toList());
 		}
@@ -185,7 +197,6 @@ public class SysDataController {
 		{
 			e.printStackTrace();
 		}
-			
 		return ResultUtil.success(propValueList);
 	}
 	
@@ -195,7 +206,9 @@ public class SysDataController {
 	 * @return
 	 */
 	@PostMapping(value = "/save")
-	public Result<List<String>> saveGeoJsonData(@RequestBody PostGeoJsonParameter para) {
+	public Result<Map<String, String>> saveGeoJsonData(@RequestBody PostGeoJsonParameter para) {
+		Map<String, String> geoMap =  new HashMap<String, String>();
+		
 		try {			
 			JSONObject jobject = new JSONObject();
 			String jsonStr = JSONValue.toJSONString(para.getGeoJson());
@@ -207,8 +220,9 @@ public class SysDataController {
 			String sId = para.getFeasid();
 			if(sId == null || sId.trim().length()<1)
 				sId = this.utilService.generateShortUuid(feaGuid);
-			switch(para.getFeatype().toUpperCase()) {
-				case "MARKER" :
+			String tmpGeoType = this.sysEnviService.getKernelById(para.getFeaClassid()).getGeomType();
+			switch(tmpGeoType) {
+				case "POINT" :
 					TlGammaLayerPoint point = new TlGammaLayerPoint();
 					point.setKernelGuid(feaGuid);
 					point.setKernelGeom((Point)geom);
@@ -216,7 +230,7 @@ public class SysDataController {
 					point.setKernelId(sId);
 					this.sysBusdataService.savePontGeom(point);
 					break;
-				case "POLYLINE" :
+				case "LINE" :
 					TlGammaLayerLine line = new TlGammaLayerLine();
 					line.setKernelGuid(feaGuid);
 					line.setKernelGeom((LineString)geom);
@@ -227,16 +241,19 @@ public class SysDataController {
 				case "POLYGON" :
 					TlGammaLayerPolygon polygon = new TlGammaLayerPolygon();
 					polygon.setKernelGuid(feaGuid);
-					polygon.setKernelGeom((Polygon)geom);
+					polygon.setKernelGeom((MultiPolygon)geom);
 					polygon.setKernelClassid(para.getFeaClassid());
 					polygon.setKernelId(sId);
 					this.sysBusdataService.savePolygonGeom(polygon);
 					break;
 			}
+			geoMap.put("feaGuid", feaGuid);
+			geoMap.put("taskGuid", para.getTaskGuid());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return ResultUtil.success("SUCCESS");
+		
+		return ResultUtil.success(geoMap);
 	}
 	
 	@PostMapping(value = "/props/save/ext")
@@ -257,10 +274,12 @@ public class SysDataController {
 		Map<String, String> resMap =  new HashMap<String, String>();
 		
 		List<TlGammaLayerAttribute> entities = para.getProps().parallelStream().map((item)->{
-			return getAttributeEntity(para.getGuid(),para.getTaskid(),para.getUsername(),item);
+			return getAttributeEntity(para.getGuid(),para.getTaskGuid(),para.getUserName(),item);
 		}).collect(Collectors.toList());
 		
-		this.sysBusdataService.saveAttribute(entities);
+		Iterable<TlGammaLayerAttribute> attrList =  this.sysBusdataService.saveAttribute(entities);
+		///返回属性列表
+		
 		return ResultUtil.success(resMap);
 	}
 	

@@ -11,7 +11,7 @@ import com.cellinfo.controller.entity.PropsQueryParameter;
 
 @Component
 @ConfigurationProperties(prefix = "com.gamma")
-@PropertySource(value = "config.properties",encoding="UTF-8")
+@PropertySource(value = "classpath:config.properties",encoding="UTF-8")
 public class PropertiesConfig {
 
     private  List<PropsQueryParameter> kernel = new ArrayList<PropsQueryParameter>();
