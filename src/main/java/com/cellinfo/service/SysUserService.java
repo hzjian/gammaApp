@@ -25,8 +25,6 @@ public class SysUserService implements UserDetailsService {
 	
     @Autowired
     private TlGammaUserRepository tlGammaUserRepository;
-
-    
     
     //@Transactional
    

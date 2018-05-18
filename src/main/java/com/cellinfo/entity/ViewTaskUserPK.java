@@ -6,15 +6,15 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ViewTaskKernelPK implements Serializable{
+public class ViewTaskUserPK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "task_guid")
 	private String taskGuid;
 
-	@Column(name = "kernel_classid")
-	private String kernelClassid;
+	@Column(name="user_name")
+	private String userName;
 
 	/**
 	 * @return the taskGuid
@@ -31,17 +31,18 @@ public class ViewTaskKernelPK implements Serializable{
 	}
 
 	/**
-	 * @return the kernelClassid
+	 * @return the userName
 	 */
-	public String getKernelClassid() {
-		return kernelClassid;
+	public String getUserName() {
+		return userName;
 	}
 
 	/**
-	 * @param kernelClassid the kernelClassid to set
+	 * @param userName the userName to set
 	 */
-	public void setKernelClassid(String kernelClassid) {
-		this.kernelClassid = kernelClassid;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-
+	
+	
 }

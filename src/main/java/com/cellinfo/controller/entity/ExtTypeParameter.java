@@ -3,7 +3,7 @@ package com.cellinfo.controller.entity;
 import java.util.List;
 import java.util.Map;
 
-public class SubtypeParameter {
+public class ExtTypeParameter {
 
 	private String extGuid;
 

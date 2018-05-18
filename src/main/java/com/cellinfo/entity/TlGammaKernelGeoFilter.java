@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 
 @Entity
@@ -27,8 +27,8 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	@Column(name="filter_type" , length=64)
 	private String filterType;
 	
-	@Column(name="filter_geom",columnDefinition = "geometry(MultiPolygon,4326)")
-	private MultiPolygon filterGeom;
+	@Column(name="filter_geom",columnDefinition = "geometry(Polygon,4326)")
+	private Polygon filterGeom;
 
 	public TlGammaKernelGeoFilter() {
 	}
@@ -78,14 +78,14 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	/**
 	 * @return the filterGeom
 	 */
-	public MultiPolygon getFilterGeom() {
+	public Polygon getFilterGeom() {
 		return filterGeom;
 	}
 
 	/**
 	 * @param filterGeom the filterGeom to set
 	 */
-	public void setFilterGeom(MultiPolygon filterGeom) {
+	public void setFilterGeom(Polygon filterGeom) {
 		this.filterGeom = filterGeom;
 	}
 	

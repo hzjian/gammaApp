@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     generate-ddl: true
   session:
     store-type: none

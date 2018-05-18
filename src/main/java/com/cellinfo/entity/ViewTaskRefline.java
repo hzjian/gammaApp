@@ -8,21 +8,19 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.LineString;
 
 
 /**
- * The persistent class for the tl_gamma_layer_polygon database table.
+ * The persistent class for the tl_gamma_layer_line database table.
  * 
  */
-@JsonIgnoreProperties({ "kernelGeom" })
 @Entity
-@Table(name="view_task_polygon")
-@NamedQuery(name="ViewTaskPolygon.findAll", query="SELECT t FROM ViewTaskPolygon t")
-public class ViewTaskPolygon implements Serializable {
+@Table(name="view_task_refline")
+@NamedQuery(name="ViewTaskRefline.findAll", query="SELECT t FROM ViewTaskRefline t")
+public class ViewTaskRefline implements Serializable {
 	private static final long serialVersionUID = 1L;
- 
+
 	@Id
 	@Column(name="kernel_guid", nullable=false)
 	private String kernelGuid;
@@ -30,8 +28,8 @@ public class ViewTaskPolygon implements Serializable {
 	@Column(name="geom_style", length=256)
 	private String geomStyle;
 
-	@Column(name="kernel_geom",columnDefinition = "geometry(MultiPolygon,4326)")
-	private MultiPolygon kernelGeom;
+	@Column(name="kernel_geom",columnDefinition = "geometry(LineString,4326)")
+	private LineString kernelGeom;
 
 	@Column(name="kernel_id")
 	private String kernelId;
@@ -47,8 +45,8 @@ public class ViewTaskPolygon implements Serializable {
 	
 	@Column(name="task_guid")
 	private String taskGuid;
-
-	public ViewTaskPolygon() {
+	
+	public ViewTaskRefline() {
 	}
 
 	public String getGeomStyle() {
@@ -58,12 +56,18 @@ public class ViewTaskPolygon implements Serializable {
 	public void setGeomStyle(String geomStyle) {
 		this.geomStyle = geomStyle;
 	}
-
-	public MultiPolygon getKernelGeom() {
-		return this.kernelGeom;
+	
+	/**
+	 * @return the kernelGeom
+	 */
+	public LineString getKernelGeom() {
+		return kernelGeom;
 	}
 
-	public void setKernelGeom(MultiPolygon kernelGeom) {
+	/**
+	 * @param kernelGeom the kernelGeom to set
+	 */
+	public void setKernelGeom(LineString kernelGeom) {
 		this.kernelGeom = kernelGeom;
 	}
 
@@ -74,6 +78,7 @@ public class ViewTaskPolygon implements Serializable {
 	public void setKernelGuid(String kernelGuid) {
 		this.kernelGuid = kernelGuid;
 	}
+
 	/**
 	 * @return the kernelClassid
 	 */
@@ -143,4 +148,5 @@ public class ViewTaskPolygon implements Serializable {
 	public void setTaskGuid(String taskGuid) {
 		this.taskGuid = taskGuid;
 	}
+	
 }

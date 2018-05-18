@@ -8,16 +8,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
+import com.cellinfo.entity.TlGammaTaskAttr;
+import com.cellinfo.entity.TlGammaTaskExt;
 import com.cellinfo.entity.TlGammaTaskUser;
 import com.cellinfo.entity.ViewTaskAttr;
-import com.cellinfo.entity.ViewTaskKernel;
+import com.cellinfo.entity.ViewTaskUser;
+import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaTaskAttrRepository;
+import com.cellinfo.repository.TlGammaTaskExtRepository;
 import com.cellinfo.repository.TlGammaTaskKernelRepository;
 import com.cellinfo.repository.TlGammaTaskRepository;
 import com.cellinfo.repository.TlGammaTaskUserRepository;
 import com.cellinfo.repository.ViewTaskAttrRepository;
-import com.cellinfo.repository.ViewTaskKernelRepository;
+import com.cellinfo.repository.ViewTaskUserRepository;
 
 
 @Service
@@ -33,13 +38,19 @@ public class SysTaskService {
 	private TlGammaTaskKernelRepository tlGammaTaskKernelRepository ;
 	
 	@Autowired
-	private ViewTaskKernelRepository viewTaskKernelRepository ;
-	
-	@Autowired
 	private ViewTaskAttrRepository viewTaskAttrRepository;
 	
 	@Autowired
 	private TlGammaTaskUserRepository tlGammaTaskUserRepository;
+	
+	@Autowired
+	private ViewTaskUserRepository  viewTaskUserRepository;
+	
+	@Autowired
+	private TlGammaKernelAttrRepository tlGammaKernelAttrRepository;
+	
+	@Autowired
+	private TlGammaTaskExtRepository tlGammaTaskExtRepository;
 	
 	public Page<TlGammaTask> getAll(PageRequest pageInfo) {
 		// TODO Auto-generated method stub
@@ -75,17 +86,17 @@ public class SysTaskService {
 		// TODO Auto-generated method stub
 		return this.tlGammaTaskRepository.findAll();
 	}
-	
-	public List<ViewTaskKernel> getTaskKernel(String taskGuid){
-		return this.viewTaskKernelRepository.getByTaskGuid(taskGuid);
-	}
 
 	public List<ViewTaskAttr> getTaskAttr(String taskGuid){
 		return this.viewTaskAttrRepository.getByTaskGuid(taskGuid);
 	}
 	
-	public void saveTaskUser(TlGammaTaskUser entity) {
-		this.tlGammaTaskUserRepository.save(entity);
+	public TlGammaTaskUser saveTaskUser(TlGammaTaskUser entity) {
+		return this.tlGammaTaskUserRepository.save(entity);
+	}
+	
+	public Page<ViewTaskUser> getTaskUserList (String taskGuid,Pageable pageable) {
+		return this.viewTaskUserRepository.getByTaskGuid(taskGuid, pageable);
 	}
 
 	public Page<TlGammaTask> getTaskByGroupGuid(String groupGuid,Pageable pageable) {
@@ -102,4 +113,34 @@ public class SysTaskService {
 		// TODO Auto-generated method stub
 		return this.tlGammaTaskRepository.findByUserName(userName,pageable);
 	}
+
+	public void deleteTaskUser(String taskGuid, String userName) {
+		// TODO Auto-generated method stub
+		this.tlGammaTaskUserRepository.deleteByTaskGuidAndUserName(taskGuid,userName);
+	}
+
+	public TlGammaTaskAttr addTaskField(TlGammaKernelAttr kernelattr, TlGammaTaskAttr taskattr) {
+		// TODO Auto-generated method stub
+		
+		this.tlGammaKernelAttrRepository.save(kernelattr);
+		
+		return this.tlGammaTaskAttrRepository.save(taskattr);
+	}
+	
+	public TlGammaTaskAttr addTaskField(TlGammaTaskAttr taskattr) {
+		
+		return this.tlGammaTaskAttrRepository.save(taskattr);
+	}
+
+	public Page<ViewTaskAttr> getTaskFieldList(String taskGuid, PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.viewTaskAttrRepository.getByTaskGuid(taskGuid,pageInfo);
+	}
+
+	public void saveTaskExt(TlGammaTaskExt taskExt) {
+		// TODO Auto-generated method stub
+		this.tlGammaTaskExtRepository.save(taskExt);
+	}
+	
+	
 }

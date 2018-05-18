@@ -6,4 +6,6 @@ import com.cellinfo.entity.TlGammaTaskUser;
 
 public interface TlGammaTaskUserRepository  extends PagingAndSortingRepository<TlGammaTaskUser, Long>{
 
+	void deleteByTaskGuidAndUserName(String taskGuid, String userName);
+
 }

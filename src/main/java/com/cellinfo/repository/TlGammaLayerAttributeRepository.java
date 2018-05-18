@@ -31,7 +31,7 @@ public interface TlGammaLayerAttributeRepository  extends PagingAndSortingReposi
 	public List<String> ltLongValue(String attrGuid,Long intvalue);
 	
 	@Query(value = "select distinct(a.kernel_guid) from tl_Gamma_Layer_Attribute a  where attr_guid = ?1 and attr_Long > ?2 and attr_Long < ?3",nativeQuery = true) 
-	public List<String> betweenLongValue(String attrGuid,Long minvalue,Integer maxvalue);
+	public List<String> betweenLongValue(String attrGuid,Long minvalue,Long maxvalue);
 	
 
 	@Query(value = "select distinct(a.kernel_guid) from tl_Gamma_Layer_Attribute a  where attr_guid = ?1 and attr_double > ?2",nativeQuery = true) 
@@ -48,7 +48,7 @@ public interface TlGammaLayerAttributeRepository  extends PagingAndSortingReposi
 	public List<String> gtTimeStampValue(String attrGuid,Timestamp value);
 	
 	@Query(value = "select distinct(a.kernel_guid) from tl_Gamma_Layer_Attribute a  where attr_guid = ?1 and attr_time < ?2",nativeQuery = true) 
-	public List<String> ltDoubleValue(String attrGuid,Timestamp value);
+	public List<String> ltTimeStampValue(String attrGuid,Timestamp value);
 	
 	@Query(value = "select distinct(a.kernel_guid) from tl_Gamma_Layer_Attribute a  where attr_guid = ?1 and attr_time > ?2 and attr_time < ?3",nativeQuery = true) 
 	public List<String> betweenTimeStampValue(String attrGuid,Timestamp minvalue,Timestamp maxvalue);

@@ -13,7 +13,7 @@ public class FieldParameter {
 	 * DATETIME
 	 */
 	private String fieldType;
-	private String isEdit;
+	private Integer isEdit;
 	
 	/**
 	 * 属性字段众筹等级
@@ -62,13 +62,13 @@ public class FieldParameter {
 	/**
 	 * @return the isEdit
 	 */
-	public String getIsEdit() {
+	public Integer getIsEdit() {
 		return isEdit;
 	}
 	/**
 	 * @param isEdit the isEdit to set
 	 */
-	public void setIsEdit(String isEdit) {
+	public void setIsEdit(Integer isEdit) {
 		this.isEdit = isEdit;
 	}
 	/**

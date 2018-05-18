@@ -102,7 +102,7 @@ public class SysDataController {
 			Geometry filterGeom = new GeometryJSON(10).read(rangeStr);
 			filterGeom.setSRID(4326);
 			TlGammaKernel kernel = this.sysEnviService.getKernelById(para.getClassId());
-			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskGuid(),0,kernel.getGeomType(),filterGeom);
+			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskGuid(),kernel.getGeomType(),filterGeom);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -118,7 +118,7 @@ public class SysDataController {
 			Geometry filterGeom = new GeometryJSON(10).read(rangeStr);
 			filterGeom.setSRID(4326);
 			TlGammaKernel kernel = this.sysEnviService.getKernelById(para.getClassId());
-			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskGuid(),1,kernel.getGeomType(),filterGeom);
+			geoList = this.sysBusdataService.getTaskData(para.getClassId(),para.getTaskGuid(),kernel.getGeomType(),filterGeom);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

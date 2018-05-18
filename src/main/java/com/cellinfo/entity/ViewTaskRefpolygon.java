@@ -18,9 +18,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
  */
 @JsonIgnoreProperties({ "kernelGeom" })
 @Entity
-@Table(name="view_task_polygon")
-@NamedQuery(name="ViewTaskPolygon.findAll", query="SELECT t FROM ViewTaskPolygon t")
-public class ViewTaskPolygon implements Serializable {
+@Table(name="view_task_refpolygon")
+@NamedQuery(name="ViewTaskRefpolygon.findAll", query="SELECT t FROM ViewTaskRefpolygon t")
+public class ViewTaskRefpolygon implements Serializable {
 	private static final long serialVersionUID = 1L;
  
 	@Id
@@ -48,7 +48,7 @@ public class ViewTaskPolygon implements Serializable {
 	@Column(name="task_guid")
 	private String taskGuid;
 
-	public ViewTaskPolygon() {
+	public ViewTaskRefpolygon() {
 	}
 
 	public String getGeomStyle() {

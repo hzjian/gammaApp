@@ -11,7 +11,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public interface ViewTaskPointRepository extends PagingAndSortingRepository<ViewTaskPoint, String>{
 	
-	@Query("select a from ViewTaskPoint a  where a.kernelClassid = ?1 and a.taskGuid = ?2 and a.kernelStatus = ?3 and (intersects( a.kernelGeom , ?4) = true)") 
-	public List<ViewTaskPoint> getDataByFilter(String kernelClassid,String taskGuid,Integer status,Geometry ptGeom,Pageable pageable);
+	@Query("select a from ViewTaskPoint a  where a.kernelClassid = ?1 and a.taskGuid = ?2 and (intersects( a.kernelGeom , ?3) = true)") 
+	public List<ViewTaskPoint> getDataByFilter(String kernelClassid,String taskGuid,Geometry ptGeom,Pageable pageable);
 
 }

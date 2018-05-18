@@ -16,14 +16,14 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="tl_gamma_task_kernel")
-@NamedQuery(name="TlGammaTaskKernel.findAll", query="SELECT t FROM TlGammaTaskKernel t")
-public class TlGammaTaskKernel implements Serializable {
+@Table(name="tl_gamma_task_refkernel")
+@NamedQuery(name="TlGammaTaskRefkernel.findAll", query="SELECT t FROM TlGammaTaskRefkernel t")
+public class TlGammaTaskRefkernel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@SequenceGenerator(name="seq_task_kernel", sequenceName="seq_task_kernel")
+	@SequenceGenerator(name="seq_task_refkernel", sequenceName="seq_task_refkernel")
 	@Id 
-	@GeneratedValue(generator="seq_task_kernel")
+	@GeneratedValue(generator="seq_task_refkernel")
 	private Long id;
 	
 	@Column(name="kernel_guid",length=36)
@@ -32,21 +32,21 @@ public class TlGammaTaskKernel implements Serializable {
 	@Column(name="task_guid", length=36)
 	private String taskGuid;
 
-	public TlGammaTaskKernel() {
+	
+	public TlGammaTaskRefkernel() {
 	}
 
-	public TlGammaTaskKernel(String taskGuid,String kernelGuid) {
+	public TlGammaTaskRefkernel(String taskGuid,String kernelGuid) {
 		this.taskGuid = taskGuid;
 		this.kernelGuid= kernelGuid;
 	}
-	
+
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
-
 
 	/**
 	 * @param id the id to set
@@ -62,7 +62,6 @@ public class TlGammaTaskKernel implements Serializable {
 		return kernelGuid;
 	}
 
-
 	/**
 	 * @param kernelGuid the kernelGuid to set
 	 */
@@ -70,13 +69,17 @@ public class TlGammaTaskKernel implements Serializable {
 		this.kernelGuid = kernelGuid;
 	}
 
-
+	/**
+	 * @return the taskGuid
+	 */
 	public String getTaskGuid() {
-		return this.taskGuid;
+		return taskGuid;
 	}
 
+	/**
+	 * @param taskGuid the taskGuid to set
+	 */
 	public void setTaskGuid(String taskGuid) {
 		this.taskGuid = taskGuid;
 	}
-	
 }

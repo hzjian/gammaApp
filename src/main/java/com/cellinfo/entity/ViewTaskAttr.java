@@ -35,7 +35,7 @@ public class ViewTaskAttr implements Serializable {
 	private String attrEnum;
 	
 	@Column(name="attr_isedit")
-	private String attrIsedit;
+	private Integer attrIsedit;
 	
 	@Column(name="attr_fgrade")
 	private String attrFgrade;
@@ -127,7 +127,7 @@ public class ViewTaskAttr implements Serializable {
 	/**
 	 * @return the attrIsedit
 	 */
-	public String getAttrIsedit() {
+	public Integer getAttrIsedit() {
 		return attrIsedit;
 	}
 
@@ -135,7 +135,7 @@ public class ViewTaskAttr implements Serializable {
 	/**
 	 * @param attrIsedit the attrIsedit to set
 	 */
-	public void setAttrIsedit(String attrIsedit) {
+	public void setAttrIsedit(Integer attrIsedit) {
 		this.attrIsedit = attrIsedit;
 	}
 

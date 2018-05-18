@@ -1,22 +1,31 @@
 package com.cellinfo;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.geotools.geojson.geom.GeometryJSON;
+import org.json.simple.JSONValue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import com.cellinfo.controller.entity.ExtTypeParameter;
 import com.cellinfo.controller.entity.FilterParameter;
 import com.cellinfo.controller.entity.RequestParameter;
-import com.cellinfo.controller.entity.SubtypeParameter;
 import com.cellinfo.controller.entity.TaskParameter;
 import com.cellinfo.entity.Result;
+import com.cellinfo.entity.TlGammaKernelExt;
 import com.cellinfo.entity.TlGammaUser;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class GroupUserTest {
 
@@ -26,8 +35,10 @@ public class GroupUserTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNjYwMzM1MiwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.eexvBMsxMn1ALZ_ipVRxuTEZXSaoLsiUYi67BYjPJc5fpUs8v9dDYEQfwopZtQF9bPQz98d19hSVpehM1oHjPg";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNjY5MDIwMiwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ._LwrWmLroqnHziD80WYLqJwVlDU8Q93hFkT4d3Fgr1Z3HaClKXxqCZBP-Cp9hk_v_WrL96xtiXDiYUcaTp0MKQ";
 	
+	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+
 
 	@Test
     public void kernelSubtypeList() throws Exception {
@@ -50,13 +61,13 @@ public class GroupUserTest {
     }
 	
 	@Test
-    public void testAddKernelSubtype() throws Exception {
+    public void testAddKernelExtType() throws Exception {
 		System.out.println("-----------------/service/user/kernel/exttype/save---------start-----------  ");
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-auth-token", token );
         
         String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
-        SubtypeParameter para = new SubtypeParameter();
+        ExtTypeParameter para = new ExtTypeParameter();
         
         para.setExtDesc("extDesc"+UUID.randomUUID().toString());
         para.setExtName("extName"+UUID.randomUUID().toString());
@@ -65,21 +76,33 @@ public class GroupUserTest {
         List<FilterParameter> fList = new LinkedList<FilterParameter>();
         FilterParameter fpara1 = new FilterParameter();
         fpara1.setAttrGuid("fc201d68-0f01-45ab-9eb7-bcca241bb6aa");
-        fpara1.setType("MORETHAN");
         fpara1.setMinValue("10");
         fList.add(fpara1);
         FilterParameter fpara2 = new FilterParameter();
         fpara2.setAttrGuid("3f1dea7d-3f2a-4f8d-9260-da9d65e2171a");
-        fpara2.setType("MORETHAN");
         fpara2.setMinValue("10");
         fList.add(fpara2);
         para.setFilterList(fList);
         
-        HttpEntity<SubtypeParameter> entity = new HttpEntity<SubtypeParameter>(para, headers);
-        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/exttype/save",entity,Result.class);
+        Polygon mpolygon = createPolygonByWKT();
+        Map<String,Object> feaMap =new HashMap<String,Object>();
+        feaMap.put("type", "Feature");
+		feaMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(mpolygon)));
+		
+
+        para.setFilterGeom(feaMap);
+        
+        HttpEntity<ExtTypeParameter> entity = new HttpEntity<ExtTypeParameter>(para, headers);
+        Result<TlGammaKernelExt> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/exttype/save",entity,Result.class);
         System.out.println(result.getData());
         Assert.assertEquals(result.getMsg(),"成功");   
         System.out.println("-----------------/service/user/kernel/exttype/save---------end-----------  "); 
+    }
+	
+	public Polygon createPolygonByWKT() throws ParseException{
+        WKTReader reader = new WKTReader( geometryFactory );
+        Polygon mpolygon = (Polygon) reader.read("POLYGON((100 30, 100 50, 120 50, 120 30, 100 30))");
+        return mpolygon;
     }
 	
     public void testTaskNoExtSave() throws Exception {
@@ -94,7 +117,7 @@ public class GroupUserTest {
         para.setTaskDesc("taskDesc"+UUID.randomUUID().toString());
         para.setStartDate("2017-01-01 12:00:01");
         para.setEndDate("2018-05-01 08:00:01");
-        para.setClassid("54b63474-112d-447f-ba01-4628b7386c0b");
+        para.setClassId("54b63474-112d-447f-ba01-4628b7386c0b");
         
         HttpEntity<TaskParameter> entity = new HttpEntity<TaskParameter>(para, headers);
 //        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/user/task/save",entity,Result.class);
@@ -116,8 +139,8 @@ public class GroupUserTest {
         para.setTaskDesc("taskDesc"+UUID.randomUUID().toString());
         para.setStartDate("2017-01-01 12:00:01");
         para.setEndDate("2018-05-01 08:00:01");
-        para.setClassid("54b63474-112d-447f-ba01-4628b7386c0b");
-        para.setExtGuid("f3f5ce6f-224b-4411-a2ea-f349545953f0");
+        para.setClassId("54b63474-112d-447f-ba01-4628b7386c0b");
+        para.setExtGuid("34d55a6f-b470-445e-a80e-46cbf2850905");
         
         HttpEntity<TaskParameter> entity = new HttpEntity<TaskParameter>(para, headers);
         Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/user/task/save",entity,Result.class);

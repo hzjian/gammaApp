@@ -45,9 +45,6 @@ public class ViewTaskLine implements Serializable {
 	
 	@Column(name="task_guid")
 	private String taskGuid;
-
-	@Column(name="kernel_status")
-	private Integer kernelStatus;
 	
 	public ViewTaskLine() {
 	}
@@ -151,20 +148,5 @@ public class ViewTaskLine implements Serializable {
 	public void setTaskGuid(String taskGuid) {
 		this.taskGuid = taskGuid;
 	}
-
-	/**
-	 * @return the kernelStatus
-	 */
-	public Integer getKernelStatus() {
-		return kernelStatus;
-	}
-
-	/**
-	 * @param kernelStatus the kernelStatus to set
-	 */
-	public void setKernelStatus(Integer kernelStatus) {
-		this.kernelStatus = kernelStatus;
-	}
-	
 	
 }

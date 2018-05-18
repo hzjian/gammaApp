@@ -10,4 +10,6 @@ public interface TlGammaKernelGeoFilterRepository extends PagingAndSortingReposi
 
 	List<TlGammaKernelGeoFilter> findByExtGuid(String extGuid);
 
+	void deleteByExtGuid(String extGuid);
+
 }

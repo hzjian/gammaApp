@@ -9,14 +9,16 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.cellinfo.controller.entity.ExtTypeParameter;
 import com.cellinfo.controller.entity.FilterParameter;
-import com.cellinfo.controller.entity.SubtypeParameter;
 import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaKernelExt;
 import com.cellinfo.entity.TlGammaKernelFilter;
+import com.cellinfo.entity.TlGammaKernelGeoFilter;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaKernelExtRepository;
 import com.cellinfo.repository.TlGammaKernelFilterRepository;
+import com.cellinfo.repository.TlGammaKernelGeoFilterRepository;
 
 @Service
 public class SysKernelExtService {
@@ -31,6 +33,9 @@ public class SysKernelExtService {
 	@Autowired
 	private TlGammaKernelAttrRepository tlGammaKernelAttrRepository;
 	
+	@Autowired
+	private TlGammaKernelGeoFilterRepository tlGammaKernelGeoFilterRepository ;
+	
 	
 	public TlGammaKernelExt saveKernelExt(TlGammaKernelExt ext, List<TlGammaKernelFilter> filterList)
 	{		
@@ -39,6 +44,10 @@ public class SysKernelExtService {
 		return this.tlGammaKernelExtRepository.save(ext);
 	}
 	
+	public TlGammaKernelGeoFilter saveGeoFilter(TlGammaKernelGeoFilter geoFilter)
+	{
+		return this.tlGammaKernelGeoFilterRepository.save(geoFilter);
+	}
 	
 	public TlGammaKernelExt getKernelExt(String extGuid)
 	{
@@ -54,7 +63,9 @@ public class SysKernelExtService {
 	public void deleteKernelExt(String extGuid)
 	{
 		this.tlGammaKernelFilterRepository.deleteByExtGuid(extGuid);
+		this.tlGammaKernelGeoFilterRepository.deleteByExtGuid(extGuid);
 		this.tlGammaKernelExtRepository.delete(extGuid);
+		
 	}
 	
 	public TlGammaKernelAttr getKernelAttr(String attrguid)
@@ -63,14 +74,14 @@ public class SysKernelExtService {
 	}
 
 
-	public Page<SubtypeParameter> getKernelExtList(String kernelClassid,String userName,Pageable pageable) {
-		List<SubtypeParameter> subTypeList = new LinkedList<SubtypeParameter>();
+	public Page<ExtTypeParameter> getKernelExtList(String kernelClassid,String userName,Pageable pageable) {
+		List<ExtTypeParameter> subTypeList = new LinkedList<ExtTypeParameter>();
 		Page<TlGammaKernelExt> extList = this.tlGammaKernelExtRepository.findByKernelClassidAndUserName(kernelClassid,userName,pageable);
 		if(extList!= null && extList.getSize()>0)
 		{
 			for(TlGammaKernelExt ext: extList.getContent())
 			{
-				SubtypeParameter subtype = new SubtypeParameter();
+				ExtTypeParameter subtype = new ExtTypeParameter();
 				subtype.setExtDesc(ext.getExtDesc());
 				subtype.setExtGuid(ext.getExtGuid());
 				subtype.setExtName(ext.getExtName());
@@ -92,18 +103,18 @@ public class SysKernelExtService {
 			}
 		}
 		
-		return new PageImpl<SubtypeParameter>(subTypeList,pageable,extList.getTotalElements());
+		return new PageImpl<ExtTypeParameter>(subTypeList,pageable,extList.getTotalElements());
 	}
 
 
-	public List<SubtypeParameter> getKernelExtList(String kernelClassid, String userName) {
-		List<SubtypeParameter> subTypeList = new LinkedList<SubtypeParameter>();
+	public List<ExtTypeParameter> getKernelExtList(String kernelClassid, String userName) {
+		List<ExtTypeParameter> subTypeList = new LinkedList<ExtTypeParameter>();
 		List<TlGammaKernelExt> extList = this.tlGammaKernelExtRepository.findByKernelClassidAndUserName(kernelClassid,userName);
 		if(extList!= null && extList.size()>0)
 		{
 			for(TlGammaKernelExt ext: extList)
 			{
-				SubtypeParameter subtype = new SubtypeParameter();
+				ExtTypeParameter subtype = new ExtTypeParameter();
 				subtype.setExtDesc(ext.getExtDesc());
 				subtype.setExtGuid(ext.getExtGuid());
 				subtype.setExtName(ext.getExtName());
