@@ -75,8 +75,8 @@ import com.vividsolutions.jts.geom.Polygon;
 @PreAuthorize("hasRole('ROLE_GROUP_ADMIN') OR hasRole('ROLE_USER')")  
 @RestController
 @RequestMapping("/service/user")
-public class GroupUserController {
-	private final static Logger logger = LoggerFactory.getLogger(GroupUserController.class);
+public class SysGroupUserController {
+	private final static Logger logger = LoggerFactory.getLogger(SysGroupUserController.class);
 	
 	@Autowired
 	private UtilService utilService;

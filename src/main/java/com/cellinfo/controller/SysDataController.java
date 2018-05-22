@@ -279,10 +279,9 @@ public class SysDataController {
 		
 		Iterable<TlGammaLayerAttribute> attrList =  this.sysBusdataService.saveAttribute(entities);
 		///返回属性列表
-		
 		return ResultUtil.success(resMap);
 	}
-	
+	 
 	private TlGammaLayerAttribute getAttributeEntity(String guid,String taskId,String username,PropItem propItem)
 	{
 		List<TlGammaLayerAttribute> tmpAttrList;

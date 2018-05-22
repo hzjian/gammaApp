@@ -58,9 +58,9 @@ import com.cellinfo.utils.ReturnDesc;
 @PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")  
 @RestController
 @RequestMapping("/service/group")
-public class GroupAdminController {
+public class SysGroupAdminController {
 
-	private final static Logger logger = LoggerFactory.getLogger(GroupAdminController.class);
+	private final static Logger logger = LoggerFactory.getLogger(SysGroupAdminController.class);
 	
 	@Autowired
 	private UtilService utilService;

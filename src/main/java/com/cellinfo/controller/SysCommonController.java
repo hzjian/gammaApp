@@ -45,8 +45,8 @@ import com.cellinfo.utils.ReturnDesc;
 @ServiceLog(moduleName = "通用系统功能模块")
 @RestController
 @RequestMapping("/service/common")
-public class CommonController {
-private final static Logger logger = LoggerFactory.getLogger(CommonController.class);
+public class SysCommonController {
+private final static Logger logger = LoggerFactory.getLogger(SysCommonController.class);
 	
 	@Autowired
 	private UtilService utilService;

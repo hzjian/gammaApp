@@ -40,7 +40,6 @@ import com.cellinfo.utils.ResultUtil;
  * 1.任务相关联的文档管理
  * 2.
  * @author zhangjian
- *
  */
 @RestController
 @RequestMapping("/service/file")
@@ -57,7 +56,6 @@ public class SysFileController {
         if (!file.exists()) {
             file.mkdir();
         }
-
     }
 	
 	@PostConstruct
