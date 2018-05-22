@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.controller.entity.ExtTypeParameter;
 import com.cellinfo.controller.entity.FieldParameter;
@@ -57,6 +58,8 @@ import com.cellinfo.service.SysKernelExtService;
 import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysTaskService;
 import com.cellinfo.service.UtilService;
+import com.cellinfo.utils.FuncDesc;
+import com.cellinfo.utils.OperDesc;
 import com.cellinfo.utils.ResultUtil;
 import com.cellinfo.utils.ReturnDesc;
 import com.vividsolutions.jts.geom.Geometry;
@@ -71,7 +74,7 @@ import com.vividsolutions.jts.geom.Polygon;
  * 数据分类（数据按空间过虑，按字段过滤，生成子类）
  * @author zhangjian
  */
-@ServiceLog(moduleName = "组织管理接口")
+@ServiceLog(moduleName = "组织用户功能模块")
 @PreAuthorize("hasRole('ROLE_GROUP_ADMIN') OR hasRole('ROLE_USER')")  
 @RestController
 @RequestMapping("/service/user")
@@ -95,6 +98,7 @@ public class SysGroupUserController {
 	
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");   
 	
+	@OperLog(funcName = FuncDesc.GROUP_USER_TASK_QUERY, methodName = OperDesc.QUERY)
 	@PostMapping(value = "/tasks")
 	public Result<List<TaskParameter>> userTasks(HttpServletRequest request,@RequestBody RequestParameter para, BindingResult bindingResult) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);

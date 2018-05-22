@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.controller.entity.DictItemParameter;
 import com.cellinfo.controller.entity.RequestParameter;
@@ -39,10 +40,12 @@ import com.cellinfo.service.SysDictService;
 import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysUserService;
 import com.cellinfo.service.UtilService;
+import com.cellinfo.utils.FuncDesc;
+import com.cellinfo.utils.OperDesc;
 import com.cellinfo.utils.ResultUtil;
 import com.cellinfo.utils.ReturnDesc;
 
-@ServiceLog(moduleName = "通用系统功能模块")
+@ServiceLog(moduleName = "系统通用模块")
 @RestController
 @RequestMapping("/service/common")
 public class SysCommonController {
@@ -62,6 +65,7 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	private final static String DEFAULT_PASSWORD = "PASSWORD";
 	
+	@OperLog(funcName = FuncDesc.QUERY_CURRENT_USER_INFO, methodName = OperDesc.QUERY)
 	@PostMapping(value = "/userinfo")
 	public Result<Map<String, String>> getCurrentUserInfo(HttpServletRequest request) {
 		Map<String, String> tMap = new HashMap<String, String>();
@@ -105,6 +109,7 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 		return ResultUtil.error(400, ReturnDesc.USER_INFO_IS_ILLEGAL);
 	}
 
+	@OperLog(funcName = FuncDesc.MODIFY_CURRENT_USER_INFO, methodName = OperDesc.EDIT)
 	@PostMapping(value = "/updateuser")
 	public Result<UserParameter> updateUser(HttpServletRequest request,@RequestBody @Valid UserParameter userInfo, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -154,9 +159,13 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 		} else {
 			sort = new Sort(Direction.DESC, sortField);
 		}
-
+		String filterStr ="";
+		if(para.getSkey()!=null&&para.getSkey().length()>0)
+		{
+			filterStr = para.getSkey();
+		}
 		PageRequest pageInfo =  PageRequest.of(pageNumber, pageSize, sort);
-		Page<TlGammaDict> mList = this.sysDictService.getDictsByGroupGuid(cUser.getGroupGuid(),para.getSkey(),pageInfo);
+		Page<TlGammaDict> mList = this.sysDictService.getDictsByGroupGuid(cUser.getGroupGuid(),filterStr,pageInfo);
 		for (TlGammaDict eachDict : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("dictId", eachDict.getDictId());

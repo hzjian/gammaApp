@@ -54,7 +54,7 @@ import com.cellinfo.utils.ReturnDesc;
  * @author zhangjian
  *
  */
-@ServiceLog(moduleName = "组织管理接口")
+@ServiceLog(moduleName = "组织管理模块")
 @PreAuthorize("hasRole('ROLE_GROUP_ADMIN')")  
 @RestController
 @RequestMapping("/service/group")

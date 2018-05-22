@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
@@ -21,9 +22,9 @@ import javax.persistence.Table;
 public class TlGammaDictItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@SequenceGenerator(name="seq_dict_item", sequenceName="seq_dict_item")
 	@Id 
-	@GeneratedValue(generator="seq_dict_item")
+	@SequenceGenerator(name="seq_dict_item", sequenceName="seq_dict_item",allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator="seq_dict_item")
 	private Long id;
 
 	@Column(name="dict_id")

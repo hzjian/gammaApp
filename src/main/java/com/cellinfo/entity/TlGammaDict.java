@@ -20,7 +20,7 @@ public class TlGammaDict implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="dict_id", nullable=false)
+	@Column(name="dict_id", length=36,nullable=false)
 	private String dictId;
 
 	@Column(name="dict_name", length=64)

@@ -21,7 +21,7 @@ import javax.persistence.Table;
 public class TlGammaTaskAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@SequenceGenerator(name="seq_task_attr", sequenceName="seq_task_attr")
+	@SequenceGenerator(name="seq_task_attr", sequenceName="seq_task_attr",allocationSize=1)
 	@Id 
 	@GeneratedValue(generator="seq_task_attr")
 	private Long id;

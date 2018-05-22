@@ -22,7 +22,7 @@ import javax.persistence.Table;
 public class TlGammaLog implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@SequenceGenerator(name="seq_gamma_log", sequenceName="seq_gamma_log")
+	@SequenceGenerator(name="seq_gamma_log", sequenceName="seq_gamma_log",allocationSize=1)
 	@Id 
 	@GeneratedValue(generator="seq_gamma_log")
 	private Long id;

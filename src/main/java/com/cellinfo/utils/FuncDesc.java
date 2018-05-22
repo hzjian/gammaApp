@@ -21,6 +21,12 @@ public class FuncDesc {
 	public static final String CHANGEPASSWORD="密码修改";
 	public static final String LONGIN="登录";
 	public static final String GROUP_ADMIN_USER_LIST = "组织管理 员用户列表";
+	public static final String QUERY_CURRENT_USER_INFO = "查询当前用户信息";
+	public static final String MODIFY_CURRENT_USER_INFO = "修改当前用户信息";
+	public static final String QUERY_TASK_REF_DATA = "任务参考数据查询";
+	
+	
+	public static final String GROUP_USER_TASK_QUERY = "用户任务列表查询";
 
 
 }

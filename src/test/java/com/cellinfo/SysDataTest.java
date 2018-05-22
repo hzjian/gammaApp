@@ -15,7 +15,7 @@ import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaUser;
 
-public class DataTest {
+public class SysDataTest {
 
 	private RestTemplate testRestTemplate = new RestTemplate();
 	

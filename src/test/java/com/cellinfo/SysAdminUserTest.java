@@ -16,7 +16,7 @@ import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
 
 
-public class AdminUserTest {
+public class SysAdminUserTest {
 	
     private RestTemplate testRestTemplate = new RestTemplate();
 	

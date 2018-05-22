@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cellinfo.annotation.OperLog;
+import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.controller.entity.PostGeoJsonParameter;
 import com.cellinfo.controller.entity.PostPropParameter;
 import com.cellinfo.controller.entity.PropItem;
@@ -43,6 +45,8 @@ import com.cellinfo.service.PropertiesConfig;
 import com.cellinfo.service.SysBusdataService;
 import com.cellinfo.service.SysEnviService;
 import com.cellinfo.service.UtilService;
+import com.cellinfo.utils.FuncDesc;
+import com.cellinfo.utils.OperDesc;
 import com.cellinfo.utils.ResultUtil;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
@@ -57,7 +61,7 @@ import com.vividsolutions.jts.geom.Point;
  * 定位
  * @author zhangjian
  */
-
+@ServiceLog(moduleName = "我的内容功能模块")
 @PreAuthorize("hasRole('ROLE_USER')")  
 @RestController
 @RequestMapping("/service/data")
@@ -76,24 +80,7 @@ public class SysDataController {
 	
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	
-	@PostMapping(value = "/query/ext")
-	public Result<List<Map<String, Object>>> queryDataExt( @RequestBody SpatialQueryParameter para) {
-		
-		PropsQueryParameter propsParam = new PropsQueryParameter();
-//		for ( PropsQueryParameter queryPara : this.propertiesConfig.getKernel())
-//		{
-//			if(queryPara.getClsname().trim().equalsIgnoreCase(para.getClsname().trim()))
-//			{
-//				propsParam = queryPara;
-//				break;
-//			}
-//		}
-//		para.setClassId(propsParam.getClassid());
-//		para.setGeomType(propsParam.getGeotype());
-		
-		return queryData(para);
-	}
-	
+	@OperLog(funcName = FuncDesc.QUERY_TASK_REF_DATA, methodName = OperDesc.QUERY)
 	@PostMapping(value = "/queryref")
 	public Result<List<Map<String, Object>>> queryRefData( @RequestBody SpatialQueryParameter para) {
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();

@@ -22,7 +22,7 @@ import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaUser;
 
 
-public class GroupAdminTest {
+public class SysGroupAdminTest {
 
     private RestTemplate testRestTemplate = new RestTemplate();
 	

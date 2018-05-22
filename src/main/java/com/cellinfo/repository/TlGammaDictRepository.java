@@ -13,7 +13,7 @@ public interface TlGammaDictRepository extends PagingAndSortingRepository<TlGamm
 
 	Page<TlGammaDict> findByGroupGuidAndDictNameLike(String groupGuid,String nameFilter, Pageable pageable);
 
-	@Query("select a from TlGammaDict a  where a.dictName =?1 and a.groupGuid = ?3") 
+	@Query("select a from TlGammaDict a  where a.dictName =?1 and a.groupGuid = ?2") 
 	List<TlGammaDict> getDictByName(String dictName,  String groupGuid);
 
 }

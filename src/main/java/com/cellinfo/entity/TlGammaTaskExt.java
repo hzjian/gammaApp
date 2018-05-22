@@ -23,7 +23,7 @@ public class TlGammaTaskExt implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 
-	@SequenceGenerator(name="seq_task_ext", sequenceName="seq_task_ext")
+	@SequenceGenerator(name="seq_task_ext", sequenceName="seq_task_ext",allocationSize=1)
 	@Id 
 	@GeneratedValue(generator="seq_task_ext")
 	private Long id;

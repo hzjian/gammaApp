@@ -27,7 +27,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-public class GroupUserTest {
+public class SysGroupUserTest {
 
     private RestTemplate testRestTemplate = new RestTemplate();
 	

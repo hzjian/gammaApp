@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaFile;
 import com.cellinfo.service.SysRelateFileService;
@@ -41,6 +42,7 @@ import com.cellinfo.utils.ResultUtil;
  * 2.
  * @author zhangjian
  */
+@ServiceLog(moduleName = "文档管理模块")
 @RestController
 @RequestMapping("/service/file")
 public class SysFileController {
