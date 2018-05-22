@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -36,7 +36,6 @@ import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaGroup;
 import com.cellinfo.entity.TlGammaUser;
-import com.cellinfo.security.UserInfo;
 import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysUserService;
 import com.cellinfo.service.UtilService;
@@ -73,26 +72,6 @@ public class SysAdminController {
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	
 	private final static String DEFAULT_PASSWORD = "PASSWORD";
-	
-	@PostMapping(value = "/curUserInfo")
-	public Result<Map<String, String>> getCurrentUserInfo(HttpServletRequest request) {
-		Map<String, String> tMap = new HashMap<String, String>();
-		//String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		
-		UserInfo currentUser = this.utilService.getCurrentUser(request);
-		if (currentUser!=null && currentUser.getUserName().length()>0) {
-
-			logger.info("currentUser=="+currentUser);
-			TlGammaUser user = this.sysUserService.findOne(currentUser.getUserName());
-			logger.info("user=="+user);
-			tMap.put("username", user.getUsername());
-			tMap.put("usercnname", user.getUserCnname());
-			
-			return ResultUtil.success(tMap);
-			
-        } 
-		return ResultUtil.error(400, ReturnDesc.USER_INFO_IS_ILLEGAL);
-	}
 
 	/**
 	 * 查询所有
@@ -125,7 +104,7 @@ public class SysAdminController {
 			filterStr = para.getSkey();
 		}
 
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
 		Page<TlGammaUser> tmpList = this.sysUserService.getGroupAdminUsers(filterStr,pageInfo);
 		
 		if(filterStr!="" && para.getGroupGuid()!= null)
@@ -139,8 +118,9 @@ public class SysAdminController {
 			tmp.setUserCnname(item.getUserCnname());
 			if(item.getGroupGuid()!=null)
 			{
-				TlGammaGroup group = this.sysGroupService.findOne(item.getGroupGuid());
-				tmp.setGroupName(group.getGroupName());
+				Optional<TlGammaGroup> group = this.sysGroupService.findOne(item.getGroupGuid());
+				if(group.isPresent())
+					tmp.setGroupName(group.get().getGroupName());
 			}
 			tmp.setUserName(item.getUsername());
 			return tmp;
@@ -155,8 +135,8 @@ public class SysAdminController {
 	 */
 	@PostMapping(value = "/user/testname")
 	public Result<TlGammaUser> testGroupMemberName(HttpServletRequest request,@RequestBody @Valid String membername, BindingResult bindingResult) {	
-		TlGammaUser kuser = this.sysUserService.findOne(membername);
-		if(kuser!=null )
+		Optional<TlGammaUser> kuser = this.sysUserService.findOne(membername);
+		if(kuser.isPresent() )
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
 		}
@@ -169,14 +149,14 @@ public class SysAdminController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@Transactional
+	//@Transactional
 	@PostMapping(value = "/user/save")
 	public Result<UserParameter> addUser(@RequestBody @Valid UserParameter user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaUser kuser = this.sysUserService.findOne(user.getUserName());
-		if(kuser != null)
+		Optional<TlGammaUser> kuser = this.sysUserService.findOne(user.getUserName());
+		if(kuser.isPresent())
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_EXIST);
 		
 		TlGammaUser tmpUser = new TlGammaUser();
@@ -187,12 +167,16 @@ public class SysAdminController {
 		tmpUser.setUserCnname(user.getUserCnname());
 		tmpUser.setUserName(user.getUserName());
 		tmpUser.setUserPassword(encoder.encode(user.getUserPassword()));
+		tmpUser.setAccountEnabled(true);
+		tmpUser.setAccountNonExpired(true);
+		tmpUser.setAccountNonLocked(true);
 		UserParameter resUser= new UserParameter();
 		TlGammaUser saveUser = this.sysUserService.save(tmpUser);
+		Map<String,String> saveResult = new HashMap<String,String>();
 		//resUser.setUserGuid(saveUser.getUserGuid());
-		resUser.setUserName(saveUser.getUsername());
-		resUser.setUserCnname(saveUser.getUserCnname());
-		return ResultUtil.success(resUser);
+		saveResult.put("userName", saveUser.getUsername());
+		saveResult.put("userCnname", saveUser.getUserCnname());
+		return ResultUtil.success(saveResult);
 	}
 	/**
 	 * 添加组织管理员用户，修改用户信息
@@ -200,7 +184,7 @@ public class SysAdminController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@Transactional
+	//@Transactional
 	@PostMapping(value = "/user/update")
 	public Result<UserParameter> updateUser(@RequestBody @Valid UserParameter user, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -208,9 +192,10 @@ public class SysAdminController {
 		}
 		if(user.getUserName()!= null)
 		{
-			TlGammaUser realUser = this.sysUserService.findOne(user.getUserName());
-			if(realUser!=null && realUser.getUsername().length()>1)
+			Optional<TlGammaUser> realUserOptional = this.sysUserService.findOne(user.getUserName());
+			if(realUserOptional.isPresent() && realUserOptional.get().getUsername().length()>1)
 			{
+				TlGammaUser  realUser = realUserOptional.get();
 				if(user.getUserCnname()!=null)
 					realUser.setUserCnname(user.getUserCnname());
 				if(user.getUserEmail()!=null)
@@ -240,13 +225,13 @@ public class SysAdminController {
 	@GetMapping(value = "/user/query")
 	public Result<UserParameter> userFindOne( @RequestBody @Valid String userName) {
 		
-		TlGammaUser  realuser = sysUserService.findOne(userName);
-		if(realuser == null)
+		Optional<TlGammaUser>  realuser = sysUserService.findOne(userName);
+		if(!realuser.isPresent())
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_NOT_EXIST);
 		
 		UserParameter user = new UserParameter();
-		user.setGroupGuid(realuser.getGroupGuid());
-		user.setUserCnname(realuser.getUserCnname());
+		user.setGroupGuid(realuser.get().getGroupGuid());
+		user.setUserCnname(realuser.get().getUserCnname());
 		user.setUserName(user.getUserName());
 
 		return ResultUtil.success(user);
@@ -256,10 +241,11 @@ public class SysAdminController {
 	@GetMapping(value = "/group/query")
 	public Result<GroupParameter> groupFindOne( @RequestBody @Valid String groupGuid) {
 		
-		TlGammaGroup  group = this.sysGroupService.findOne(groupGuid);
-		if(group == null)
+		Optional<TlGammaGroup>  groupOptional = this.sysGroupService.findOne(groupGuid);
+		if(!groupOptional.isPresent())
 			return ResultUtil.error(400, ReturnDesc.GROUP_IS_NOT_EXIST);
 		
+		TlGammaGroup group = groupOptional.get();
 		GroupParameter refgroup = new GroupParameter();
 		refgroup.setGroupGuid(group.getGroupGuid());
 		refgroup.setGroupAddress(group.getGroupAddress());
@@ -352,9 +338,10 @@ public class SysAdminController {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaGroup refgroup = this.sysGroupService.getByGUID(group.getGroupGuid());
-		if(refgroup!=null && refgroup.getGroupGuid().length()>1)
+		Optional<TlGammaGroup> refgroupOptional = this.sysGroupService.getByGUID(group.getGroupGuid());
+		if(refgroupOptional.isPresent() && refgroupOptional.get().getGroupGuid().length()>1)
 		{
+			TlGammaGroup refgroup = refgroupOptional.get();
 			if(group.getGroupAddress()!=null)
 				refgroup.setGroupAddress(group.getGroupAddress());
 			if(group.getGroupCode()!=null)

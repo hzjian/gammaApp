@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -28,6 +29,15 @@ public class ViewTaskUser implements Serializable {
 	
 	@Column(name="user_email", length=64)
 	private String userEmail;
+	
+	@Column(name="task_name")
+	private String taskName;
+
+	@Column(name="task_timeend")
+	private Timestamp taskTimeend;
+
+	@Column(name="task_timestart")
+	private Timestamp taskTimestart;
 	
 	public ViewTaskUser() {
 	}
@@ -74,7 +84,47 @@ public class ViewTaskUser implements Serializable {
 		this.userEmail = userEmail;
 	}
 
+	/**
+	 * @return the taskName
+	 */
+	public String getTaskName() {
+		return taskName;
+	}
 
+	/**
+	 * @param taskName the taskName to set
+	 */
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
 
+	/**
+	 * @return the taskTimeend
+	 */
+	public Timestamp getTaskTimeend() {
+		return taskTimeend;
+	}
+
+	/**
+	 * @param taskTimeend the taskTimeend to set
+	 */
+	public void setTaskTimeend(Timestamp taskTimeend) {
+		this.taskTimeend = taskTimeend;
+	}
+
+	/**
+	 * @return the taskTimestart
+	 */
+	public Timestamp getTaskTimestart() {
+		return taskTimestart;
+	}
+
+	/**
+	 * @param taskTimestart the taskTimestart to set
+	 */
+	public void setTaskTimestart(Timestamp taskTimestart) {
+		this.taskTimestart = taskTimestart;
+	}
+	
 	
 }

@@ -2,6 +2,7 @@ package com.cellinfo.service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,7 @@ public class SysKernelExtService {
 	
 	public TlGammaKernelExt saveKernelExt(TlGammaKernelExt ext, List<TlGammaKernelFilter> filterList)
 	{		
-		this.tlGammaKernelFilterRepository.save(filterList);
+		this.tlGammaKernelFilterRepository.saveAll(filterList);
 		
 		return this.tlGammaKernelExtRepository.save(ext);
 	}
@@ -49,9 +50,9 @@ public class SysKernelExtService {
 		return this.tlGammaKernelGeoFilterRepository.save(geoFilter);
 	}
 	
-	public TlGammaKernelExt getKernelExt(String extGuid)
+	public Optional<TlGammaKernelExt> getKernelExt(String extGuid)
 	{
-		return this.tlGammaKernelExtRepository.findOne(extGuid);
+		return this.tlGammaKernelExtRepository.findById(extGuid);
 	}
 	
 	public List<TlGammaKernelFilter> getKernelExtFilter(String extGuid)
@@ -64,13 +65,13 @@ public class SysKernelExtService {
 	{
 		this.tlGammaKernelFilterRepository.deleteByExtGuid(extGuid);
 		this.tlGammaKernelGeoFilterRepository.deleteByExtGuid(extGuid);
-		this.tlGammaKernelExtRepository.delete(extGuid);
+		this.tlGammaKernelExtRepository.deleteById(extGuid);
 		
 	}
 	
-	public TlGammaKernelAttr getKernelAttr(String attrguid)
+	public Optional<TlGammaKernelAttr> getKernelAttr(String attrguid)
 	{
-		return this.tlGammaKernelAttrRepository.findOne(attrguid);
+		return this.tlGammaKernelAttrRepository.findById(attrguid);
 	}
 
 

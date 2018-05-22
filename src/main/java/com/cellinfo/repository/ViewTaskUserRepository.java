@@ -13,4 +13,7 @@ public interface ViewTaskUserRepository  extends PagingAndSortingRepository<View
 	@Query("select a from ViewTaskUser a  where a.id.taskGuid = ?1") 
 	public Page<ViewTaskUser> getByTaskGuid(String taskGuid,Pageable pageable);
 	
+	@Query("select a from ViewTaskUser a  where a.id.userName = ?1") 
+	public Page<ViewTaskUser> getByUserName(String userName,Pageable pageable);
+	
 }

@@ -17,15 +17,17 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+        temp:
+          use_jdbc_metadata_defaults : false
     hibernate:
       ddl-auto: update
-    show-sql: false
+    show-sql: true
     generate-ddl: true
   session:
     store-type: none
 logging:
   level: 
-    root: warn
+    root: WARN
     org:
       springframework:
         security: WARN

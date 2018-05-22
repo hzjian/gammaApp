@@ -5,7 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +57,7 @@ public class SysEnviService {
 	
 	private Map<String,TlGammaGroup> groupMap = new HashMap<String ,TlGammaGroup>();
 
-	private static final Logger logger = Logger.getLogger(SysEnviService.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(SysEnviService.class);
 	
 	public void loadInitData() {
 		

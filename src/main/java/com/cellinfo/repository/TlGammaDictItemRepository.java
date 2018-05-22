@@ -11,4 +11,6 @@ public interface TlGammaDictItemRepository extends CrudRepository<TlGammaDictIte
 	public  List<TlGammaDictItem> findByDictId(String dictId);
 	
 	public int deleteByDictId(String dictId);
+
+	public List<TlGammaDictItem> findByDictIdAndDictItem(String dictId, String dictItem);
 }

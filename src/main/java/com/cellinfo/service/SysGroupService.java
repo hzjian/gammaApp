@@ -1,6 +1,7 @@
 package com.cellinfo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,7 @@ public class SysGroupService {
 	public String  deleteGroup(String groupGuid)
 	{
 		try {
-			this.tlGammaGroupRepository.delete(groupGuid);
+			this.tlGammaGroupRepository.deleteById(groupGuid);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -59,9 +60,9 @@ public class SysGroupService {
 		return this.tlGammaGroupRepository.findAll(pageInfo);
 	}
 
-	public TlGammaGroup getByGUID(String groupGuid) {
+	public Optional<TlGammaGroup> getByGUID(String groupGuid) {
 		// TODO Auto-generated method stub
-		return this.tlGammaGroupRepository.findOne(groupGuid);
+		return this.tlGammaGroupRepository.findById(groupGuid);
 	}
 
 	public Iterable<TlGammaGroup> getByName(String groupName) {
@@ -85,8 +86,8 @@ public class SysGroupService {
 		return this.tlGammaGroupRepository.findByGroupName(groupname);
 	}
 
-	public TlGammaGroup findOne(String groupGuid) {
+	public Optional<TlGammaGroup> findOne(String groupGuid) {
 		// TODO Auto-generated method stub
-		return this.tlGammaGroupRepository.findOne(groupGuid);
+		return this.tlGammaGroupRepository.findById(groupGuid);
 	}
 }

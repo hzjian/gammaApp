@@ -1,6 +1,7 @@
 package com.cellinfo.config;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ import com.cellinfo.service.SysUserService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final Logger logger = Logger.getLogger(WebSecurityConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 	
 	
 	@Autowired  

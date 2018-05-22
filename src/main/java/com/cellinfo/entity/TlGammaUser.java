@@ -66,7 +66,7 @@ public class TlGammaUser implements Serializable , UserDetails{
 	
 	public TlGammaUser() {
 	}
-
+	
 	public TlGammaUser(String username, String password, boolean account_enabled,
 			boolean account_non_expired, boolean account_non_locked,
 			Collection<? extends GrantedAuthority> authorities) {
@@ -174,6 +174,30 @@ public class TlGammaUser implements Serializable , UserDetails{
 		return this.userName;
 	}
 
+	public void setAccountNonExpired(boolean account_non_expired)
+	{
+		if(account_non_expired)
+			this.accNonExpired = 1;
+		else
+			this.accNonExpired = 0;
+	}
+	
+	public void setAccountEnabled(boolean account_enabled)
+	{
+		if(account_enabled)
+			this.accEnabled = 1;
+		else
+			this.accEnabled = 0;
+	}
+	
+	public void setAccountNonLocked(boolean account_non_locked)
+	{
+		if(account_non_locked)
+			this.accNonLocked = 1;
+		else
+			this.accNonLocked = 0;
+	}
+	
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub

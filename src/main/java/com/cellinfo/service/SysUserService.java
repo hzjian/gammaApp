@@ -30,7 +30,7 @@ public class SysUserService implements UserDetailsService {
    
 
     public void getEnabled(String userId) throws Exception{
-    	TlGammaUser user = tlGammaUserRepository.findOne(userId);
+    	TlGammaUser user = tlGammaUserRepository.findById(userId).get();
         boolean isEnable = user.isEnabled();
         if (isEnable) {
             throw new NetException(ResultEnum.INVALIDUSER);
@@ -44,8 +44,8 @@ public class SysUserService implements UserDetailsService {
      * @param id
      * @return
      */
-    public TlGammaUser findOne(String userName) {
-        return tlGammaUserRepository.findOne(userName);
+    public Optional<TlGammaUser> findOne(String userName) {
+        return tlGammaUserRepository.findById(userName);
     }
 
 	public List<TlGammaUser> findByUserCnname(String cnname) {
@@ -54,7 +54,7 @@ public class SysUserService implements UserDetailsService {
 	}
 
 	public void delete(String id) {
-		this.tlGammaUserRepository.delete(id);
+		this.tlGammaUserRepository.deleteById(id);
 		
 	}
 

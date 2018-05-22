@@ -1,6 +1,7 @@
 package com.cellinfo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -67,14 +68,14 @@ public class SysTaskService {
 		return this.tlGammaTaskRepository.save(task);
 	}
 
-	public TlGammaTask getByGuid(String taskGuid) {
+	public Optional<TlGammaTask> getByGuid(String taskGuid) {
 		// TODO Auto-generated method stub
-		return this.tlGammaTaskRepository.findOne(taskGuid);
+		return this.tlGammaTaskRepository.findById(taskGuid);
 	}
 
 	public void deleteTask(String taskGuid) {
 		// TODO Auto-generated method stub
-		this.tlGammaTaskRepository.delete(taskGuid);
+		this.tlGammaTaskRepository.deleteById(taskGuid);
 	}
 
 	public TlGammaTask updateTask(TlGammaTask task) {
@@ -140,6 +141,11 @@ public class SysTaskService {
 	public void saveTaskExt(TlGammaTaskExt taskExt) {
 		// TODO Auto-generated method stub
 		this.tlGammaTaskExtRepository.save(taskExt);
+	}
+
+	public Page<ViewTaskUser> getTaskByUserParticapate(String userName, PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.viewTaskUserRepository.getByUserName(userName, pageInfo);
 	}
 	
 	

@@ -1,5 +1,6 @@
 package com.cellinfo;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,11 +20,11 @@ public class AdminUserTest {
 	
     private RestTemplate testRestTemplate = new RestTemplate();
 	
-	private String serverPath1 = "http://47.94.88.135:8181/gammaa";
+	private String serverPath = "http://47.94.88.135:8181/gammaa";
 	
-	private String serverPath = "http://127.0.0.1:8081";
+	private String serverPath2 = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI2NDUyMTc3LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.t9tJphfw4U4ByVSOydoBmZN4w1HUxaTSY2g7-EWTnw-N6p58QS1VqxzLfcsFA7QkgVqlHt7MHxVr3w9aXJ4O3Q";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI2ODE1MjI1LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjBmZDVmMmU2LTJiYjktNDIzYi1iZDk3LTc5MDk0MGY5OTk3ZSJ9.0_S1dJPrhYC4t4ghEN-PcGhjUva9fSwzeDLf_TmNfxkwbsf_88WVl1O3hltQpcgZvZf-hL6MY3vkXLBeWAbj4w";
 	
 	@Test
     public void sysAminuserList() throws Exception {
@@ -49,7 +50,37 @@ public class AdminUserTest {
     }
 	
 	
+	@Test
+    public void groupAdminLogin() throws Exception {
+		System.out.println("-----------------/service/auth/login---------start-----------  ");
+		Map<String,String> userinfo = new HashMap<String,String>();
+		
+		userinfo.put("userName","groupadmin57661fa");
+		userinfo.put("userPassword","12345678");
+		
+        HttpEntity<Map<String,String>> entity = new HttpEntity<Map<String,String>>(userinfo);
+        Result<Map<String, String>> result = testRestTemplate.postForObject(this.serverPath+"/service/auth/login",entity,Result.class);
+        System.out.println(result.getData());
+        Assert.assertEquals(result.getMsg(),"成功");
+        
+        System.out.println("-----------------/service/auth/login---------end-----------  ");
+    }
 
+	@Test
+    public void getUserInfo() throws Exception {
+		System.out.println("-----------------/service/common/userinfo---------start-----------  ");
+		HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        
+        HttpEntity entity = new HttpEntity(null, headers);
+        
+        Result<Map<String, String>> result = testRestTemplate.postForObject(this.serverPath+"/service/common/userinfo",entity,Result.class);
+        System.out.println(result.getData());
+        Assert.assertEquals(result.getMsg(),"成功");
+        
+        System.out.println("-----------------/service/common/userinfo---------end-----------  ");
+    }
+	
 	@Test
     public void sysAdminTestUserName() throws Exception {
 		System.out.println("-----------------/service/api/user/testname---------start-----------  ");
@@ -75,7 +106,9 @@ public class AdminUserTest {
         String testname ="groupadmin"+ UUID.randomUUID().toString().substring(0, 7);
         user.setUserCnname("组织管理员");
         user.setUserName(testname);
-        user.setUserPassword("password");
+        user.setUserPassword("12345678");
+        user.setGroupGuid("367e5da5-6f34-4c68-b34d-6af2f1f41a14");
+        System.out.println("testname=="+testname);
         HttpEntity<UserParameter> entity = new HttpEntity<UserParameter>(user, headers);
         Result<Object> result = testRestTemplate.postForObject(this.serverPath+"/service/api/user/save",entity,Result.class);
         System.out.println(result.getData());

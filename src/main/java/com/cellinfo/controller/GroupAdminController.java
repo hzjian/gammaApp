@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaUser;
+import com.cellinfo.entity.ViewTaskUser;
 import com.cellinfo.security.UserInfo;
 import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysTaskService;
@@ -87,10 +89,10 @@ public class GroupAdminController {
 		if (currentUser!=null && currentUser.getUserName().length()>0) {
 
 			logger.info("currentUser=="+currentUser);
-			TlGammaUser user = this.sysUserService.findOne(currentUser.getUserName());
+			Optional<TlGammaUser> user = this.sysUserService.findOne(currentUser.getUserName());
 			logger.info("user=="+user);
-			tMap.put("username", user.getUsername());
-			tMap.put("usercnname", user.getUserCnname());
+			tMap.put("username", user.get().getUsername());
+			tMap.put("usercnname", user.get().getUserCnname());
 			
 			return ResultUtil.success(tMap);
         } 
@@ -117,7 +119,7 @@ public class GroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
 		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaKernel eachKernel : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
@@ -181,18 +183,18 @@ public class GroupAdminController {
 	public Result<KernelParameter> queryKernel(HttpServletRequest request ,@RequestBody @Valid String kernelClassid) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		KernelParameter kPara = new KernelParameter();
-		TlGammaKernel kernel = this.sysKernelService.getByKernelClassid(kernelClassid);
-		if(kernel==null )
+		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(kernelClassid);
+		if(!kernel.isPresent() )
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
 		}
 		
-		kPara.setClassGuid(kernel.getKernelClassid());
-		kPara.setClassName(kernel.getKernelClassname());
-		kPara.setDescInfo(kernel.getKernelClassdesc());;
-		kPara.setGeomType(kernel.getGeomType());
+		kPara.setClassGuid(kernel.get().getKernelClassid());
+		kPara.setClassName(kernel.get().getKernelClassname());
+		kPara.setDescInfo(kernel.get().getKernelClassdesc());;
+		kPara.setGeomType(kernel.get().getGeomType());
 		
-		List<TlGammaKernelAttr> attrList =  this.sysKernelService.getKernelAttrList(kernel.getKernelClassid());
+		List<TlGammaKernelAttr> attrList =  this.sysKernelService.getKernelAttrList(kernel.get().getKernelClassid());
 		List<FieldParameter> fieldList = new LinkedList<FieldParameter>();
 		for(TlGammaKernelAttr  attr : attrList)
 		{		
@@ -216,12 +218,12 @@ public class GroupAdminController {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaKernel tmpKernel = this.sysKernelService.getByKernelClassid(kernel.getClassGuid());
-		if(tmpKernel==null )
+		Optional<TlGammaKernel> tmpKernelOptional = this.sysKernelService.getByKernelClassid(kernel.getClassGuid());
+		if(!tmpKernelOptional.isPresent() )
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
 		}
-
+		TlGammaKernel tmpKernel =tmpKernelOptional.get();
 		tmpKernel.setKernelClassdesc(kernel.getDescInfo());
 		tmpKernel.setKernelClassname(kernel.getClassName());
 		tmpKernel.setGeomType(kernel.getGeomType());
@@ -294,8 +296,8 @@ public class GroupAdminController {
 
 	@PostMapping(value = "/member/testname")
 	public Result<TlGammaUser> testGroupMemberName(HttpServletRequest request,@RequestBody @Valid String membername, BindingResult bindingResult) {	
-		TlGammaUser kuser = this.sysUserService.findOne(membername);
-		if(kuser!=null )
+		Optional<TlGammaUser> kuser = this.sysUserService.findOne(membername);
+		if(kuser.isPresent())
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
 		}
@@ -308,8 +310,8 @@ public class GroupAdminController {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaUser kuser = this.sysUserService.findOne(member.getUserName());
-		if(kuser != null)
+		Optional<TlGammaUser> kuserOptional = this.sysUserService.findOne(member.getUserName());
+		if(kuserOptional.isPresent())
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_EXIST);
 		
 		TlGammaUser tmpUser = new TlGammaUser();
@@ -321,6 +323,9 @@ public class GroupAdminController {
 		tmpUser.setUserCnname(member.getUserCnname());
 		tmpUser.setUserName(member.getUserName());
 		tmpUser.setUserPassword(encoder.encode(member.getUserPassword()));
+		tmpUser.setAccountEnabled(true);
+		tmpUser.setAccountNonExpired(true);
+		tmpUser.setAccountNonLocked(true);
 		
 		return ResultUtil.success(this.sysUserService.save(tmpUser));
 	}
@@ -330,9 +335,11 @@ public class GroupAdminController {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaUser kuser = this.sysUserService.findOne(member.getUserName());
-		if(kuser == null)
+		Optional<TlGammaUser> kuserOptional = this.sysUserService.findOne(member.getUserName());
+		if(!kuserOptional.isPresent())
 			return ResultUtil.error(400, ReturnDesc.USER_NAME_IS_NOT_EXIST);
+		
+		TlGammaUser kuser = kuserOptional.get();
 		if(member.getUserCnname()!=null)
 			kuser.setUserCnname(member.getUserCnname());
 		if(member.getUserEmail()!=null)
@@ -408,7 +415,7 @@ public class GroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 		
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
 		Page<TlGammaTask> mList = this.sysTaskService.getTaskByUsername(para.getSkey(),pageInfo);
 		for (TlGammaTask eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
@@ -447,20 +454,19 @@ public class GroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 		
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaTask> mList = this.sysTaskService.getTaskByUsername(para.getSkey(),pageInfo);
-		for (TlGammaTask eachTask : mList) {
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		Page<ViewTaskUser> mList = this.sysTaskService.getTaskByUserParticapate(para.getSkey(),pageInfo);
+		for (ViewTaskUser eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
-			tMap.put("taskGuid", eachTask.getTaskGuid());
+			tMap.put("taskGuid", eachTask.getId().getTaskGuid());
 			tMap.put("taskName", eachTask.getTaskName());
 			if(eachTask.getTaskTimestart()!= null)
 				tMap.put("startDate", df.format(eachTask.getTaskTimestart()));
 			if(eachTask.getTaskTimeend()!= null)
 				tMap.put("endDate", df.format(eachTask.getTaskTimeend()));
-			tMap.put("userName", eachTask.getUserName());
+			tMap.put("userName", eachTask.getId().getUserName());
 			list.add(tMap);
 		}
-
 		return ResultUtil.success(list);
 	}
 }

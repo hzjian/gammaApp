@@ -94,6 +94,20 @@ public final class JwtTokenHandler {
             boolean account_non_expired = (Boolean) claims.get(TokenField.CLAIM_KEY_ACCOUNT_NON_EXPIRED);
 
             user = new TlGammaUser(username, "password", account_enabled, account_non_expired, account_non_locked, authorities);
+            /*
+            user = new TlGammaUser();
+            user.setUserName(username);
+            user.setUserPassword("password");
+            user.setAccountEnabled(account_enabled);
+            user.setAccountNonExpired(account_non_expired);
+            user.setAccountNonLocked(account_non_locked);
+            if(authorities!= null && authorities.size()>0)
+    		{
+    			//System.out.println(authorities.toArray()[0].toString());
+    			 for(GrantedAuthority ga:authorities){
+    				 user.setRoleId(ga.getAuthority());
+    	         }
+    		}*/
         } catch (Exception e) {
             user = null;
             throw e;

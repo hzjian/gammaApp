@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.geotools.geojson.geom.GeometryJSON;
@@ -131,14 +131,15 @@ public class GroupUserController {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		TlGammaTask realTask = this.sysTaskService.getByGuid(taskGuid);
+		Optional<TlGammaTask> realTask = this.sysTaskService.getByGuid(taskGuid);
 		TaskParameter tpara = new TaskParameter();
-
-		tpara.setEndDate(df.format(realTask.getTaskTimeend()));
-		tpara.setStartDate(df.format(realTask.getTaskTimestart()));
-		tpara.setTaskGuid(realTask.getTaskGuid());
-		tpara.setTaskName(realTask.getTaskName());
-		
+		if(realTask.isPresent())
+		{
+			tpara.setEndDate(df.format(realTask.get().getTaskTimeend()));
+			tpara.setStartDate(df.format(realTask.get().getTaskTimestart()));
+			tpara.setTaskGuid(realTask.get().getTaskGuid());
+			tpara.setTaskName(realTask.get().getTaskName());
+		}
 		return ResultUtil.success(tpara);
 	}
 
@@ -179,7 +180,7 @@ public class GroupUserController {
 	 * 保存任务基本信息
 	 * 任务对应的核心对象类别必选
 	 */
-	@Transactional
+	//@Transactional
 	@PostMapping(value = "/task/save")
 	public Result<Map<String,Object>> createTask(HttpServletRequest request,
 			@RequestBody @Valid TaskParameter taskParam, BindingResult bindingResult) {
@@ -250,16 +251,20 @@ public class GroupUserController {
 		try {
 			if(taskParam.getTaskGuid()!= null)
 			{
-				TlGammaTask task = this.sysTaskService.getByGuid(taskParam.getTaskGuid());
-				if(taskParam.getStartDate()!=null)
-					task.setTaskTimestart( Timestamp.valueOf(taskParam.getStartDate()));
-				if(taskParam.getEndDate()!=null)
-					task.setTaskTimeend(Timestamp.valueOf(taskParam.getEndDate()));
-				if(taskParam.getBusPassword()!=null)
-					task.setBusinessPassword(taskParam.getBusPassword());
-				TlGammaTask tmpTask = this.sysTaskService.updateTask(task);
-				resList.put("taskGuid", tmpTask.getTaskGuid());
-				resList.put("taskName", tmpTask.getTaskName());
+				Optional<TlGammaTask> taskOptional = this.sysTaskService.getByGuid(taskParam.getTaskGuid());
+				if(taskOptional.isPresent())
+				{
+					TlGammaTask task = taskOptional.get();
+					if(taskParam.getStartDate()!=null)
+						task.setTaskTimestart( Timestamp.valueOf(taskParam.getStartDate()));
+					if(taskParam.getEndDate()!=null)
+						task.setTaskTimeend(Timestamp.valueOf(taskParam.getEndDate()));
+					if(taskParam.getBusPassword()!=null)
+						task.setBusinessPassword(taskParam.getBusPassword());
+					TlGammaTask tmpTask = this.sysTaskService.updateTask(task);
+					resList.put("taskGuid", tmpTask.getTaskGuid());
+					resList.put("taskName", tmpTask.getTaskName());
+				}
 			}
 			//任务基本信息
 			
@@ -537,12 +542,14 @@ public class GroupUserController {
 		}
 		logger.info("userList");
 		KernelParameter  para = new KernelParameter();
-		TlGammaKernel kernel = this.sysKernelService.getByKernelClassid(kernelClassid);
-		para.setClassGuid(kernel.getKernelClassid());
-		para.setClassName(kernel.getKernelClassname());
-		para.setDescInfo(kernel.getKernelClassdesc());
-		para.setGeomType(kernel.getGeomType());
-
+		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(kernelClassid);
+		if(kernel.isPresent())
+		{
+			para.setClassGuid(kernel.get().getKernelClassid());
+			para.setClassName(kernel.get().getKernelClassname());
+			para.setDescInfo(kernel.get().getKernelClassdesc());
+			para.setGeomType(kernel.get().getGeomType());
+		}
 		List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(kernelClassid);
 		
 		List<FieldParameter> fieldList = attrList.stream().map(item ->{
@@ -577,7 +584,7 @@ public class GroupUserController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
 		
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		
@@ -635,7 +642,7 @@ public class GroupUserController {
 			{
 				if(filter.getAttrGuid()!= null)
 				{
-					TlGammaKernelAttr kernelAttr = this.sysKernelExtService.getKernelAttr(filter.getAttrGuid());
+					Optional<TlGammaKernelAttr> kernelAttr = this.sysKernelExtService.getKernelAttr(filter.getAttrGuid());
 					TlGammaKernelFilter nFilter = new TlGammaKernelFilter();
 					nFilter.setFilterGuid(UUID.randomUUID().toString());
 					nFilter.setExtGuid(ext.getExtGuid());
@@ -643,8 +650,8 @@ public class GroupUserController {
 					nFilter.setFilterType(filter.getType());
 					nFilter.setMaxValue(filter.getMaxValue());
 					nFilter.setMinValue(filter.getMinValue());
-					nFilter.setAttrField(kernelAttr.getAttrField());
-					nFilter.setAttrType(kernelAttr.getAttrType());
+					nFilter.setAttrField(kernelAttr.get().getAttrField());
+					nFilter.setAttrType(kernelAttr.get().getAttrType());
 					filterList.add(nFilter);
 				}
 			}

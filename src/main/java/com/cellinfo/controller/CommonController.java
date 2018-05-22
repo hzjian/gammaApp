@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,15 +70,35 @@ private final static Logger logger = LoggerFactory.getLogger(CommonController.cl
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (cUser!=null && cUser.getUserName().length()>0) {
 
-			TlGammaUser user = this.sysUserService.findOne(cUser.getUserName());
-			logger.info("user=="+user);
-			tMap.put("username", user.getUsername());
-			tMap.put("usercnname", user.getUserCnname());			
-			tMap.put("userrole", user.getUserCnname());
-			if(cUser.getGroupGuid()!= null)
+			Optional<TlGammaUser> userOptional = this.sysUserService.findOne(cUser.getUserName());
+			if(userOptional.isPresent())
 			{
-				TlGammaGroup group = this.sysGroupService.findOne(cUser.getGroupGuid());
-				tMap.put("groupname", group.getGroupName());
+				TlGammaUser user = userOptional.get();
+				logger.info("user=="+user);
+				tMap.put("username", user.getUsername());
+				tMap.put("usercnname", user.getUserCnname());	
+				String roleName = "组织用户";
+				Integer roleKey = 300;
+				if(user.getRoleId().equalsIgnoreCase("ROLE_ADMIN"))
+				{
+					roleName= "系统管理员";
+					roleKey = 100;
+				}
+				else if(user.getRoleId().equalsIgnoreCase("ROLE_GROUP_ADMIN"))
+				{
+					roleName = "组织管理员";
+					roleKey = 200;
+				}
+				tMap.put("rolename", roleName);
+				if(cUser.getGroupGuid()!= null)
+				{
+					Optional<TlGammaGroup> group = this.sysGroupService.findOne(cUser.getGroupGuid());
+					if(group.isPresent())
+					{
+						tMap.put("groupname", group.get().getGroupName());
+						tMap.put("roleKey", String.valueOf(roleKey));
+					}
+				}
 			}
 			return ResultUtil.success(tMap);
         } 
@@ -92,9 +113,10 @@ private final static Logger logger = LoggerFactory.getLogger(CommonController.cl
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if(userInfo.getUserName()!= null && cUser!=null)
 		{
-			TlGammaUser realUser = this.sysUserService.findOne(cUser.getUserName());
-			if(realUser!=null && realUser.getUsername().length()>1)
+			Optional<TlGammaUser> realUserOptional = this.sysUserService.findOne(cUser.getUserName());
+			if(realUserOptional.isPresent() && realUserOptional.get().getUsername().length()>1)
 			{
+				TlGammaUser realUser = realUserOptional.get();
 				if(userInfo.getUserCnname()!=null)
 					realUser.setUserCnname(userInfo.getUserCnname());
 				if(userInfo.getUserEmail()!=null)
@@ -133,8 +155,8 @@ private final static Logger logger = LoggerFactory.getLogger(CommonController.cl
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaDict> mList = this.sysDictService.getDictsByGroupGuid(cUser.getGroupGuid(),pageInfo);
+		PageRequest pageInfo =  PageRequest.of(pageNumber, pageSize, sort);
+		Page<TlGammaDict> mList = this.sysDictService.getDictsByGroupGuid(cUser.getGroupGuid(),para.getSkey(),pageInfo);
 		for (TlGammaDict eachDict : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("dictId", eachDict.getDictId());
@@ -209,6 +231,12 @@ private final static Logger logger = LoggerFactory.getLogger(CommonController.cl
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 
+		List<TlGammaDictItem> dictItemList = this.sysDictService.getDictItemByName(item.getDictId(),item.getDictItem());
+		if(dictItemList!=null && dictItemList.iterator().hasNext())
+		{
+			return ResultUtil.error(400, ReturnDesc.DICT_ITEM_NAME_IS_EXIST);
+		}
+		
 		if(item.getDictId()!= null && item.getDictId().length()>1 && 
 				item.getDictItem()!= null && item.getDictItem().length()>1) {
 			return ResultUtil.success(this.sysDictService.addDictItem(item.getDictId(),item.getDictItem()));

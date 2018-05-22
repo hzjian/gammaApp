@@ -35,7 +35,7 @@ public class GroupUserTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNjY5MDIwMiwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ._LwrWmLroqnHziD80WYLqJwVlDU8Q93hFkT4d3Fgr1Z3HaClKXxqCZBP-Cp9hk_v_WrL96xtiXDiYUcaTp0MKQ";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNzAzNzM2MywiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.hLCaBcj0ghfHtWsHkeRrSEcxFUNf02vFR7w1ztxpIAklJ50MPA0jgH5oix7wZ9wZADlJ0Bx21jmrv-YzJV-ERg";
 	
 	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
@@ -80,7 +80,7 @@ public class GroupUserTest {
         fList.add(fpara1);
         FilterParameter fpara2 = new FilterParameter();
         fpara2.setAttrGuid("3f1dea7d-3f2a-4f8d-9260-da9d65e2171a");
-        fpara2.setMinValue("10");
+        fpara2.setMinValue("0");
         fList.add(fpara2);
         para.setFilterList(fList);
         
@@ -101,9 +101,11 @@ public class GroupUserTest {
 	
 	public Polygon createPolygonByWKT() throws ParseException{
         WKTReader reader = new WKTReader( geometryFactory );
-        Polygon mpolygon = (Polygon) reader.read("POLYGON((100 30, 100 50, 120 50, 120 30, 100 30))");
+        Polygon mpolygon = (Polygon) reader.read("POLYGON((110 35, 110 45, 118 45, 118 35, 110 35))");
         return mpolygon;
     }
+	
+
 	
     public void testTaskNoExtSave() throws Exception {
 		System.out.println("-----------------/service/user/task/save---------start-----------  ");
@@ -140,7 +142,7 @@ public class GroupUserTest {
         para.setStartDate("2017-01-01 12:00:01");
         para.setEndDate("2018-05-01 08:00:01");
         para.setClassId("54b63474-112d-447f-ba01-4628b7386c0b");
-        para.setExtGuid("34d55a6f-b470-445e-a80e-46cbf2850905");
+        para.setExtGuid("70eb14ff-778a-4a34-9357-a58c7aba52a8");
         
         HttpEntity<TaskParameter> entity = new HttpEntity<TaskParameter>(para, headers);
         Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/user/task/save",entity,Result.class);

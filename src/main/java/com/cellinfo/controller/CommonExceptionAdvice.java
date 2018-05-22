@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -217,6 +218,14 @@ public class CommonExceptionAdvice {
 	  
     logger.error(ExceptionDesc.ILLEGAL_ARGUMENT, e);
     return ResultUtil.error(500,ExceptionDesc.ILLEGAL_ARGUMENT);
+  }
+  
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  @ExceptionHandler(InternalAuthenticationServiceException.class)
+  public Result<String> InternalAuthenticationServiceException(InternalAuthenticationServiceException e) {
+	  
+    logger.error(ExceptionDesc.WRONG_USER_STATUS, e);
+    return ResultUtil.error(500,ExceptionDesc.WRONG_USER_STATUS);
   }
   
 }

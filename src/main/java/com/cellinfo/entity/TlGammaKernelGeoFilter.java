@@ -18,10 +18,10 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="filter_guid", nullable=false)
+	@Column(name="filter_guid", length=36)
 	private String filterGuid;
 	
-	@Column(name="ext_guid")
+	@Column(name="ext_guid", length=36)
 	private String extGuid;
 	
 	@Column(name="filter_type" , length=64)

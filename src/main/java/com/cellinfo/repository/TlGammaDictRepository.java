@@ -11,9 +11,9 @@ import com.cellinfo.entity.TlGammaDict;
 
 public interface TlGammaDictRepository extends PagingAndSortingRepository<TlGammaDict, String>{
 
-	Page<TlGammaDict> findByGroupGuid(String groupGuid, Pageable pageable);
+	Page<TlGammaDict> findByGroupGuidAndDictNameLike(String groupGuid,String nameFilter, Pageable pageable);
 
-	@Query("select a from TlGammaDict a  where a.dictName =?1 and a.groupGuid = ?2") 
-	List<TlGammaDict> getDictByName(String dictName, String groupGuid);
+	@Query("select a from TlGammaDict a  where a.dictName =?1 and a.groupGuid = ?3") 
+	List<TlGammaDict> getDictByName(String dictName,  String groupGuid);
 
 }

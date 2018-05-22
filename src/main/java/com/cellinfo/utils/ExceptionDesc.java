@@ -39,4 +39,6 @@ public class ExceptionDesc {
 	public static final String VALIDATION_EXCEPTION = "参数验证失败";
 
 	public static final String CONSTRAINT_VIOLATION_EXCEPTION = "参数冲突";
+
+	public static final String WRONG_USER_STATUS = "用户被锁定或已过期！";
 }

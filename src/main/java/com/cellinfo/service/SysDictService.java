@@ -21,9 +21,9 @@ public class SysDictService {
 	@Autowired
 	private TlGammaDictItemRepository tlGammaDictItemRepository;
 
-	public Page<TlGammaDict> getDictsByGroupGuid(String groupGuid, Pageable pageable) {
+	public Page<TlGammaDict> getDictsByGroupGuid(String groupGuid, String nameFilter,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return this.tlGammaDictRepository.findByGroupGuid(groupGuid,pageable);
+		return this.tlGammaDictRepository.findByGroupGuidAndDictNameLike(groupGuid,nameFilter,pageable);
 	}
 
 	public TlGammaDict save(TlGammaDict tmpDict) {
@@ -37,7 +37,7 @@ public class SysDictService {
 	}
 
 	public void deleteDict(String dictId) {
-		this.tlGammaDictRepository.delete(dictId);
+		this.tlGammaDictRepository.deleteById(dictId);
 		this.tlGammaDictItemRepository.deleteByDictId(dictId);
 		
 	}
@@ -53,11 +53,16 @@ public class SysDictService {
 
 	public void deleteItem(Long itemId) {
 		// TODO Auto-generated method stub
-		this.tlGammaDictItemRepository.delete(itemId);
+		this.tlGammaDictItemRepository.deleteById(itemId);
 	}
 
 	public List<TlGammaDictItem> getDictItems(String dictId) {
 		// TODO Auto-generated method stub
 		return this.tlGammaDictItemRepository.findByDictId(dictId);
+	}
+
+	public List<TlGammaDictItem> getDictItemByName(String dictId, String dictItem) {
+		// TODO Auto-generated method stub
+		return this.tlGammaDictItemRepository.findByDictIdAndDictItem(dictId, dictItem);
 	}
 }

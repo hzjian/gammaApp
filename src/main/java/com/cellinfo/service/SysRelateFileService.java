@@ -28,13 +28,13 @@ public class SysRelateFileService {
 
 	public String getFileNameById(String fileId) {
 		// TODO Auto-generated method stub
-		TlGammaFile tmp = this.tlGammaFileRepository.findOne(fileId);
+		TlGammaFile tmp = this.tlGammaFileRepository.findById(fileId).get();
 		return tmp.getFname();
 	}
 
 	public void deleteFile(String fileid) {
 		// TODO Auto-generated method stub
-		this.tlGammaFileRepository.delete(fileid);
+		this.tlGammaFileRepository.deleteById(fileid);
 		
 	}
 	
