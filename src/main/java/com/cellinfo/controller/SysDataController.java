@@ -311,7 +311,7 @@ public class SysDataController {
 				} catch (Exception e) {
 		            e.printStackTrace();
 				}
-				break;	
+				break;	 
 			case "STRING":
 				attr.setAttrText(propItem.getAttrValue());
 				break;

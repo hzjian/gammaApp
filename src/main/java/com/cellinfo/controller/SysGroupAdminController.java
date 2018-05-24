@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -27,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cellinfo.annotation.ServiceLog;
-import com.cellinfo.controller.entity.FieldParameter;
+import com.cellinfo.controller.entity.AttrParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
@@ -79,28 +81,9 @@ public class SysGroupAdminController {
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	
 	private final static String DEFAULT_PASSWORD = "PASSWORD";
-	
-	@PostMapping(value = "/curUserInfo")
-	public Result<Map<String, String>> getCurrentUserInfo(HttpServletRequest request) {
-		Map<String, String> tMap = new HashMap<String, String>();
-		//String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
-		
-		UserInfo currentUser = this.utilService.getCurrentUser(request);
-		if (currentUser!=null && currentUser.getUserName().length()>0) {
-
-			logger.info("currentUser=="+currentUser);
-			Optional<TlGammaUser> user = this.sysUserService.findOne(currentUser.getUserName());
-			logger.info("user=="+user);
-			tMap.put("username", user.get().getUsername());
-			tMap.put("usercnname", user.get().getUserCnname());
-			
-			return ResultUtil.success(tMap);
-        } 
-		return ResultUtil.error(400, ReturnDesc.USER_INFO_IS_ILLEGAL);
-	}
 
 	@PostMapping(value = "/kernels")
-	public Result<List<Map<String, Object>>> kernelList(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
+	public Result<Page<Map<String, Object>>> kernelList(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
@@ -129,18 +112,19 @@ public class SysGroupAdminController {
 			list.add(tMap);
 		}
 		
-		return ResultUtil.success(list);
+		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
+		return ResultUtil.success(resPage);
 	}
 	
 	@PostMapping(value = "/kernel/save")
-	public Result<TlGammaKernel> addKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernel, BindingResult bindingResult) {
+	public Result<Map<String,String>> addKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernel, BindingResult bindingResult) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 		TlGammaKernel tmpKernel = new TlGammaKernel();
-		if(kernel.getClassGuid() == null || kernel.getClassGuid().trim().equalsIgnoreCase("0"))
-			tmpKernel.setKernelClassid(UUID.randomUUID().toString());
+
+		tmpKernel.setKernelClassid(UUID.randomUUID().toString());
 		tmpKernel.setGroupGuid(cUser.getGroupGuid());
 		tmpKernel.setKernelClassdesc(kernel.getDescInfo());
 		tmpKernel.setKernelClassname(kernel.getClassName());
@@ -152,105 +136,114 @@ public class SysGroupAdminController {
 			return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
 		}
 		
-		List<TlGammaKernelAttr> entities = new LinkedList<TlGammaKernelAttr>();
-		for(FieldParameter field : kernel.getFieldList())
-		{
-			TlGammaKernelAttr  attr = new TlGammaKernelAttr();
-			attr.setAttrGuid(UUID.randomUUID().toString());
-			attr.setKernelClassid(tmpKernel.getKernelClassid());
-			attr.setAttrName(field.getFieldName());
-			attr.setAttrField("F_"+this.utilService.generateShortUuid());
-//			   STRING
-//			 * INTEGER
-//			 * NUMBER
-//			 * DATETIME
-			attr.setAttrType(field.getFieldType());
-			attr.setAttrEnum(field.getFieldEnum());
-			attr.setAttrFgrade(field.getFieldGrade());
-			entities.add(attr);
-		}
-		KernelParameter resKernel = new KernelParameter();
-		this.sysKernelService.saveKernelAttr(entities);
+		Map<String,String> result = new HashMap<String,String>();
 		TlGammaKernel saveKernel = this.sysKernelService.addGroupKernel(tmpKernel);
-		resKernel.setClassGuid(saveKernel.getKernelClassid());
-		resKernel.setClassName(saveKernel.getKernelClassname());
-		resKernel.setGeomType(saveKernel.getGeomType());
-		resKernel.setDescInfo(saveKernel.getKernelClassdesc());
-		return ResultUtil.success(resKernel);
+		result.put("classId", saveKernel.getKernelClassid());
+		result.put("className", saveKernel.getKernelClassname());
+		return ResultUtil.success(result);
 	}
 	
 	@PostMapping(value = "/kernel/query")
-	public Result<KernelParameter> queryKernel(HttpServletRequest request ,@RequestBody @Valid String kernelClassid) {
+	public Result<Map<String,Object>> queryKernel(HttpServletRequest request ,@RequestBody @Valid String kernelClassid) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
-		KernelParameter kPara = new KernelParameter();
+		Map<String,Object> result = new HashMap<String,Object>();
 		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(kernelClassid);
 		if(!kernel.isPresent() )
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
 		}
-		
-		kPara.setClassGuid(kernel.get().getKernelClassid());
-		kPara.setClassName(kernel.get().getKernelClassname());
-		kPara.setDescInfo(kernel.get().getKernelClassdesc());;
-		kPara.setGeomType(kernel.get().getGeomType());
-		
-		List<TlGammaKernelAttr> attrList =  this.sysKernelService.getKernelAttrList(kernel.get().getKernelClassid());
-		List<FieldParameter> fieldList = new LinkedList<FieldParameter>();
-		for(TlGammaKernelAttr  attr : attrList)
-		{		
-			FieldParameter field = new FieldParameter();
-			field.setFieldAlias(attr.getAttrField());
-			field.setFieldEnum(attr.getAttrEnum());
-			field.setFieldGrade(attr.getAttrFgrade());
-			field.setFieldGuid(attr.getAttrGuid());
-			field.setFieldName(attr.getAttrName());
-			field.setFieldType(attr.getAttrType());
-			
-			fieldList.add(field);
+		else
+		{
+			result.put("classId",kernel.get().getKernelClassid());
+			result.put("className",kernel.get().getKernelClassname());
+			result.put("descInfo",kernel.get().getKernelClassdesc());
+			result.put("geoType",kernel.get().getGeomType());
 		}
-		kPara.setFieldList(fieldList);
-		return ResultUtil.success(kPara);
+		List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(kernelClassid);
+		
+		List<Map<String,Object>> fieldList = attrList.stream().map(item ->{
+			Map<String,Object> fieldMap = new HashMap<String,Object>();
+			fieldMap.put("attrId", item.getAttrGuid());
+			fieldMap.put("attrName",item.getAttrName());
+			fieldMap.put("attrType",item.getAttrType());
+			fieldMap.put("attrGrade",item.getAttrFgrade());
+			fieldMap.put("attrEnum",item.getAttrEnum());
+			return fieldMap;
+		}).collect(Collectors.toList());
+		
+		result.put("attrs", fieldList);
+		
+		return ResultUtil.success(result);
 	}
 	
 	@PostMapping(value = "/kernel/update")
-	public Result<TlGammaKernel> updateKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernel, BindingResult bindingResult) {
+	public Result<Map<String,String>> updateKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernel, BindingResult bindingResult) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		Optional<TlGammaKernel> tmpKernelOptional = this.sysKernelService.getByKernelClassid(kernel.getClassGuid());
+		Optional<TlGammaKernel> tmpKernelOptional = this.sysKernelService.getByKernelClassid(kernel.getClassId());
 		if(!tmpKernelOptional.isPresent() )
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
 		}
 		TlGammaKernel tmpKernel =tmpKernelOptional.get();
-		tmpKernel.setKernelClassdesc(kernel.getDescInfo());
-		tmpKernel.setKernelClassname(kernel.getClassName());
-		tmpKernel.setGeomType(kernel.getGeomType());
-		
-		
-		List<TlGammaKernelAttr> entities = new LinkedList<TlGammaKernelAttr>();
-		for(FieldParameter field : kernel.getAppendList())
-		{
-			TlGammaKernelAttr  attr = new TlGammaKernelAttr();
-			attr.setAttrGuid(UUID.randomUUID().toString());
-			attr.setKernelClassid(tmpKernel.getKernelClassid());
-			attr.setAttrName(field.getFieldName());
-			attr.setAttrField("F_"+this.utilService.generateShortUuid());
-			attr.setAttrType(field.getFieldType());
-			attr.setAttrEnum(field.getFieldEnum());
-			attr.setAttrFgrade(field.getFieldGrade());
-			entities.add(attr);
-		}
-		KernelParameter resKernel = new KernelParameter();
-		this.sysKernelService.saveKernelAttr(entities);
+		if(kernel.getDescInfo()!=null)
+			tmpKernel.setKernelClassdesc(kernel.getDescInfo());
+		if(kernel.getClassName()!=null)
+			tmpKernel.setKernelClassname(kernel.getClassName());
+		if(kernel.getGeomType()!=null)
+			tmpKernel.setGeomType(kernel.getGeomType());
+
+		Map<String,String> result = new HashMap<String,String>();
 		TlGammaKernel saveKernel = this.sysKernelService.addGroupKernel(tmpKernel);
-		resKernel.setClassGuid(saveKernel.getKernelClassid());
-		resKernel.setClassName(saveKernel.getKernelClassname());
-		resKernel.setGeomType(saveKernel.getGeomType());
-		resKernel.setDescInfo(saveKernel.getKernelClassdesc());
-		return ResultUtil.success(resKernel);
+		
+		result.put("classId", saveKernel.getKernelClassid());
+		result.put("className", saveKernel.getKernelClassname());
+		
+		return ResultUtil.success(result);
 	}
+	
+	@PostMapping(value = "/kernel/addattr")
+	public Result<Map<String,String>> addKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		Map<String,String> result = new HashMap<String,String>();
+		TlGammaKernelAttr  attr = new TlGammaKernelAttr();
+		attr.setAttrGuid(UUID.randomUUID().toString());
+		attr.setKernelClassid(attrPara.getClassId());
+		attr.setAttrName(attrPara.getAttrName());
+		attr.setAttrField("F_"+this.utilService.generateShortUuid());
+		attr.setAttrType(attrPara.getAttrType());
+		attr.setAttrEnum(attrPara.getAttrEnum());
+		attr.setAttrFgrade(attrPara.getAttrGrade());
+		TlGammaKernelAttr  tmp = this.sysKernelService.saveKernelAttr(attr);
+
+		result.put("attrId", tmp.getAttrGuid());
+		result.put("attrName", tmp.getAttrName());
+
+		return ResultUtil.success(result);
+	}
+	
+	@PostMapping(value = "/kernel/deleteattr")
+	public Result<String> deleteKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		Map<String,String> result = new HashMap<String,String>();
+		long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
+		if(aNum>0)///判断该字段是否被使用
+		{
+			this.sysKernelService.deleteKernelAttr(attrPara.getAttrId());
+			return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
+		}
+		return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_INUSED);
+	}
+	
+	
 	
 	@PostMapping(value = "/kernel/delete")
 	public Result<String> updateKernel(@RequestBody @Valid String kernelGuid) {
@@ -260,7 +253,7 @@ public class SysGroupAdminController {
 	
 	//group member 
 	@PostMapping(value = "/members")
-	public Result<List<Map<String, Object>>> groupMemberList(HttpServletRequest request,@RequestBody RequestParameter para, BindingResult bindingResult) {
+	public Result<Page<Map<String, Object>>> groupMemberList(HttpServletRequest request,@RequestBody RequestParameter para, BindingResult bindingResult) {
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
@@ -278,20 +271,23 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
+		String filterStr ="";
+		if(para.getSkey()!=null&&para.getSkey().length()>0)
+		{
+			filterStr = para.getSkey();
+		}
 		
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaUser> mList = this.sysUserService.getGroupMember(pageInfo,cUser.getGroupGuid());
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		Page<TlGammaUser> mList = this.sysUserService.getGroupMember(pageInfo,filterStr,cUser.getGroupGuid());
 		for (TlGammaUser eachUser : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>();
-			tMap.put("userGuid", eachUser.getUserGuid());
 			tMap.put("userName", eachUser.getUserName());
 			tMap.put("userCnname", eachUser.getUserCnname());
 			tMap.put("userEmail",eachUser.getUserEmail());
-			tMap.put("password", DEFAULT_PASSWORD);
 			list.add(tMap);
 		}
-		
-		return ResultUtil.success(list);
+		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
+		return ResultUtil.success(resPage);
 	}
 
 	@PostMapping(value = "/member/testname")
@@ -305,7 +301,8 @@ public class SysGroupAdminController {
 	}
 	
 	@PostMapping(value = "/member/save")
-	public Result<TlGammaUser> saveGroupMember(HttpServletRequest request,@RequestBody @Valid UserParameter member, BindingResult bindingResult) {
+	public Result<Map<String, String>> saveGroupMember(HttpServletRequest request,@RequestBody @Valid UserParameter member, BindingResult bindingResult) {
+		Map<String, String> tMap = new HashMap<String, String>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
@@ -318,7 +315,7 @@ public class SysGroupAdminController {
 
 		tmpUser.setUserGuid(UUID.randomUUID().toString());
 		tmpUser.setGroupGuid(cUser.getGroupGuid());
-		tmpUser.setUserEmail(member.getUserName());
+		tmpUser.setUserEmail(member.getUserEmail());
 		tmpUser.setRoleId("ROLE_USER");
 		tmpUser.setUserCnname(member.getUserCnname());
 		tmpUser.setUserName(member.getUserName());
@@ -327,11 +324,15 @@ public class SysGroupAdminController {
 		tmpUser.setAccountNonExpired(true);
 		tmpUser.setAccountNonLocked(true);
 		
-		return ResultUtil.success(this.sysUserService.save(tmpUser));
+		TlGammaUser saveResult = this.sysUserService.save(tmpUser);	
+		tMap.put("userName", saveResult.getUsername());
+		tMap.put("userEmail", saveResult.getUserEmail());
+		return ResultUtil.success(tMap);
 	}
 	
 	@PostMapping(value = "/member/update")
-	public Result<TlGammaUser> updateGroupMember(@RequestBody @Valid UserParameter member, BindingResult bindingResult) {
+	public Result<Map<String, String>> updateGroupMember(@RequestBody @Valid UserParameter member, BindingResult bindingResult) {
+		Map<String, String> tMap = new HashMap<String, String>();
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -347,7 +348,11 @@ public class SysGroupAdminController {
 		if(member.getUserPassword()!=null && !member.getUserPassword().equalsIgnoreCase(DEFAULT_PASSWORD))
 			kuser.setUserPassword(encoder.encode(member.getUserPassword()));	
 
-		return ResultUtil.success(this.sysUserService.save(kuser));
+		
+		TlGammaUser saveResult = this.sysUserService.save(kuser);	
+		tMap.put("userName", saveResult.getUsername());
+		tMap.put("userEmail", saveResult.getUserEmail());
+		return ResultUtil.success(tMap);
 	}
 	
 	@PostMapping(value = "/member/delete")
@@ -358,7 +363,7 @@ public class SysGroupAdminController {
 	
 	//组织任务查看
 	@PostMapping(value = "/tasklist")
-	public Result<List<Map<String, Object>>>  groupTaskList (HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
+	public Result<Page<Map<String, Object>>>  groupTaskList (HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
 	{
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
@@ -377,7 +382,7 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 		
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
 		Page<TlGammaTask> mList = this.sysTaskService.getTaskByGroupGuid(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaTask eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
@@ -390,13 +395,13 @@ public class SysGroupAdminController {
 			tMap.put("userName", eachTask.getUserName());
 			list.add(tMap);
 		}
-
-		return ResultUtil.success(list);
+		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
+		return ResultUtil.success(resPage);
 	}
 	
 	//组织用户创建任务查看
 	@PostMapping(value = "/usertasklist")
-	public Result<List<Map<String, Object>>>  userTaskList(HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
+	public Result<Page<Map<String, Object>>>  userTaskList(HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
 	{
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
@@ -428,14 +433,14 @@ public class SysGroupAdminController {
 			tMap.put("userName", eachTask.getUserName());
 			list.add(tMap);
 		}
-
-		return ResultUtil.success(list);
+		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
+		return ResultUtil.success(resPage);
 	}
 	
 	//组织用户参与任务查看
 	// TODO
 	@PostMapping(value = "/parttasklist")
-	public Result<List<Map<String, Object>>>  partTaskList(HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
+	public Result<Page<Map<String, Object>>>  partTaskList(HttpServletRequest request,@RequestBody @Valid RequestParameter para, BindingResult bindingResult) 
 	{
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
@@ -467,6 +472,7 @@ public class SysGroupAdminController {
 			tMap.put("userName", eachTask.getId().getUserName());
 			list.add(tMap);
 		}
-		return ResultUtil.success(list);
+		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
+		return ResultUtil.success(resPage);
 	}
 }

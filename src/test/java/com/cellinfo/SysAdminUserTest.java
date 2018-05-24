@@ -20,11 +20,11 @@ public class SysAdminUserTest {
 	
     private RestTemplate testRestTemplate = new RestTemplate();
 	
-	private String serverPath = "http://47.94.88.135:8181/gammaa";
+	private String serverPath1 = "http://47.94.88.135:8181/gammaa";
 	
-	private String serverPath2 = "http://127.0.0.1:8081";
+	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI2ODE1MjI1LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjBmZDVmMmU2LTJiYjktNDIzYi1iZDk3LTc5MDk0MGY5OTk3ZSJ9.0_S1dJPrhYC4t4ghEN-PcGhjUva9fSwzeDLf_TmNfxkwbsf_88WVl1O3hltQpcgZvZf-hL6MY3vkXLBeWAbj4w";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3MTMzMjYxLCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.pU4H2FmGaIJkt0FA4KYLZD6cGnuXz0R5ri3j4tlU1qQq2WUgf1_OnAxRkgfecG09WqRxmTboMYL9zwIRxBrC3w";
 	
 	@Test
     public void sysAminuserList() throws Exception {
@@ -36,7 +36,7 @@ public class SysAdminUserTest {
         para.setPage(0);
         para.setPageSize(10);
         para.setSortDirection("DESC");
-        para.setGroupGuid("ff0bba88-1a8b-4714-9833-846df0e09519");
+        para.setGroupGuid("367e5da5-6f34-4c68-b34d-6af2f1f41a14");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
         Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/api/users",entity,Result.class);
@@ -55,12 +55,13 @@ public class SysAdminUserTest {
 		System.out.println("-----------------/service/auth/login---------start-----------  ");
 		Map<String,String> userinfo = new HashMap<String,String>();
 		
-		userinfo.put("userName","groupadmin57661fa");
-		userinfo.put("userPassword","12345678");
+		userinfo.put("userName","admin");
+		userinfo.put("userPassword","admin");
 		
         HttpEntity<Map<String,String>> entity = new HttpEntity<Map<String,String>>(userinfo);
         Result<Map<String, String>> result = testRestTemplate.postForObject(this.serverPath+"/service/auth/login",entity,Result.class);
         System.out.println(result.getData());
+        Assert.assertNotNull(result.getData());
         Assert.assertEquals(result.getMsg(),"成功");
         
         System.out.println("-----------------/service/auth/login---------end-----------  ");

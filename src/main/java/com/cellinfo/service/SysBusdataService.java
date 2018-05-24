@@ -96,7 +96,7 @@ public class SysBusdataService {
 	}
 	
 	private  List<Map<String, Object>> getPointGeojsonList(String kernelClassId,String taskGuid,Geometry filterGeom) {	
-		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<ViewTaskPoint> pointlist = this.viewTaskPointRepository.getDataByFilter(kernelClassId,taskGuid,filterGeom, pageInfo);
 
@@ -117,7 +117,7 @@ public class SysBusdataService {
 	
 
 	private  List<Map<String, Object>> getLineGeojsonList(String kernelClassId,String taskGuid,Geometry filterGeom) {	
-		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<ViewTaskLine> linelist = this.viewTaskLineRepository.getDataByFilter(kernelClassId,taskGuid,filterGeom, pageInfo);
 
@@ -137,7 +137,7 @@ public class SysBusdataService {
 	}
 	
 	private  List<Map<String, Object>> getPolygonGeojsonList(String kernelClassId,String taskGuid,Geometry filterGeom) {	
-		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<ViewTaskPolygon> polygonlist = this.viewTaskPolygonRepository.getDataByFilter(kernelClassId,taskGuid,filterGeom, pageInfo);
 

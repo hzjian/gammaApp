@@ -39,6 +39,9 @@ public class ViewTaskUser implements Serializable {
 	@Column(name="task_timestart")
 	private Timestamp taskTimestart;
 	
+	@Column(name="business_password")
+	private String businessPassword;
+	
 	public ViewTaskUser() {
 	}
 
@@ -125,6 +128,21 @@ public class ViewTaskUser implements Serializable {
 	public void setTaskTimestart(Timestamp taskTimestart) {
 		this.taskTimestart = taskTimestart;
 	}
+
+	/**
+	 * @return the businessPassword
+	 */
+	public String getBusinessPassword() {
+		return businessPassword;
+	}
+
+	/**
+	 * @param businessPassword the businessPassword to set
+	 */
+	public void setBusinessPassword(String businessPassword) {
+		this.businessPassword = businessPassword;
+	}
+	
 	
 	
 }

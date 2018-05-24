@@ -82,7 +82,7 @@ public class SysAdminController {
 	@PostMapping(value = "/users")
 	public Result<Page<UserParameter>> userList(@RequestBody RequestParameter para, BindingResult bindingResult) {
 		
-		List<UserParameter> mlist = new LinkedList<UserParameter>();
+		List<Map<String,String>> mlist = new LinkedList<Map<String,String>>();
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -105,29 +105,32 @@ public class SysAdminController {
 		}
 
 		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
-		Page<TlGammaUser> tmpList = this.sysUserService.getGroupAdminUsers(filterStr,pageInfo);
+		Page<TlGammaUser> tmpList = null;
 		
-		if(filterStr!="" && para.getGroupGuid()!= null)
+		if(para.getGroupGuid()!= null)
 		{
 			tmpList = this.sysUserService.getGroupAdminUsers(filterStr,para.getGroupGuid(),pageInfo);
 		}
 		
-		mlist = tmpList.getContent().stream().map(item -> {
-			UserParameter tmp = new UserParameter();
-			tmp.setGroupGuid(item.getGroupGuid());
-			tmp.setUserCnname(item.getUserCnname());
-			if(item.getGroupGuid()!=null)
-			{
-				Optional<TlGammaGroup> group = this.sysGroupService.findOne(item.getGroupGuid());
-				if(group.isPresent())
-					tmp.setGroupName(group.get().getGroupName());
-			}
-			tmp.setUserName(item.getUsername());
-			return tmp;
-		}).collect(Collectors.toList());
-		Page<UserParameter> userPage = new PageImpl<UserParameter>(mlist,pageInfo,tmpList.getTotalElements());
-		
-		return ResultUtil.success(userPage);
+		if(tmpList!= null)
+		{
+			mlist = tmpList.getContent().stream().map(item -> {
+				Map<String,String> tmp = new HashMap<String,String>();
+				tmp.put("groupGuid", item.getGroupGuid());
+				tmp.put("userCnname",item.getUserCnname());
+				if(item.getGroupGuid()!=null)
+				{
+					Optional<TlGammaGroup> group = this.sysGroupService.findOne(item.getGroupGuid());
+					if(group.isPresent())
+						tmp.put("groupName",group.get().getGroupName());
+				}
+				tmp.put("userName",item.getUsername());
+				return tmp;
+			}).collect(Collectors.toList());
+			Page<Map<String,String>> userPage = new PageImpl<Map<String,String>>(mlist,pageInfo,tmpList.getTotalElements());
+			return ResultUtil.success(userPage);
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
 	}
 
 	/**

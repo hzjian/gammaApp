@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -86,7 +87,26 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         tokenMap.put("userName", authenticatedUser.getUsername());
         tokenMap.put("x-auth-token", tokenAuthenticationService.addJwtTokenToHeader(response, userAuthentication));
         //添加路由
-
+        String roleName = "组织用户";
+		Integer roleKey = 300;
+		String  roleId = "ROLE_USER";
+        for( GrantedAuthority auth : authenticatedUser.getAuthorities())
+        {
+        	roleId = auth.getAuthority();
+        }
+        
+		if(roleId.indexOf("ROLE_ADMIN") >= 0)
+		{
+			roleName= "系统管理员";
+			roleKey = 100;
+		}
+		else if(roleId.indexOf("ROLE_GROUP_ADMIN") >= 0)
+		{
+			roleName = "组织管理员";
+			roleKey = 200;
+		}
+		tokenMap.put("roleName", roleName);
+		tokenMap.put("roleKey", String.valueOf(roleKey));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getWriter(), ResultUtil.success(tokenMap));

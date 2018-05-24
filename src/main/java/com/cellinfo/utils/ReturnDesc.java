@@ -21,4 +21,6 @@ public class ReturnDesc {
 	public static final String GROUP_IS_NOT_EXIST = "该组织不存在";
 	public static final String KERNEL_CLASS_SHOULD_NOT_NULL = "核心对象类别不能为空";
 	public static final String DICT_ITEM_NAME_IS_EXIST = "该数据字典项已存在！";
+	public static final String EXT_NAME_IS_EXIST = "标签已存在";
+	public static final String THIS_ATTR_IS_INUSED = "该字段已被使用";
 }

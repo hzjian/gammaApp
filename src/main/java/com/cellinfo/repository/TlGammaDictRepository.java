@@ -11,6 +11,7 @@ import com.cellinfo.entity.TlGammaDict;
 
 public interface TlGammaDictRepository extends PagingAndSortingRepository<TlGammaDict, String>{
 
+	@Query("select a from TlGammaDict a  where a.groupGuid = ?1 and a.dictName like %?2%") 
 	Page<TlGammaDict> findByGroupGuidAndDictNameLike(String groupGuid,String nameFilter, Pageable pageable);
 
 	@Query("select a from TlGammaDict a  where a.dictName =?1 and a.groupGuid = ?2") 

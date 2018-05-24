@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @NamedQuery(name="ViewTaskAttr.findAll", query="SELECT s FROM ViewTaskAttr s")
 public class ViewTaskAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	@EmbeddedId
 	private ViewTaskAttrPK id;
 
@@ -40,6 +40,9 @@ public class ViewTaskAttr implements Serializable {
 	@Column(name="attr_fgrade")
 	private String attrFgrade;
 	
+	@Column(name="layer_grade")
+	private Integer layerGrade;
+
 	public ViewTaskAttr() {
 	}
 
@@ -155,5 +158,22 @@ public class ViewTaskAttr implements Serializable {
 		this.attrFgrade = attrFgrade;
 	}
 
+
+	/**
+	 * @return the layerGrade
+	 */
+	public Integer getLayerGrade() {
+		return layerGrade;
+	}
+
+
+	/**
+	 * @param layerGrade the layerGrade to set
+	 */
+	public void setLayerGrade(Integer layerGrade) {
+		this.layerGrade = layerGrade;
+	}
+
+	
 	
 }

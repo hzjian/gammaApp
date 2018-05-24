@@ -1,5 +1,6 @@
 package com.cellinfo;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +11,9 @@ import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.cellinfo.controller.entity.FieldParameter;
+import com.cellinfo.controller.entity.AttrParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
@@ -26,35 +25,22 @@ public class SysGroupAdminTest {
 
     private RestTemplate testRestTemplate = new RestTemplate();
 	
-	private String serverPath = "http://47.94.88.135:8181/gammaa";
+	private String serverPath1 = "http://47.94.88.135:8181/gammaa";
+	
+	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1MjU5MTgyNzIsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.0Dw4YrZYrQFun8w8iYZveuaRuf3h2MeQrKUwlO2hTWM7t5gWQP2IlLhhOLRuQk4SS078P5h_KBQ-npM-K9q7Lg";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1MjcxMjUzODksImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.zJbkEHu-FizjdfnVAPoQ3GcKfxgIBNKhMEltX5XVO4ySucTM8W_79gpzskmKu2MNyAtQi4tkJ3HjCZa8OyhcnA";
 	
 	@Test
     public void longin() throws Exception {
-		UserParameter user = new UserParameter();
-		user.setUserName("jtadmin");
-		user.setUserPassword("admin");
+		Map<String,String> user = new HashMap<String,String>();
+		user.put("userName","jtadmin");
+		user.put("userPassword","admin");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<UserParameter> entity = new HttpEntity<UserParameter>(user, headers);
+        HttpEntity<Map<String,String>> entity = new HttpEntity<Map<String,String>>(user, headers);
         Result<Map<String, Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/auth/login",entity,Result.class);
         Assert.assertEquals(result.getMsg(),"成功");
-    }
-	
-	@Test
-    public void curUserInfo() throws Exception {
-		System.out.println("-----------------/service/group/curUserInfo---------start-----------  ");
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("x-auth-token", token);
-        
-        MultiValueMap<String,String> multiValueMap = new LinkedMultiValueMap<String,String>();
-        multiValueMap.add("username","lake");
-        
-        HttpEntity<MultiValueMap<String,String>> entity = new HttpEntity<MultiValueMap<String,String>>(multiValueMap, headers);
-        Result<Map<String, Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/curUserInfo",entity,Result.class);
-        Assert.assertEquals(result.getMsg(),"成功");
-        System.out.println("-----------------/service/group/curUserInfo---------start-----------  ");
     }
 	
 	@Test
@@ -67,12 +53,13 @@ public class SysGroupAdminTest {
         para.setPage(0);
         para.setPageSize(10);
         para.setSortDirection("DESC");
+        para.setSkey("a");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
-        Result<List<Map<String ,Object>>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/members",entity,Result.class);
-        List<Map<String ,Object>> rlist = result.getData();
-        rlist.stream().forEach(item-> {
-        	item.keySet().stream().forEach(key -> System.out.println(key+" " + item.get(key)));
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/members",entity,Result.class);
+        Map<String ,Object> rlist = result.getData();
+        rlist.keySet().stream().forEach(item-> {
+        	 System.out.println(item+" " + rlist.get(item));
         });
         Assert.assertEquals(result.getMsg(),"成功");
         
@@ -146,10 +133,10 @@ public class SysGroupAdminTest {
         para.setSortDirection("DESC");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
-        Result<List<Map<String ,Object>>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/tasklist",entity,Result.class);
-        List<Map<String ,Object>> rlist = result.getData();
-        rlist.stream().forEach(item-> {
-        	item.keySet().stream().forEach(key -> System.out.println(key+" " + item.get(key)));
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/tasklist",entity,Result.class);
+        Map<String ,Object> rlist = result.getData();
+        rlist.keySet().stream().forEach(item-> {
+        	System.out.println(item+" " + rlist.get(item));
         });
         Assert.assertEquals(result.getMsg(),"成功");
         
@@ -169,10 +156,10 @@ public class SysGroupAdminTest {
         para.setSortDirection("DESC");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
-        Result<List<Map<String ,Object>>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/usertasklist",entity,Result.class);
-        List<Map<String ,Object>> rlist = result.getData();
-        rlist.stream().forEach(item-> {
-        	item.keySet().stream().forEach(key -> System.out.println(key+" " + item.get(key)));
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/usertasklist",entity,Result.class);
+        Map<String ,Object> rlist = result.getData();
+        rlist.keySet().stream().forEach(item-> {
+        	System.out.println(item+" " + rlist.get(item));
         });
         Assert.assertEquals(result.getMsg(),"成功");
         
@@ -192,10 +179,10 @@ public class SysGroupAdminTest {
         para.setSortDirection("DESC");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
-        Result<List<Map<String ,Object>>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernels",entity,Result.class);
-        List<Map<String ,Object>> rlist = result.getData();
-        rlist.stream().forEach(item-> {
-        	item.keySet().stream().forEach(key -> System.out.println(key+" " + item.get(key)));
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernels",entity,Result.class);
+        Map<String ,Object> rlist = result.getData();
+        rlist.keySet().stream().forEach(item-> {
+        	System.out.println(item+" " + rlist.get(item));
         });
         Assert.assertEquals(result.getMsg(),"成功");
         
@@ -213,18 +200,7 @@ public class SysGroupAdminTest {
         para.setClassName(testname);
         para.setDescInfo("descinfo");
         para.setGeomType("POINT");
-        List<FieldParameter> fList = new LinkedList<FieldParameter>();
-        FieldParameter fpara1 = new FieldParameter();
-        fpara1.setFieldName("名称");
-        fpara1.setFieldType("STRING");
-        fpara1.setFieldGrade("TASKGRADE");
-        fList.add(fpara1);
-        FieldParameter fpara2 = new FieldParameter();
-        fpara2.setFieldName("数量");
-        fpara2.setFieldType("INTEGER");
-        fpara2.setFieldGrade("USERGRADE");
-        fList.add(fpara2);
-        para.setFieldList(fList);
+
         
         HttpEntity<KernelParameter> entity = new HttpEntity<KernelParameter>(para, headers);
         Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/save",entity,Result.class);
@@ -232,6 +208,28 @@ public class SysGroupAdminTest {
         Assert.assertEquals(result.getMsg(),"成功");
         
         System.out.println("-----------------/service/group/kernel/save---------end-----------  ");
+    }
+	
+	@Test
+    public void groupKernelAddAttr() throws Exception {
+		System.out.println("-----------------/service/group/kernel/addattr---------start-----------  ");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
+        AttrParameter para = new AttrParameter();
+        para.setAttrAlias("attrAlias");
+        para.setAttrEnum("attrEnum");
+        para.setAttrGrade("NORMAL");
+        para.setAttrName(testname);
+        para.setAttrType("STRING");
+        para.setClassId("d3ec60f-d0a5-4d84-a774-343bb9b6c92a");
+        
+        HttpEntity<AttrParameter> entity = new HttpEntity<AttrParameter>(para, headers);
+        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/addattr",entity,Result.class);
+        System.out.println(result.getData());
+        Assert.assertEquals(result.getMsg(),"成功");
+        
+        System.out.println("-----------------/service/group/kernel/addattr---------end-----------  ");
     }
 	
 	@Test
@@ -249,7 +247,6 @@ public class SysGroupAdminTest {
         System.out.println("-----------------/service/group/kernel/query---------end-----------  ");
     }
 	
-	
 	@Test
     public void groupKernelUpdate() throws Exception {
 		System.out.println("-----------------/service/group/kernel/update---------start-----------  ");
@@ -257,22 +254,21 @@ public class SysGroupAdminTest {
         headers.add("x-auth-token", token );
         String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
         KernelParameter para = new KernelParameter();
-        para.setClassGuid("fc1bc0b2-d2ab-4b48-9268-5b3c5da849c5");
+        para.setClassId("fc1bc0b2-d2ab-4b48-9268-5b3c5da849c5");
         para.setClassName(testname);
         para.setDescInfo("descinfo");
         para.setGeomType("POINT");
-        List<FieldParameter> fList = new LinkedList<FieldParameter>();
-        FieldParameter fpara1 = new FieldParameter();
-        fpara1.setFieldName("名称3");
-        fpara1.setFieldType("STRING");
-        fpara1.setFieldGrade("TASKGRADE");
+        List<AttrParameter> fList = new LinkedList<AttrParameter>();
+        AttrParameter fpara1 = new AttrParameter();
+        fpara1.setAttrName("名称3");
+        fpara1.setAttrType("STRING");
+        fpara1.setAttrGrade("TASKGRADE");
         fList.add(fpara1);
-        FieldParameter fpara2 = new FieldParameter();
-        fpara2.setFieldName("数量3");
-        fpara2.setFieldType("INTEGER");
-        fpara2.setFieldGrade("USERGRADE");
+        AttrParameter fpara2 = new AttrParameter();
+        fpara2.setAttrName("数量3");
+        fpara2.setAttrType("INTEGER");
+        fpara2.setAttrGrade("USERGRADE");
         fList.add(fpara2);
-        para.setAppendList(fList);
         
         HttpEntity<KernelParameter> entity = new HttpEntity<KernelParameter>(para, headers);
         Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/update",entity,Result.class);

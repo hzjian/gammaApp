@@ -1,8 +1,5 @@
 package com.cellinfo.controller.entity;
 
-import java.util.List;
-import java.util.Map;
-
 public class ExtTypeParameter {
 
 	private String extGuid;
@@ -13,10 +10,8 @@ public class ExtTypeParameter {
 
 	private String extDesc;
 	
-	List<FilterParameter> filterList;
 	
-	//geojson
-	private Map<String,Object> filterGeom;
+	
 	/**
 	 * @return the extGuid
 	 */
@@ -71,34 +66,6 @@ public class ExtTypeParameter {
 	 */
 	public void setExtDesc(String extDesc) {
 		this.extDesc = extDesc;
-	}
-
-	/**
-	 * @return the filterList
-	 */
-	public List<FilterParameter> getFilterList() {
-		return filterList;
-	}
-
-	/**
-	 * @param filterList the filterList to set
-	 */
-	public void setFilterList(List<FilterParameter> filterList) {
-		this.filterList = filterList;
-	}
-
-	/**
-	 * @return the filterGeom
-	 */
-	public Map<String, Object> getFilterGeom() {
-		return filterGeom;
-	}
-
-	/**
-	 * @param filterGeom the filterGeom to set
-	 */
-	public void setFilterGeom(Map<String, Object> filterGeom) {
-		this.filterGeom = filterGeom;
 	}
 
 }

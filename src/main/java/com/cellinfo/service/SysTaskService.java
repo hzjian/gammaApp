@@ -110,9 +110,9 @@ public class SysTaskService {
 		return this.tlGammaTaskRepository.findByUserName(userName,pageable);
 	}
 
-	public Page<TlGammaTask> getByUserName(String userName,Pageable pageable) {
+	public Page<TlGammaTask> getUserCreateTasks(String groupGuid,String userName,String strFilter,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return this.tlGammaTaskRepository.findByUserName(userName,pageable);
+		return this.tlGammaTaskRepository.getUserCreateTasks(groupGuid,userName,strFilter,pageable);
 	}
 
 	public void deleteTaskUser(String taskGuid, String userName) {
@@ -138,14 +138,36 @@ public class SysTaskService {
 		return this.viewTaskAttrRepository.getByTaskGuid(taskGuid,pageInfo);
 	}
 
-	public void saveTaskExt(TlGammaTaskExt taskExt) {
+	public TlGammaTaskExt saveTaskExt(TlGammaTaskExt taskExt) {
 		// TODO Auto-generated method stub
-		this.tlGammaTaskExtRepository.save(taskExt);
+		return this.tlGammaTaskExtRepository.save(taskExt);
 	}
 
 	public Page<ViewTaskUser> getTaskByUserParticapate(String userName, PageRequest pageInfo) {
 		// TODO Auto-generated method stub
 		return this.viewTaskUserRepository.getByUserName(userName, pageInfo);
+	}
+
+	public void deleteTaskAttr(String taskGuid, String fieldGuid) {
+		// TODO Auto-generated method stub
+		this.tlGammaTaskAttrRepository.deleteTaskAttr(taskGuid,fieldGuid);
+	}
+
+	public long getAttrApplyNum(String attrId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskAttrRepository.countByAttrGuid(attrId);
+	}
+
+	public Page<ViewTaskUser> getByUserInvolveTasks(String userName, String filterStr,
+			PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.viewTaskUserRepository.getUserTasks(userName,filterStr,pageInfo);
+	}
+
+	public Page<ViewTaskUser> getPasswordTasks(String groupGuid, String userName, String filterStr,
+			PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.viewTaskUserRepository.getPasswordTasks(userName,filterStr,pageInfo);
 	}
 	
 	

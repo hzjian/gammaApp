@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -142,7 +143,7 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 	}
 	
 	@PostMapping(value = "/dicts")
-	public Result<List<Map<String, Object>>> groupDict(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
+	public Result<Page<Map<String, Object>>> groupDict(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
@@ -166,15 +167,15 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 		}
 		PageRequest pageInfo =  PageRequest.of(pageNumber, pageSize, sort);
 		Page<TlGammaDict> mList = this.sysDictService.getDictsByGroupGuid(cUser.getGroupGuid(),filterStr,pageInfo);
-		for (TlGammaDict eachDict : mList) { 
+		for (TlGammaDict eachDict : mList.getContent()) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("dictId", eachDict.getDictId());
 			tMap.put("dictName", eachDict.getDictName());
 			tMap.put("dictDesc", eachDict.getDictDesc());
 			list.add(tMap);
 		}
-		
-		return ResultUtil.success(list);
+		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
+		return ResultUtil.success(resPage);
 	}
 	
 	@PostMapping(value = "/dict/save")
@@ -184,10 +185,14 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 
-		List<TlGammaDict> dictList = this.sysDictService.getDictbyName(dict.getDictName(),cUser.getGroupGuid());
-		if(dictList!=null && dictList.iterator().hasNext())
+		//新增数据字典时，查重
+		if(dict.getDictId()== null || dict.getDictId().length()<5)
 		{
-			return ResultUtil.error(400, ReturnDesc.DICT_NAME_IS_EXIST);
+			List<TlGammaDict> dictList = this.sysDictService.getDictbyName(dict.getDictName(),cUser.getGroupGuid());
+			if(dictList!=null && dictList.iterator().hasNext())
+			{
+				return ResultUtil.error(400, ReturnDesc.DICT_NAME_IS_EXIST);
+			}
 		}
 		
 		TlGammaDict tmpDict = new TlGammaDict();
@@ -197,8 +202,10 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 			tmpDict.setDictId(dict.getDictId());
 			
 		tmpDict.setGroupGuid(cUser.getGroupGuid());
-		tmpDict.setDictName(dict.getDictName());
-		tmpDict.setDictDesc(dict.getDictDesc());
+		if(dict.getDictName()!=null)
+			tmpDict.setDictName(dict.getDictName());
+		if(dict.getDictDesc()!=null)
+			tmpDict.setDictDesc(dict.getDictDesc());
 		this.sysDictService.save(tmpDict);
 		return ResultUtil.success(tmpDict);
 	}

@@ -1,27 +1,23 @@
 package com.cellinfo.controller.entity;
 
-import java.util.List;
-
 public class KernelParameter {
 
-	private String classGuid;
+	private String classId;
 	private String className;
 	private String geomType;
 	private String descInfo;
-	private List<FieldParameter> fieldList;
-	private List<FieldParameter> appendList;
 	
 	/**
-	 * @return the classGuid
+	 * @return the classId
 	 */
-	public String getClassGuid() {
-		return classGuid;
+	public String getClassId() {
+		return classId;
 	}
 	/**
-	 * @param classGuid the classGuid to set
+	 * @param classId the classId to set
 	 */
-	public void setClassGuid(String classGuid) {
-		this.classGuid = classGuid;
+	public void setClassId(String classId) {
+		this.classId = classId;
 	}
 	/**
 	 * @return the className
@@ -47,18 +43,7 @@ public class KernelParameter {
 	public void setDescInfo(String descInfo) {
 		this.descInfo = descInfo;
 	}
-	/**
-	 * @return the fieldList
-	 */
-	public List<FieldParameter> getFieldList() {
-		return fieldList;
-	}
-	/**
-	 * @param fieldList the fieldList to set
-	 */
-	public void setFieldList(List<FieldParameter> fieldList) {
-		this.fieldList = fieldList;
-	}
+	
 	/**
 	 * @return the geomType
 	 */
@@ -71,20 +56,5 @@ public class KernelParameter {
 	public void setGeomType(String geomType) {
 		this.geomType = geomType;
 	}
-	/**
-	 * @return the appendList
-	 */
-	public List<FieldParameter> getAppendList() {
-		return appendList;
-	}
-	/**
-	 * @param appendList the appendList to set
-	 */
-	public void setAppendList(List<FieldParameter> appendList) {
-		this.appendList = appendList;
-	}
-	
-	
-	
 	
 }

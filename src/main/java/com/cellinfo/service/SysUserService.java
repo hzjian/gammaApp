@@ -78,14 +78,9 @@ public class SysUserService implements UserDetailsService {
 		
 	}
 
-	public Page<TlGammaUser> getGroupMember(Pageable pageable, String groupGuid) {
+	public Page<TlGammaUser> getGroupMember(Pageable pageable,String userFilter, String groupGuid) {
 		// TODO Auto-generated method stub
 		return this.tlGammaUserRepository.findByGroupGuid(groupGuid,pageable);
-	}
-
-	public Page<TlGammaUser> getGroupAdminUsers(String sKey, PageRequest pageInfo) {
-		// TODO Auto-generated method stub
-		return this.tlGammaUserRepository.getGroupAdminUsers(sKey,pageInfo);
 	}
 
 	public Page<TlGammaUser> getGroupAdminUsers(String sKey,String groupGuid ,PageRequest pageInfo) {

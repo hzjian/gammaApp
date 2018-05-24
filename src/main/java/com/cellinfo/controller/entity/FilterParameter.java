@@ -2,6 +2,10 @@ package com.cellinfo.controller.entity;
 
 public class FilterParameter {
 	
+	private String filterId;
+	
+	private String extGuid;
+	
 	private String attrGuid;
 	
 	/**
@@ -77,4 +81,33 @@ public class FilterParameter {
 	public void setMaxValue(String maxValue) {
 		this.maxValue = maxValue;
 	}
+
+	/**
+	 * @return the filterId
+	 */
+	public String getFilterId() {
+		return filterId;
+	}
+
+	/**
+	 * @param filterId the filterId to set
+	 */
+	public void setFilterId(String filterId) {
+		this.filterId = filterId;
+	}
+
+	/**
+	 * @return the extGuid
+	 */
+	public String getExtGuid() {
+		return extGuid;
+	}
+
+	/**
+	 * @param extGuid the extGuid to set
+	 */
+	public void setExtGuid(String extGuid) {
+		this.extGuid = extGuid;
+	}
+	
 }

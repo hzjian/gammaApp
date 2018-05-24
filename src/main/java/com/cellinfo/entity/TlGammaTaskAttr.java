@@ -21,37 +21,44 @@ import javax.persistence.Table;
 public class TlGammaTaskAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
 	@SequenceGenerator(name="seq_task_attr", sequenceName="seq_task_attr",allocationSize=1)
-	@Id 
 	@GeneratedValue(generator="seq_task_attr")
 	private Long id;
 	
-	@Column(name="attr_guid")
+	@Column(name="task_guid",length=36)
+	private String taskGuid;
+	
+	
+	@Column(name="attr_guid",length=36)
 	private String attrGuid;
 
 	@Column(name="attr_isedit")
 	private Integer attrIsedit;
-
-	@Column(name="task_guid")
-	private String taskGuid;
+	
+	/**
+	 * 1----main layer
+	 * 0----ref layer
+	 */
+	@Column(name="layer_grade")
+	private Integer layerGrade;
 
 	public TlGammaTaskAttr() {
 	}
 
-	public String getAttrGuid() {
-		return this.attrGuid;
+	
+	/**
+	 * @return the id
+	 */
+	public Long getId() {
+		return id;
 	}
 
-	public void setAttrGuid(String attrGuid) {
-		this.attrGuid = attrGuid;
-	}
-
-	public Integer getAttrIsedit() {
-		return this.attrIsedit;
-	}
-
-	public void setAttrIsedit(Integer attrIsedit) {
-		this.attrIsedit = attrIsedit;
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getTaskGuid() {
@@ -62,4 +69,35 @@ public class TlGammaTaskAttr implements Serializable {
 		this.taskGuid = taskGuid;
 	}
 
+	public String getAttrGuid() {
+		return this.attrGuid;
+	}
+
+	public void setAttrGuid(String attrGuid) {
+		this.attrGuid = attrGuid;
+	}
+	
+	/**
+	 * @return the layerGrade
+	 */
+	public Integer getLayerGrade() {
+		return layerGrade;
+	}
+
+
+	/**
+	 * @param layerGrade the layerGrade to set
+	 */
+	public void setLayerGrade(Integer layerGrade) {
+		this.layerGrade = layerGrade;
+	}
+
+
+	public Integer getAttrIsedit() {
+		return this.attrIsedit;
+	}
+
+	public void setAttrIsedit(Integer attrIsedit) {
+		this.attrIsedit = attrIsedit;
+	}
 }

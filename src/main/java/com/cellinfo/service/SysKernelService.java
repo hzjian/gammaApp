@@ -22,7 +22,6 @@ import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaKernelFilter;
 import com.cellinfo.entity.TlGammaKernelGeoFilter;
 import com.cellinfo.entity.TlGammaTaskKernel;
-import com.cellinfo.entity.TlGammaTaskRefkernel;
 import com.cellinfo.entity.ViewLayerKernel;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaKernelFilterRepository;
@@ -33,7 +32,6 @@ import com.cellinfo.repository.TlGammaLayerLineRepository;
 import com.cellinfo.repository.TlGammaLayerPointRepository;
 import com.cellinfo.repository.TlGammaLayerPolygonRepository;
 import com.cellinfo.repository.TlGammaTaskKernelRepository;
-import com.cellinfo.repository.TlGammaTaskRefkernelRepository;
 import com.cellinfo.repository.TlGammaTaskTmpRepository;
 import com.cellinfo.repository.ViewLayerKernelRepository;
 import com.vividsolutions.jts.geom.Polygon;
@@ -59,9 +57,6 @@ public class SysKernelService {
 	
 	@Autowired
 	private TlGammaTaskKernelRepository tlGammaTaskKernelRepository;
-	
-	@Autowired
-	private TlGammaTaskRefkernelRepository tlGammaTaskRefkernelRepository;
 	
 	@Autowired
 	private TlGammaKernelFilterRepository tlGammaKernelFilterRepository;
@@ -134,7 +129,7 @@ public class SysKernelService {
 		return this.tlGammaKernelRepository.findByKernelClassname(kernelClassname);
 	}
 	
-	public Map<String,String> transferTaskKernelList(String taskGuid,String kernelClassid,Integer grade)
+	public Map<String,String> transferTaskKernelList(String taskGuid,String kernelClassid)
 	{
 		long recordNum =0;
 		int exeNum=0;
@@ -146,14 +141,11 @@ public class SysKernelService {
 		exeNum = Double.valueOf(Math.ceil(recordNum/MAX_RECORD)).intValue();
 		for(int i =0;i<exeNum;i++)
 		{
-			PageRequest page = new PageRequest(i,this.MAX_RECORD);
+			PageRequest page = PageRequest.of(i,this.MAX_RECORD);
 			CompletableFuture<List<ViewLayerKernel>> pointList = this.viewLayerKernelRepository.findByKernelClassid(kernelClassid,page);
 			try {
 				pointList.get().parallelStream().forEach(item->{
-					if(grade == 1)
 						this.tlGammaTaskKernelRepository.save(new TlGammaTaskKernel(taskGuid,item.getKernelGuid()));
-					else
-						this.tlGammaTaskRefkernelRepository.save(new TlGammaTaskRefkernel(taskGuid,item.getKernelGuid()));
 				});
 			} catch (InterruptedException | ExecutionException e) {
 				// TODO Auto-generated catch block
@@ -165,7 +157,7 @@ public class SysKernelService {
 		return msgList;
 	}
 	
-	public Map<String,String> transferTaskKernelList(String taskGuid,String kernelClassid,String extGuid,Integer grade)
+	public Map<String,String> transferTaskKernelList(String taskGuid,String kernelClassid,String extGuid)
 	{
 		System.out.println("start transfer extGuid--------"+ System.currentTimeMillis());
 		long recordNum =0;
@@ -205,105 +197,107 @@ public class SysKernelService {
 		
 		for(TlGammaKernelFilter filter: filterList)
 		{
-			if(filter.getAttrType().equalsIgnoreCase("INTEGER"))
+			Optional<TlGammaKernelAttr> kernelAtrr = this.tlGammaKernelAttrRepository.findById(filter.getAttrGuid());
+			if(kernelAtrr.isPresent())
 			{
-				Long minvalue = null,maxvalue = null;
-				try
+				if(kernelAtrr.get().getAttrType().equalsIgnoreCase("INTEGER"))
 				{
-					if(filter.getMinValue()!= null)
-						minvalue = Long.parseLong(filter.getMinValue());
-					if(filter.getMaxValue()!= null)
-						maxvalue = Long.parseLong(filter.getMaxValue());
-				}catch(Exception e) {}
-				if(minvalue !=null && maxvalue !=null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateBetweenLongValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue, maxvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertBetweenLongValue(tmpGuid,filter.getAttrGuid(), minvalue, maxvalue);
-				}else if(minvalue != null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateGTLongValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertGTLongValue(tmpGuid,filter.getAttrGuid(), minvalue);
-				}else if(maxvalue != null) {
-					this.tlGammaLayerAttributeRepository.updateLTLongValue(tmpGuid,filterNum,filter.getAttrGuid(), maxvalue);
+					Long minvalue = null,maxvalue = null;
+					try
+					{
+						if(filter.getMinValue()!= null)
+							minvalue = Long.parseLong(filter.getMinValue());
+						if(filter.getMaxValue()!= null)
+							maxvalue = Long.parseLong(filter.getMaxValue());
+					}catch(Exception e) {}
+					if(minvalue !=null && maxvalue !=null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateBetweenLongValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue, maxvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertBetweenLongValue(tmpGuid,filter.getAttrGuid(), minvalue, maxvalue);
+					}else if(minvalue != null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateGTLongValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertGTLongValue(tmpGuid,filter.getAttrGuid(), minvalue);
+					}else if(maxvalue != null) {
+						this.tlGammaLayerAttributeRepository.updateLTLongValue(tmpGuid,filterNum,filter.getAttrGuid(), maxvalue);
+					}
 				}
-			}
-			if(filter.getAttrType().equalsIgnoreCase("DOUBLE"))
-			{
-				Double minvalue = null,maxvalue = null;
-				try
+				if(kernelAtrr.get().getAttrType().equalsIgnoreCase("DOUBLE"))
 				{
-					if(filter.getMinValue()!= null)
-						minvalue = Double.parseDouble(filter.getMinValue());
-					if(filter.getMaxValue()!= null)
-						maxvalue = Double.parseDouble(filter.getMaxValue());
-				}catch(Exception e) {}
-				if(minvalue !=null && maxvalue !=null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateBetweenDoubleValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue, maxvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertBetweenDoubleValue(tmpGuid,filter.getAttrGuid(), minvalue, maxvalue);
-				}else if(minvalue !=null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateGTDoubleValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertGTDoubleValue(tmpGuid,filter.getAttrGuid(), minvalue);
-				}else if(maxvalue !=null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateLTDoubleValue(tmpGuid,filterNum,filter.getAttrGuid(), maxvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertLTDoubleValue(tmpGuid,filter.getAttrGuid(), maxvalue);
+					Double minvalue = null,maxvalue = null;
+					try
+					{
+						if(filter.getMinValue()!= null)
+							minvalue = Double.parseDouble(filter.getMinValue());
+						if(filter.getMaxValue()!= null)
+							maxvalue = Double.parseDouble(filter.getMaxValue());
+					}catch(Exception e) {}
+					if(minvalue !=null && maxvalue !=null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateBetweenDoubleValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue, maxvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertBetweenDoubleValue(tmpGuid,filter.getAttrGuid(), minvalue, maxvalue);
+					}else if(minvalue !=null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateGTDoubleValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertGTDoubleValue(tmpGuid,filter.getAttrGuid(), minvalue);
+					}else if(maxvalue !=null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateLTDoubleValue(tmpGuid,filterNum,filter.getAttrGuid(), maxvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertLTDoubleValue(tmpGuid,filter.getAttrGuid(), maxvalue);
+					}
 				}
-			}
-			if(filter.getAttrType().equalsIgnoreCase("DATETIME"))
-			{
-				Timestamp minvalue = null;
-				Timestamp maxvalue = null;
-				try
+				if(kernelAtrr.get().getAttrType().equalsIgnoreCase("DATETIME"))
 				{
-					if(filter.getMinValue()!= null)
-						minvalue = new Timestamp(df.parse(filter.getMinValue()).getTime());
-					if(filter.getMaxValue()!= null)
-						maxvalue = new Timestamp(df.parse(filter.getMaxValue()).getTime());
-				}catch(Exception e) {}
-				if(minvalue != null && maxvalue !=null)
-				{
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateBetweenTimeStampValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue, maxvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertBetweenTimeStampValue(tmpGuid,filter.getAttrGuid(), minvalue, maxvalue);
-				}else if(minvalue != null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateGTTimeStampValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertGTTimeStampValue(tmpGuid,filter.getAttrGuid(), minvalue);
-				}else if(maxvalue !=null) {
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateLTTimeStampValue(tmpGuid,filterNum,filter.getAttrGuid(), maxvalue);
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertLTTimeStampValue(tmpGuid,filter.getAttrGuid(), maxvalue);
+					Timestamp minvalue = null;
+					Timestamp maxvalue = null;
+					try
+					{
+						if(filter.getMinValue()!= null)
+							minvalue = new Timestamp(df.parse(filter.getMinValue()).getTime());
+						if(filter.getMaxValue()!= null)
+							maxvalue = new Timestamp(df.parse(filter.getMaxValue()).getTime());
+					}catch(Exception e) {}
+					if(minvalue != null && maxvalue !=null)
+					{
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateBetweenTimeStampValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue, maxvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertBetweenTimeStampValue(tmpGuid,filter.getAttrGuid(), minvalue, maxvalue);
+					}else if(minvalue != null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateGTTimeStampValue(tmpGuid,filterNum,filter.getAttrGuid(), minvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertGTTimeStampValue(tmpGuid,filter.getAttrGuid(), minvalue);
+					}else if(maxvalue !=null) {
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateLTTimeStampValue(tmpGuid,filterNum,filter.getAttrGuid(), maxvalue);
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertLTTimeStampValue(tmpGuid,filter.getAttrGuid(), maxvalue);
+					}
 				}
-			}
-			if(filter.getAttrType().equalsIgnoreCase("STRING"))
-			{
-				if(filter.getMinValue()!=null && filter.getMinValue().length()>0)
+				if(kernelAtrr.get().getAttrType().equalsIgnoreCase("STRING"))
 				{
-					if(filterNum>0)
-						resultNum = this.tlGammaLayerAttributeRepository.updateLikeStringValue(tmpGuid,filterNum,filter.getAttrGuid(), filter.getMinValue());
-					else
-						resultNum = this.tlGammaLayerAttributeRepository.insertLikeStringValue(tmpGuid,filter.getAttrGuid(), filter.getMinValue());
+					if(filter.getMinValue()!=null && filter.getMinValue().length()>0)
+					{
+						if(filterNum>0)
+							resultNum = this.tlGammaLayerAttributeRepository.updateLikeStringValue(tmpGuid,filterNum,filter.getAttrGuid(), filter.getMinValue());
+						else
+							resultNum = this.tlGammaLayerAttributeRepository.insertLikeStringValue(tmpGuid,filter.getAttrGuid(), filter.getMinValue());
+					}
 				}
+				filterNum +=1;
 			}
-			filterNum +=1;
 			logger.warn("property filter num =="+resultNum);
 		}
 		try 
 		{
-			if(grade == 1)
-				resultNum = this.tlGammaTaskKernelRepository.createTaskFilter(taskGuid, tmpGuid, filterNum);
-			else
-				resultNum = this.tlGammaTaskRefkernelRepository.createTaskFilter(taskGuid, tmpGuid, filterNum);
+			resultNum = this.tlGammaTaskKernelRepository.createTaskFilter(taskGuid, tmpGuid, filterNum);
+
 			logger.warn("insert task num =="+taskGuid+"  "+resultNum);
 			///TODO
 			///DELETE TMP TABLE RECORDS
@@ -315,5 +309,10 @@ public class SysKernelService {
 		msgList.put("recordnum", String.valueOf(recordNum));
 		System.out.println("end transfer extGuid---recordnum-+"+recordNum+"--"+ System.currentTimeMillis());
 		return msgList;
+	}
+
+	public void deleteKernelAttr( String attrId) {
+		// TODO Auto-generated method stub
+		this.tlGammaKernelAttrRepository.deleteById(attrId);
 	}
 }

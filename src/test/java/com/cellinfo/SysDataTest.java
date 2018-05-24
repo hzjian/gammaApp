@@ -10,7 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
-import com.cellinfo.controller.entity.FieldParameter;
+import com.cellinfo.controller.entity.AttrParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.entity.Result;
 import com.cellinfo.entity.TlGammaUser;
@@ -30,22 +30,22 @@ public class SysDataTest {
         headers.add("x-auth-token", token );
         String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
         KernelParameter para = new KernelParameter();
-        para.setClassGuid("fc1bc0b2-d2ab-4b48-9268-5b3c5da849c5");
+        para.setClassId("fc1bc0b2-d2ab-4b48-9268-5b3c5da849c5");
         para.setClassName(testname);
         para.setDescInfo("descinfo");
         para.setGeomType("POINT");
-        List<FieldParameter> fList = new LinkedList<FieldParameter>();
-        FieldParameter fpara1 = new FieldParameter();
-        fpara1.setFieldName("名称3");
-        fpara1.setFieldType("STRING");
-        fpara1.setFieldGrade("TASKGRADE");
+        List<AttrParameter> fList = new LinkedList<AttrParameter>();
+        AttrParameter fpara1 = new AttrParameter();
+        fpara1.setAttrName("名称3");
+        fpara1.setAttrType("STRING");
+        fpara1.setAttrGrade("TASKGRADE");
         fList.add(fpara1);
-        FieldParameter fpara2 = new FieldParameter();
-        fpara2.setFieldName("数量3");
-        fpara2.setFieldType("INTEGER");
-        fpara2.setFieldGrade("USERGRADE");
+        AttrParameter fpara2 = new AttrParameter();
+        fpara2.setAttrName("数量3");
+        fpara2.setAttrType("INTEGER");
+        fpara2.setAttrGrade("USERGRADE");
         fList.add(fpara2);
-        para.setAppendList(fList);
+
         
         HttpEntity<KernelParameter> entity = new HttpEntity<KernelParameter>(para, headers);
         Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/update",entity,Result.class);

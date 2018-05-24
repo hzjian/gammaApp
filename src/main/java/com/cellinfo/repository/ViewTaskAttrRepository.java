@@ -12,10 +12,10 @@ import com.cellinfo.entity.ViewTaskAttrPK;
 
 public interface ViewTaskAttrRepository extends PagingAndSortingRepository<ViewTaskAttr, ViewTaskAttrPK> {
 
-	@Query("select a from ViewTaskAttr a  where a.id.taskGuid = ?1") 
+	@Query("select a from ViewTaskAttr a  where a.id.taskGuid = ?1 and a.layerGrade = 1") 
 	public List<ViewTaskAttr> getByTaskGuid(String taskGuid);
 
-	@Query("select a from ViewTaskAttr a  where a.id.taskGuid = ?1") 
+	@Query("select a from ViewTaskAttr a  where a.id.taskGuid = ?1 and a.layerGrade = 1") 
 	public Page<ViewTaskAttr> getByTaskGuid(String taskGuid, Pageable pageInfo);
 	
 }

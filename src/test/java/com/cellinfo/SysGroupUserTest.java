@@ -35,7 +35,7 @@ public class SysGroupUserTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNzAzNzM2MywiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.hLCaBcj0ghfHtWsHkeRrSEcxFUNf02vFR7w1ztxpIAklJ50MPA0jgH5oix7wZ9wZADlJ0Bx21jmrv-YzJV-ERg";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1MjcyMDk1ODAsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.J0znmSvVI40C7xwx_59-H1eOs9Iai2W4tqZzO0vMcsrHuFWaWiyz0Ut0dbvYvcThvEk97KEoJn_8owM481q6HA";
 	
 	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
@@ -82,7 +82,7 @@ public class SysGroupUserTest {
         fpara2.setAttrGuid("3f1dea7d-3f2a-4f8d-9260-da9d65e2171a");
         fpara2.setMinValue("0");
         fList.add(fpara2);
-        para.setFilterList(fList);
+        //para.setFilterList(fList);
         
         Polygon mpolygon = createPolygonByWKT();
         Map<String,Object> feaMap =new HashMap<String,Object>();
@@ -90,7 +90,7 @@ public class SysGroupUserTest {
 		feaMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(mpolygon)));
 		
 
-        para.setFilterGeom(feaMap);
+        //para.setFilterGeom(feaMap);
         
         HttpEntity<ExtTypeParameter> entity = new HttpEntity<ExtTypeParameter>(para, headers);
         Result<TlGammaKernelExt> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/exttype/save",entity,Result.class);

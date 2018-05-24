@@ -14,23 +14,9 @@ public class TaskParameter implements GammaParameter{
 	
 	private String classId;
 	
-	private String className;
-	
 	private String extGuid;
 	
-	private String extName;
-	
-	private FieldParameter field;
-		
-	private String refExtGuid;
-	
-	private String refExtName;
-	
-	private UserParameter user;
-	
 	private String refClassid;
-	
-	private String refClassName;
 	
 	private String fileId;
 	
@@ -137,48 +123,6 @@ public class TaskParameter implements GammaParameter{
 	}
 
 	/**
-	 * @return the field
-	 */
-	public FieldParameter getField() {
-		return field;
-	}
-
-	/**
-	 * @param field the field to set
-	 */
-	public void setField(FieldParameter field) {
-		this.field = field;
-	}
-
-	/**
-	 * @return the refExtGuid
-	 */
-	public String getRefExtGuid() {
-		return refExtGuid;
-	}
-
-	/**
-	 * @param refExtGuid the refExtGuid to set
-	 */
-	public void setRefExtGuid(String refExtGuid) {
-		this.refExtGuid = refExtGuid;
-	}
-
-	/**
-	 * @return the user
-	 */
-	public UserParameter getUser() {
-		return user;
-	}
-
-	/**
-	 * @param user the user to set
-	 */
-	public void setUser(UserParameter user) {
-		this.user = user;
-	}
-
-	/**
 	 * @return the refClassid
 	 */
 	public String getRefClassid() {
@@ -233,62 +177,4 @@ public class TaskParameter implements GammaParameter{
 	public void setKernelAdd(Integer kernelAdd) {
 		this.kernelAdd = kernelAdd;
 	}
-
-	/**
-	 * @return the className
-	 */
-	public String getClassName() {
-		return className;
-	}
-
-	/**
-	 * @param className the className to set
-	 */
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-	/**
-	 * @return the extName
-	 */
-	public String getExtName() {
-		return extName;
-	}
-
-	/**
-	 * @param extName the extName to set
-	 */
-	public void setExtName(String extName) {
-		this.extName = extName;
-	}
-
-	/**
-	 * @return the refClassName
-	 */
-	public String getRefClassName() {
-		return refClassName;
-	}
-
-	/**
-	 * @param refClassName the refClassName to set
-	 */
-	public void setRefClassName(String refClassName) {
-		this.refClassName = refClassName;
-	}
-
-	/**
-	 * @return the refExtName
-	 */
-	public String getRefExtName() {
-		return refExtName;
-	}
-
-	/**
-	 * @param refExtName the refExtName to set
-	 */
-	public void setRefExtName(String refExtName) {
-		this.refExtName = refExtName;
-	}
-
-	
 }
