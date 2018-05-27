@@ -12,17 +12,19 @@ import org.springframework.stereotype.Service;
 import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaTaskAttr;
-import com.cellinfo.entity.TlGammaTaskExt;
+import com.cellinfo.entity.TlGammaTaskLayer;
 import com.cellinfo.entity.TlGammaTaskUser;
 import com.cellinfo.entity.ViewTaskAttr;
+import com.cellinfo.entity.ViewTaskExt;
 import com.cellinfo.entity.ViewTaskUser;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
+import com.cellinfo.repository.TlGammaKernelSubsetRepository;
 import com.cellinfo.repository.TlGammaTaskAttrRepository;
-import com.cellinfo.repository.TlGammaTaskExtRepository;
-import com.cellinfo.repository.TlGammaTaskKernelRepository;
+import com.cellinfo.repository.TlGammaTaskLayerRepository;
 import com.cellinfo.repository.TlGammaTaskRepository;
 import com.cellinfo.repository.TlGammaTaskUserRepository;
 import com.cellinfo.repository.ViewTaskAttrRepository;
+import com.cellinfo.repository.ViewTaskExtRepository;
 import com.cellinfo.repository.ViewTaskUserRepository;
 
 
@@ -36,7 +38,7 @@ public class SysTaskService {
 	private TlGammaTaskAttrRepository  tlGammaTaskAttrRepository;
 	
 	@Autowired
-	private TlGammaTaskKernelRepository tlGammaTaskKernelRepository ;
+	private TlGammaKernelSubsetRepository tlGammaKernelSubsetRepository ;
 	
 	@Autowired
 	private ViewTaskAttrRepository viewTaskAttrRepository;
@@ -51,7 +53,11 @@ public class SysTaskService {
 	private TlGammaKernelAttrRepository tlGammaKernelAttrRepository;
 	
 	@Autowired
-	private TlGammaTaskExtRepository tlGammaTaskExtRepository;
+	private TlGammaTaskLayerRepository tlGammaTaskLayerRepository;
+	
+	@Autowired
+	private ViewTaskExtRepository viewTaskExtRepository;
+	
 	
 	public Page<TlGammaTask> getAll(PageRequest pageInfo) {
 		// TODO Auto-generated method stub
@@ -138,11 +144,16 @@ public class SysTaskService {
 		return this.viewTaskAttrRepository.getByTaskGuid(taskGuid,pageInfo);
 	}
 
-	public TlGammaTaskExt saveTaskExt(TlGammaTaskExt taskExt) {
+	public TlGammaTaskLayer saveTaskLayer(TlGammaTaskLayer taskLayer) {
 		// TODO Auto-generated method stub
-		return this.tlGammaTaskExtRepository.save(taskExt);
+		return this.tlGammaTaskLayerRepository.save(taskLayer);
 	}
 
+	public Optional<ViewTaskExt> getTaskLayer(String  layerId) {
+		// TODO Auto-generated method stub
+		return this.viewTaskExtRepository.findById(layerId);
+	}
+	
 	public Page<ViewTaskUser> getTaskByUserParticapate(String userName, PageRequest pageInfo) {
 		// TODO Auto-generated method stub
 		return this.viewTaskUserRepository.getByUserName(userName, pageInfo);

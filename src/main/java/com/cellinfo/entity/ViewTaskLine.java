@@ -5,8 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 import com.vividsolutions.jts.geom.LineString;
 
@@ -16,8 +17,12 @@ import com.vividsolutions.jts.geom.LineString;
  * 
  */
 @Entity
-@Table(name="view_task_line")
-@NamedQuery(name="ViewTaskLine.findAll", query="SELECT t FROM ViewTaskLine t")
+//@Table(name="view_task_line")
+//@NamedQuery(name="ViewTaskLine.findAll", query="SELECT t FROM ViewTaskLine t")
+@Immutable
+@Subselect("select  a.kernel_guid,a.geom_style,a.kernel_anno,a.kernel_classid,a.kernel_geom,a.kernel_id,a.user_name,b.ext_guid  "
+		+  "from tl_gamma_layer_line a, tl_gamma_kernel_subset b "
+		+  "where a.kernel_guid = b.kernel_guid" )
 public class ViewTaskLine implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -43,8 +48,8 @@ public class ViewTaskLine implements Serializable {
 	@Column(name="kernel_anno")
 	private String kernelAnno;
 	
-	@Column(name="task_guid")
-	private String taskGuid;
+	@Column(name="ext_guid")
+	private String extGuid;
 	
 	public ViewTaskLine() {
 	}
@@ -136,17 +141,17 @@ public class ViewTaskLine implements Serializable {
 	}
 
 	/**
-	 * @return the taskGuid
+	 * @return the extGuid
 	 */
-	public String getTaskGuid() {
-		return taskGuid;
+	public String getExtGuid() {
+		return extGuid;
 	}
 
 	/**
-	 * @param taskGuid the taskGuid to set
+	 * @param extGuid the extGuid to set
 	 */
-	public void setTaskGuid(String taskGuid) {
-		this.taskGuid = taskGuid;
+	public void setExtGuid(String extGuid) {
+		this.extGuid = extGuid;
 	}
-	
+
 }

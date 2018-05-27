@@ -42,11 +42,11 @@ public class TlGammaTask implements Serializable {
 	@Column(name="task_name", length=256)
 	private String taskName;
 
-	@Column(name="task_timeend")
-	private Timestamp taskTimeend;
+	@Column(name="terminal_time")
+	private Timestamp terminalTime;
 
-	@Column(name="task_timestart")
-	private Timestamp taskTimestart;
+	@Column(name="start_time")
+	private Timestamp startTime;
 
 	@Column(name="user_name", length=64)
 	private String userName;
@@ -106,21 +106,34 @@ public class TlGammaTask implements Serializable {
 	public void setTaskName(String taskName) {
 		this.taskName = taskName;
 	}
+	
 
-	public Timestamp getTaskTimeend() {
-		return this.taskTimeend;
+	/**
+	 * @return the terminalTime
+	 */
+	public Timestamp getTerminalTime() {
+		return terminalTime;
 	}
 
-	public void setTaskTimeend(Timestamp taskTimeend) {
-		this.taskTimeend = taskTimeend;
+	/**
+	 * @param terminalTime the terminalTime to set
+	 */
+	public void setTerminalTime(Timestamp terminalTime) {
+		this.terminalTime = terminalTime;
 	}
 
-	public Timestamp getTaskTimestart() {
-		return this.taskTimestart;
+	/**
+	 * @return the startTime
+	 */
+	public Timestamp getStartTime() {
+		return startTime;
 	}
 
-	public void setTaskTimestart(Timestamp taskTimestart) {
-		this.taskTimestart = taskTimestart;
+	/**
+	 * @param startTime the startTime to set
+	 */
+	public void setStartTime(Timestamp startTime) {
+		this.startTime = startTime;
 	}
 
 	public String getUserName() {
@@ -131,4 +144,5 @@ public class TlGammaTask implements Serializable {
 		this.userName = userName;
 	}
 
+	
 }

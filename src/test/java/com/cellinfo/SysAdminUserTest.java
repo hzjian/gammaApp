@@ -24,7 +24,7 @@ public class SysAdminUserTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3MTMzMjYxLCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.pU4H2FmGaIJkt0FA4KYLZD6cGnuXz0R5ri3j4tlU1qQq2WUgf1_OnAxRkgfecG09WqRxmTboMYL9zwIRxBrC3w";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3NDExNzgwLCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.qno-KEB8nm0KOOgi5MAksT0VQMKie9rB8LTJQ7gPdAhCWsrffZPh0ZG71Zc7Mzj1UTiQPRYGxQCihJ2B3WLYNg";
 	
 	@Test
     public void sysAminuserList() throws Exception {
@@ -109,6 +109,7 @@ public class SysAdminUserTest {
         user.setUserName(testname);
         user.setUserPassword("12345678");
         user.setGroupGuid("367e5da5-6f34-4c68-b34d-6af2f1f41a14");
+        user.setUserEmail("email"+UUID.randomUUID().toString().substring(0, 7));
         System.out.println("testname=="+testname);
         HttpEntity<UserParameter> entity = new HttpEntity<UserParameter>(user, headers);
         Result<Object> result = testRestTemplate.postForObject(this.serverPath+"/service/api/user/save",entity,Result.class);

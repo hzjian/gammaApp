@@ -6,7 +6,7 @@ public class GeoFilterParameter {
 	
 	private String filterId;
 	
-	private String extGuid;
+	private String extId;
 	
 	//geojson
 	private Map<String,Object> filterGeom;
@@ -26,17 +26,17 @@ public class GeoFilterParameter {
 	}
 
 	/**
-	 * @return the extGuid
+	 * @return the extId
 	 */
-	public String getExtGuid() {
-		return extGuid;
+	public String getExtId() {
+		return extId;
 	}
 
 	/**
-	 * @param extGuid the extGuid to set
+	 * @param extId the extId to set
 	 */
-	public void setExtGuid(String extGuid) {
-		this.extGuid = extGuid;
+	public void setExtId(String extId) {
+		this.extId = extId;
 	}
 
 	/**

@@ -18,7 +18,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
  */
 @JsonIgnoreProperties({ "kernelGeom" })
 @Entity
-@Table(name="tl_gamma_layer_polygon")
+@Table(name="tl_gamma_layer_polygon"/*,indexes = {
+        @Index(columnList = "kernel_classid", name = "idx_polygon_kernel_classid")
+        }*/)
 @NamedQuery(name="TlGammaLayerPolygon.findAll", query="SELECT t FROM TlGammaLayerPolygon t")
 public class TlGammaLayerPolygon implements Serializable {
 	private static final long serialVersionUID = 1L;

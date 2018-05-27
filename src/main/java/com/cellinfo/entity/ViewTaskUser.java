@@ -6,8 +6,9 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 
 /**
@@ -15,8 +16,12 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="view_task_user")
-@NamedQuery(name="ViewTaskUser.findAll", query="SELECT s FROM ViewTaskUser s")
+//@Table(name="view_task_user")
+//@NamedQuery(name="ViewTaskUser.findAll", query="SELECT s FROM ViewTaskUser s")
+@Immutable
+@Subselect( "SELECT a.task_guid, a.user_name, b.user_cnname, b.user_email, c.task_name, c.business_password, c.terminal_time, c.start_time " + 
+			"FROM tl_gamma_task_user a,tl_gamma_user b,tl_gamma_task c " + 
+			"WHERE a.user_name = b.user_name AND a.task_guid = c.task_guid")
 public class ViewTaskUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,11 +38,11 @@ public class ViewTaskUser implements Serializable {
 	@Column(name="task_name")
 	private String taskName;
 
-	@Column(name="task_timeend")
-	private Timestamp taskTimeend;
+	@Column(name="terminal_time")
+	private Timestamp terminalTime;
 
-	@Column(name="task_timestart")
-	private Timestamp taskTimestart;
+	@Column(name="start_time")
+	private Timestamp startTime;
 	
 	@Column(name="business_password")
 	private String businessPassword;
@@ -101,32 +106,33 @@ public class ViewTaskUser implements Serializable {
 		this.taskName = taskName;
 	}
 
+
 	/**
-	 * @return the taskTimeend
+	 * @return the terminalTime
 	 */
-	public Timestamp getTaskTimeend() {
-		return taskTimeend;
+	public Timestamp getTerminalTime() {
+		return terminalTime;
 	}
 
 	/**
-	 * @param taskTimeend the taskTimeend to set
+	 * @param terminalTime the terminalTime to set
 	 */
-	public void setTaskTimeend(Timestamp taskTimeend) {
-		this.taskTimeend = taskTimeend;
+	public void setTerminalTime(Timestamp terminalTime) {
+		this.terminalTime = terminalTime;
 	}
 
 	/**
-	 * @return the taskTimestart
+	 * @return the startTime
 	 */
-	public Timestamp getTaskTimestart() {
-		return taskTimestart;
+	public Timestamp getStartTime() {
+		return startTime;
 	}
 
 	/**
-	 * @param taskTimestart the taskTimestart to set
+	 * @param startTime the startTime to set
 	 */
-	public void setTaskTimestart(Timestamp taskTimestart) {
-		this.taskTimestart = taskTimestart;
+	public void setStartTime(Timestamp startTime) {
+		this.startTime = startTime;
 	}
 
 	/**

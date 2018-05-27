@@ -22,7 +22,7 @@ public class SysCommonTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 	
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1MjcxMjUzODksImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.zJbkEHu-FizjdfnVAPoQ3GcKfxgIBNKhMEltX5XVO4ySucTM8W_79gpzskmKu2MNyAtQi4tkJ3HjCZa8OyhcnA";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3NDEyMDQ0LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.zbtYSFbemVePfcNq4Bhjq3uU-XKYW4Vld6cCUTOTMtoGY59jcIr-pSeznR7ZW6QTVowZcCY0cEHjaUh_WhAkiw";
 	
 	@Test
 	public void common_dict_save() throws Exception {

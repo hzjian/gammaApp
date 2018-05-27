@@ -5,8 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 
 /**
@@ -14,8 +15,12 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="view_task_attr")
-@NamedQuery(name="ViewTaskAttr.findAll", query="SELECT s FROM ViewTaskAttr s")
+//@Table(name="view_task_attr")
+//@NamedQuery(name="ViewTaskAttr.findAll", query="SELECT s FROM ViewTaskAttr s")
+@Immutable
+@Subselect("select a.task_guid,b.attr_guid,c.kernel_classid,c.attr_name,c.attr_field,c.attr_type,c.attr_enum "
+		+ "from tl_gamma_task a, tl_gamma_task_attr b, tl_gamma_kernel_attr c "
+		+ "where a.task_guid = b.task_guid and b.attr_guid = c.attr_guid")
 public class ViewTaskAttr implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

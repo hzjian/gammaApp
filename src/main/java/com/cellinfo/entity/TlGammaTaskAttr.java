@@ -29,7 +29,6 @@ public class TlGammaTaskAttr implements Serializable {
 	@Column(name="task_guid",length=36)
 	private String taskGuid;
 	
-	
 	@Column(name="attr_guid",length=36)
 	private String attrGuid;
 
@@ -45,7 +44,6 @@ public class TlGammaTaskAttr implements Serializable {
 
 	public TlGammaTaskAttr() {
 	}
-
 	
 	/**
 	 * @return the id

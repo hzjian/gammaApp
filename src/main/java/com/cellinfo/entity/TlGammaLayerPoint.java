@@ -16,7 +16,9 @@ import com.vividsolutions.jts.geom.Geometry;
  * 
  */
 @Entity
-@Table(name="tl_gamma_layer_point")
+@Table(name="tl_gamma_layer_point" /*,indexes = {
+        @Index(columnList = "kernel_classid", name = "idx_line_kernel_classid")
+        }*/)
 @NamedQuery(name="TlGammaLayerPoint.findAll", query="SELECT t FROM TlGammaLayerPoint t")
 public class TlGammaLayerPoint implements Serializable{
 	private static final long serialVersionUID = 1L;

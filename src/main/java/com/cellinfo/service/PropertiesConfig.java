@@ -3,14 +3,18 @@ package com.cellinfo.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.cellinfo.controller.entity.PropsQueryParameter;
 
 @Component
-//@ConfigurationProperties(prefix = "com.gamma")
-//@PropertySource(value = "classpath:config.properties",encoding="UTF-8")
+@ConfigurationProperties(prefix = "com.gamma")
+@PropertySource(value = "classpath:config.properties",encoding="UTF-8")
 public class PropertiesConfig {
+	
+	private String groupId;
 
     private  List<PropsQueryParameter> kernel = new ArrayList<PropsQueryParameter>();
 
@@ -27,7 +31,19 @@ public class PropertiesConfig {
 	public void setKernel(List<PropsQueryParameter> kernel) {
 		this.kernel = kernel;
 	}
-    
-    
+
+	/**
+	 * @return the groupId
+	 */
+	public String getGroupId() {
+		return groupId;
+	}
+
+	/**
+	 * @param groupId the groupId to set
+	 */
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
     
 }

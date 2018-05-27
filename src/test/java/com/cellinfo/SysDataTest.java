@@ -1,58 +1,78 @@
 package com.cellinfo;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
+import org.geotools.geojson.geom.GeometryJSON;
+import org.json.simple.JSONValue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
-import com.cellinfo.controller.entity.AttrParameter;
-import com.cellinfo.controller.entity.KernelParameter;
+import com.cellinfo.controller.entity.SpatialQueryParameter;
 import com.cellinfo.entity.Result;
-import com.cellinfo.entity.TlGammaUser;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
 
 public class SysDataTest {
 
 	private RestTemplate testRestTemplate = new RestTemplate();
 	
-	private String serverPath = "http://47.94.88.135:8181/gammaa";
+	private String serverPath1 = "http://47.94.88.135:8181/gammaa";
+	
+	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1MjU5MTgyNzIsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.0Dw4YrZYrQFun8w8iYZveuaRuf3h2MeQrKUwlO2hTWM7t5gWQP2IlLhhOLRuQk4SS078P5h_KBQ-npM-K9q7Lg";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNzUyMDEwNCwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.JMzkgm6VyIKiKIT2aDefTjyVD7bzqlfs3PgOut-ldXq5R2agj67Tg00jUbdv7a_aBm6PWP0PbjrCj6-RUCplCg";
+	
+	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 	
 	@Test
-    public void groupKernelUpdate() throws Exception {
-		System.out.println("-----------------/service/group/kernel/update---------start-----------  ");
+    public void service_data_layerinfo() throws Exception {
+		System.out.println("-----------------/service/data/task/layerinfo---------start-----------  ");
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-auth-token", token );
-        String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
-        KernelParameter para = new KernelParameter();
-        para.setClassId("fc1bc0b2-d2ab-4b48-9268-5b3c5da849c5");
-        para.setClassName(testname);
-        para.setDescInfo("descinfo");
-        para.setGeomType("POINT");
-        List<AttrParameter> fList = new LinkedList<AttrParameter>();
-        AttrParameter fpara1 = new AttrParameter();
-        fpara1.setAttrName("名称3");
-        fpara1.setAttrType("STRING");
-        fpara1.setAttrGrade("TASKGRADE");
-        fList.add(fpara1);
-        AttrParameter fpara2 = new AttrParameter();
-        fpara2.setAttrName("数量3");
-        fpara2.setAttrType("INTEGER");
-        fpara2.setAttrGrade("USERGRADE");
-        fList.add(fpara2);
+        String taskId = "1a8f242b-711c-4ece-bcfb-fafead63117b";
 
-        
-        HttpEntity<KernelParameter> entity = new HttpEntity<KernelParameter>(para, headers);
-        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/update",entity,Result.class);
+        HttpEntity<String> entity = new HttpEntity<String>(taskId, headers);
+        Result<List<Map<String,String>>> result = testRestTemplate.postForObject(this.serverPath+"/service/data/task/layerinfo",entity,Result.class);
         System.out.println(result.getData());
         Assert.assertEquals(result.getMsg(),"成功");
+        System.out.println("-----------------/service/data/task/layerinfo---------end-----------  ");
+    }
+	
+	public Polygon createPolygonByWKT() throws ParseException{
+        WKTReader reader = new WKTReader( geometryFactory );
+        Polygon mpolygon = (Polygon) reader.read("POLYGON((110 35, 110 45, 118 45, 118 35, 110 35))");
+        return mpolygon;
+    }
+	
+	@Test
+    public void service_data_query() throws Exception {
+		System.out.println("-----------------/service/data/query---------start-----------  ");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        SpatialQueryParameter qParam = new SpatialQueryParameter();
+        qParam.setLayerId("77d31b6a-93ed-4e78-aefc-d3c47865321e");
         
-        System.out.println("-----------------/service/group/kernel/update---------end-----------  ");
+
+        Polygon mpolygon = createPolygonByWKT();
+        Map<String,Object> feaMap =new HashMap<String,Object>();
+        feaMap.put("type", "Feature");
+    	feaMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(mpolygon)));
+    	
+        qParam.setQueryRange(feaMap);
+
+        HttpEntity<SpatialQueryParameter> entity = new HttpEntity<SpatialQueryParameter>(qParam, headers);
+        Result<List<Map<String,String>>> result = testRestTemplate.postForObject(this.serverPath+"/service/data/query",entity,Result.class);
+        System.out.println(result.getData());
+        Assert.assertEquals(result.getMsg(),"成功");
+        System.out.println("-----------------/service/data/query---------end-----------  ");
     }
 	
 

@@ -4,19 +4,21 @@ public class TaskParameter implements GammaParameter{
 
 	private String taskName;
 
-	private String taskGuid;
+	private String taskId;
 	
 	private String taskDesc;
 	
-	private String startDate;
+	private String startTime;
 	
-	private String endDate;
+	private String terminalTime;
 	
 	private String classId;
 	
-	private String extGuid;
+	private String extId;
 	
-	private String refClassid;
+	private String refClassId;
+	
+	private String refExtId;
 	
 	private String fileId;
 	
@@ -39,17 +41,17 @@ public class TaskParameter implements GammaParameter{
 	}
 
 	/**
-	 * @return the taskGuid
+	 * @return the taskId
 	 */
-	public String getTaskGuid() {
-		return taskGuid;
+	public String getTaskId() {
+		return taskId;
 	}
 
 	/**
-	 * @param taskGuid the taskGuid to set
+	 * @param taskId the taskId to set
 	 */
-	public void setTaskGuid(String taskGuid) {
-		this.taskGuid = taskGuid;
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 
 	/**
@@ -66,32 +68,35 @@ public class TaskParameter implements GammaParameter{
 		this.taskDesc = taskDesc;
 	}
 
+	
+	
+	
 	/**
-	 * @return the startDate
+	 * @return the startTime
 	 */
-	public String getStartDate() {
-		return startDate;
+	public String getStartTime() {
+		return startTime;
 	}
 
 	/**
-	 * @param startDate the startDate to set
+	 * @param startTime the startTime to set
 	 */
-	public void setStartDate(String startDate) {
-		this.startDate = startDate;
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
 	}
 
 	/**
-	 * @return the endDate
+	 * @return the terminalTime
 	 */
-	public String getEndDate() {
-		return endDate;
+	public String getTerminalTime() {
+		return terminalTime;
 	}
 
 	/**
-	 * @param endDate the endDate to set
+	 * @param terminalTime the terminalTime to set
 	 */
-	public void setEndDate(String endDate) {
-		this.endDate = endDate;
+	public void setTerminalTime(String terminalTime) {
+		this.terminalTime = terminalTime;
 	}
 
 	/**
@@ -109,31 +114,45 @@ public class TaskParameter implements GammaParameter{
 	}
 
 	/**
-	 * @return the extGuid
+	 * @return the extId
 	 */
-	public String getExtGuid() {
-		return extGuid;
+	public String getExtId() {
+		return extId;
 	}
 
 	/**
-	 * @param extGuid the extGuid to set
+	 * @param extId the extId to set
 	 */
-	public void setExtGuid(String extGuid) {
-		this.extGuid = extGuid;
+	public void setExtId(String extId) {
+		this.extId = extId;
 	}
 
 	/**
-	 * @return the refClassid
+	 * @return the refClassId
 	 */
-	public String getRefClassid() {
-		return refClassid;
+	public String getRefClassId() {
+		return refClassId;
 	}
 
 	/**
-	 * @param refClassid the refClassid to set
+	 * @param refClassId the refClassId to set
 	 */
-	public void setRefClassid(String refClassid) {
-		this.refClassid = refClassid;
+	public void setRefClassId(String refClassId) {
+		this.refClassId = refClassId;
+	}
+
+	/**
+	 * @return the refExtId
+	 */
+	public String getRefExtId() {
+		return refExtId;
+	}
+
+	/**
+	 * @param refExtId the refExtId to set
+	 */
+	public void setRefExtId(String refExtId) {
+		this.refExtId = refExtId;
 	}
 
 	/**

@@ -14,12 +14,14 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public interface TlGammaLayerPolygonRepository extends PagingAndSortingRepository<TlGammaLayerPolygon, String>{
 
-
-	@Query("select a from TlGammaLayerPolygon a  where intersects(a.kernelGeom , ?1) = true ") 
-	public List<TlGammaLayerPolygon> getDataByFilter(Geometry ptGeom,Pageable pageable);
+	@Query("select a from TlGammaLayerPolygon a  where a.kernelClassid = ?1  and intersects(a.kernelGeom , ?2) = true ") 
+	public List<TlGammaLayerPolygon> getDataByFilter(String kernelClassid,Geometry ptGeom,Pageable pageable);
+	
+	@Query("select count(*) from TlGammaLayerPolygon a  where a.kernelClassid = ?1 and intersects(a.kernelGeom , ?2) = true ") 
+	public long getDataCountByFilter(String kernelClassid,Geometry ptGeom);
 
 	@Query(value = "select kernel_guid from Tl_Gamma_Layer_polygon a  where a.kernel_Classid = ?1 and st_intersects( a.kernel_geom , ?2) = true order by kernel_guid",nativeQuery = true)
-	public List<String> getDataByGeoFilter(String kernelClassid,Geometry geom);
+	public List<String> getKernelIdByGeoFilter(String kernelClassid,Geometry geom);
 	
 	//@Query(value = "select kernel_guid from Tl_Gamma_Layer_polygon a  where a.kernel_Classid = ?1 and st_intersects( a.kernel_geom , ?2) = true  ORDER BY ?#{#pageable}",
 	//  countQuery = "select count(*) from Tl_Gamma_Layer_polygon a  where a.kernel_Classid = ?1 and st_intersects( a.kernel_geom , ?2) = true",nativeQuery = true) 

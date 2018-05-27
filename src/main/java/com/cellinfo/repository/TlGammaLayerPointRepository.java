@@ -14,11 +14,14 @@ import com.vividsolutions.jts.geom.Geometry;
 
 public interface TlGammaLayerPointRepository extends PagingAndSortingRepository<TlGammaLayerPoint, String>{
 	
-	@Query("select a from TlGammaLayerPoint a  where intersects(a.kernelGeom , ?1) = true") 
-	public List<TlGammaLayerPoint> getDataByFilter(Geometry ptGeom,Pageable pageable);
+	@Query("select a from TlGammaLayerPoint a  where a.kernelClassid = ?1 and intersects(a.kernelGeom , ?2) = true") 
+	public List<TlGammaLayerPoint> getDataByFilter(String kernelClassid,Geometry ptGeom,Pageable pageable);
+	
+	@Query("select count(*) from TlGammaLayerPoint a  where a.kernelClassid = ?1 and intersects(a.kernelGeom , ?2) = true") 
+	public long getDataCountByFilter(String kernelClassid,Geometry geom);
 		
 	@Query(value = "select kernel_guid from Tl_Gamma_Layer_Point a  where a.kernel_Classid = ?1 and st_intersects( a.kernel_geom , ?2) = true",nativeQuery = true) 
-	public List<String> getDataByGeoFilter(String kernelClassid,Geometry geom);
+	public List<String> getKernelIdByGeoFilter(String kernelClassid,Geometry geom);
 	
 	@Transactional
 	@Modifying

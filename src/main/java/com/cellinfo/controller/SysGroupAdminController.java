@@ -106,7 +106,7 @@ public class SysGroupAdminController {
 		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaKernel eachKernel : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
-			tMap.put("classGuid", eachKernel.getKernelClassid());
+			tMap.put("classId", eachKernel.getKernelClassid());
 			tMap.put("className", eachKernel.getKernelClassname());
 			tMap.put("descInfo", eachKernel.getKernelClassdesc());
 			list.add(tMap);
@@ -144,10 +144,10 @@ public class SysGroupAdminController {
 	}
 	
 	@PostMapping(value = "/kernel/query")
-	public Result<Map<String,Object>> queryKernel(HttpServletRequest request ,@RequestBody @Valid String kernelClassid) {
+	public Result<Map<String,Object>> queryKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernelParam) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		Map<String,Object> result = new HashMap<String,Object>();
-		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(kernelClassid);
+		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(kernelParam.getClassId());
 		if(!kernel.isPresent() )
 		{
 			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
@@ -159,7 +159,7 @@ public class SysGroupAdminController {
 			result.put("descInfo",kernel.get().getKernelClassdesc());
 			result.put("geoType",kernel.get().getGeomType());
 		}
-		List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(kernelClassid);
+		List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(kernelParam.getClassId());
 		
 		List<Map<String,Object>> fieldList = attrList.stream().map(item ->{
 			Map<String,Object> fieldMap = new HashMap<String,Object>();
@@ -170,9 +170,7 @@ public class SysGroupAdminController {
 			fieldMap.put("attrEnum",item.getAttrEnum());
 			return fieldMap;
 		}).collect(Collectors.toList());
-		
 		result.put("attrs", fieldList);
-		
 		return ResultUtil.success(result);
 	}
 	
@@ -386,12 +384,12 @@ public class SysGroupAdminController {
 		Page<TlGammaTask> mList = this.sysTaskService.getTaskByGroupGuid(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaTask eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
-			tMap.put("taskGuid", eachTask.getTaskGuid());
+			tMap.put("taskId", eachTask.getTaskGuid());
 			tMap.put("taskName", eachTask.getTaskName());
-			if(eachTask.getTaskTimestart()!= null)
-				tMap.put("startDate", df.format(eachTask.getTaskTimestart()));
-			if(eachTask.getTaskTimeend()!= null)
-				tMap.put("endDate", df.format(eachTask.getTaskTimeend()));
+			if(eachTask.getStartTime()!= null)
+				tMap.put("startTime", df.format(eachTask.getStartTime()));
+			if(eachTask.getTerminalTime()!= null)
+				tMap.put("terminalTime", df.format(eachTask.getTerminalTime()));
 			tMap.put("userName", eachTask.getUserName());
 			list.add(tMap);
 		}
@@ -424,12 +422,12 @@ public class SysGroupAdminController {
 		Page<TlGammaTask> mList = this.sysTaskService.getTaskByUsername(para.getSkey(),pageInfo);
 		for (TlGammaTask eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
-			tMap.put("taskGuid", eachTask.getTaskGuid());
+			tMap.put("taskId", eachTask.getTaskGuid());
 			tMap.put("taskName", eachTask.getTaskName());
-			if(eachTask.getTaskTimestart()!= null)
-				tMap.put("startDate", df.format(eachTask.getTaskTimestart()));
-			if(eachTask.getTaskTimeend()!= null)
-				tMap.put("endDate", df.format(eachTask.getTaskTimeend()));
+			if(eachTask.getStartTime()!= null)
+				tMap.put("startTime", df.format(eachTask.getStartTime()));
+			if(eachTask.getTerminalTime()!= null)
+				tMap.put("terminalTime", df.format(eachTask.getTerminalTime()));
 			tMap.put("userName", eachTask.getUserName());
 			list.add(tMap);
 		}
@@ -463,12 +461,12 @@ public class SysGroupAdminController {
 		Page<ViewTaskUser> mList = this.sysTaskService.getTaskByUserParticapate(para.getSkey(),pageInfo);
 		for (ViewTaskUser eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
-			tMap.put("taskGuid", eachTask.getId().getTaskGuid());
+			tMap.put("taskId", eachTask.getId().getTaskGuid());
 			tMap.put("taskName", eachTask.getTaskName());
-			if(eachTask.getTaskTimestart()!= null)
-				tMap.put("startDate", df.format(eachTask.getTaskTimestart()));
-			if(eachTask.getTaskTimeend()!= null)
-				tMap.put("endDate", df.format(eachTask.getTaskTimeend()));
+			if(eachTask.getStartTime()!= null)
+				tMap.put("startTime", df.format(eachTask.getStartTime()));
+			if(eachTask.getTerminalTime()!= null)
+				tMap.put("terminalTime", df.format(eachTask.getTerminalTime()));
 			tMap.put("userName", eachTask.getId().getUserName());
 			list.add(tMap);
 		}

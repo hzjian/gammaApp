@@ -12,41 +12,35 @@ import javax.persistence.Table;
 
 
 /**
- * The persistent class for the tl_gamma_task_kernel database table.
+ * 标签核心对象关系
  * 
  */
 @Entity
-@Table(name="tl_gamma_task_kernel")
-@NamedQuery(name="TlGammaTaskKernel.findAll", query="SELECT t FROM TlGammaTaskKernel t")
-public class TlGammaTaskKernel implements Serializable {
+@Table(name="tl_gamma_kernel_subset")
+@NamedQuery(name="TlGammaKernelSubset.findAll", query="SELECT t FROM TlGammaKernelSubset t")
+public class TlGammaKernelSubset implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@SequenceGenerator(name="seq_task_kernel", sequenceName="seq_task_kernel",allocationSize=1)
-	@Id 
-	@GeneratedValue(generator="seq_task_kernel")
+	@Id
+	@SequenceGenerator(name="seq_kernel_subset", sequenceName="seq_kernel_subset",allocationSize=1)
+	@GeneratedValue(generator="seq_kernel_subset")
 	private Long id;
 	
 	@Column(name="kernel_guid",length=36)
 	private String kernelGuid;
 
-	@Column(name="task_guid", length=36)
-	private String taskGuid;
+	@Column(name="ext_guid", length=36)
+	private String extGuid;
 
-	public TlGammaTaskKernel() {
+	public TlGammaKernelSubset() {
 	}
 
-	public TlGammaTaskKernel(String taskGuid,String kernelGuid) {
-		this.taskGuid = taskGuid;
-		this.kernelGuid= kernelGuid;
-	}
-	
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
-
 
 	/**
 	 * @param id the id to set
@@ -62,7 +56,6 @@ public class TlGammaTaskKernel implements Serializable {
 		return kernelGuid;
 	}
 
-
 	/**
 	 * @param kernelGuid the kernelGuid to set
 	 */
@@ -70,13 +63,19 @@ public class TlGammaTaskKernel implements Serializable {
 		this.kernelGuid = kernelGuid;
 	}
 
-
-	public String getTaskGuid() {
-		return this.taskGuid;
+	/**
+	 * @return the extGuid
+	 */
+	public String getExtGuid() {
+		return extGuid;
 	}
 
-	public void setTaskGuid(String taskGuid) {
-		this.taskGuid = taskGuid;
+	/**
+	 * @param extGuid the extGuid to set
+	 */
+	public void setExtGuid(String extGuid) {
+		this.extGuid = extGuid;
 	}
+	
 	
 }

@@ -4,9 +4,9 @@ public class FilterParameter {
 	
 	private String filterId;
 	
-	private String extGuid;
+	private String extId;
 	
-	private String attrGuid;
+	private String attrId;
 	
 	/**
 	 * INTEGER
@@ -25,20 +25,6 @@ public class FilterParameter {
 	private String minValue;
 	
 	private String maxValue;
-
-	/**
-	 * @return the attrGuid
-	 */
-	public String getAttrGuid() {
-		return attrGuid;
-	}
-
-	/**
-	 * @param attrGuid the attrGuid to set
-	 */
-	public void setAttrGuid(String attrGuid) {
-		this.attrGuid = attrGuid;
-	}
 
 	/**
 	 * @return the type
@@ -97,17 +83,32 @@ public class FilterParameter {
 	}
 
 	/**
-	 * @return the extGuid
+	 * @return the extId
 	 */
-	public String getExtGuid() {
-		return extGuid;
+	public String getExtId() {
+		return extId;
 	}
 
 	/**
-	 * @param extGuid the extGuid to set
+	 * @param extId the extId to set
 	 */
-	public void setExtGuid(String extGuid) {
-		this.extGuid = extGuid;
+	public void setExtId(String extId) {
+		this.extId = extId;
 	}
+
+	/**
+	 * @return the attrId
+	 */
+	public String getAttrId() {
+		return attrId;
+	}
+
+	/**
+	 * @param attrId the attrId to set
+	 */
+	public void setAttrId(String attrId) {
+		this.attrId = attrId;
+	}
+	
 	
 }

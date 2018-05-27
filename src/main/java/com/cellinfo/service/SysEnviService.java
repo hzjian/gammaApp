@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cellinfo.controller.entity.PropsQueryParameter;
 import com.cellinfo.entity.TlGammaDict;
 import com.cellinfo.entity.TlGammaDictItem;
 import com.cellinfo.entity.TlGammaGroup;
@@ -26,6 +27,10 @@ import com.cellinfo.repository.TlGammaUserRepository;
 
 @Service
 public class SysEnviService {
+	
+	@Autowired
+	private PropertiesConfig propertiesConfig ;
+	
 	@Autowired
 	private TlGammaDictRepository tlGammaDictRepository;
 	
@@ -48,7 +53,6 @@ public class SysEnviService {
 	
 	private Iterable<TlGammaGroup> groupList;
 	
-
 	private Map<String ,LinkedList<String>>  dictMap  = new HashMap<String ,LinkedList<String>>();
 	
 	private Map<String ,TlGammaKernel>  kernelMap  = new HashMap<String ,TlGammaKernel>();
@@ -58,6 +62,20 @@ public class SysEnviService {
 	private Map<String,TlGammaGroup> groupMap = new HashMap<String ,TlGammaGroup>();
 
 	private static final Logger logger = LoggerFactory.getLogger(SysEnviService.class);
+	
+	public void loadPropData()
+	{
+		PropsQueryParameter propsParam = new PropsQueryParameter();
+//		for ( PropsQueryParameter para : this.propertiesConfig.getKernel())
+//		{
+//			if(para.getClsname().trim().equalsIgnoreCase(clsname.trim()))
+//			{
+//				propsParam = para;
+//				break;
+//			}
+//		}
+		
+	}
 	
 	public void loadInitData() {
 		

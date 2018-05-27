@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +19,15 @@ import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaKernelFilter;
 import com.cellinfo.entity.TlGammaKernelGeoFilter;
-import com.cellinfo.entity.TlGammaTaskKernel;
-import com.cellinfo.entity.ViewLayerKernel;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaKernelFilterRepository;
 import com.cellinfo.repository.TlGammaKernelGeoFilterRepository;
 import com.cellinfo.repository.TlGammaKernelRepository;
+import com.cellinfo.repository.TlGammaKernelSubsetRepository;
 import com.cellinfo.repository.TlGammaLayerAttributeRepository;
 import com.cellinfo.repository.TlGammaLayerLineRepository;
 import com.cellinfo.repository.TlGammaLayerPointRepository;
 import com.cellinfo.repository.TlGammaLayerPolygonRepository;
-import com.cellinfo.repository.TlGammaTaskKernelRepository;
 import com.cellinfo.repository.TlGammaTaskTmpRepository;
 import com.cellinfo.repository.ViewLayerKernelRepository;
 import com.vividsolutions.jts.geom.Polygon;
@@ -56,7 +52,7 @@ public class SysKernelService {
 	private TlGammaLayerPolygonRepository tlGammaLayerPolygonRepository;
 	
 	@Autowired
-	private TlGammaTaskKernelRepository tlGammaTaskKernelRepository;
+	private TlGammaKernelSubsetRepository tlGammaKernelSubsetRepository;
 	
 	@Autowired
 	private TlGammaKernelFilterRepository tlGammaKernelFilterRepository;
@@ -129,35 +125,8 @@ public class SysKernelService {
 		return this.tlGammaKernelRepository.findByKernelClassname(kernelClassname);
 	}
 	
-	public Map<String,String> transferTaskKernelList(String taskGuid,String kernelClassid)
-	{
-		long recordNum =0;
-		int exeNum=0;
-		Map<String,String> msgList = new HashMap<String,String>();
-		//TlGammaKernel kernel = this.getByKernelClassid(kernelClassid);
-		
-		System.out.println("start transfer --------"+ System.currentTimeMillis());
-		recordNum = this.viewLayerKernelRepository.countByKernelClassid(kernelClassid);
-		exeNum = Double.valueOf(Math.ceil(recordNum/MAX_RECORD)).intValue();
-		for(int i =0;i<exeNum;i++)
-		{
-			PageRequest page = PageRequest.of(i,this.MAX_RECORD);
-			CompletableFuture<List<ViewLayerKernel>> pointList = this.viewLayerKernelRepository.findByKernelClassid(kernelClassid,page);
-			try {
-				pointList.get().parallelStream().forEach(item->{
-						this.tlGammaTaskKernelRepository.save(new TlGammaTaskKernel(taskGuid,item.getKernelGuid()));
-				});
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		System.out.println("end transfer --------"+ System.currentTimeMillis());
-		msgList.put("recordnum", String.valueOf(recordNum));
-		return msgList;
-	}
-	
-	public Map<String,String> transferTaskKernelList(String taskGuid,String kernelClassid,String extGuid)
+
+	public Map<String,String> transferExtKernelList(String kernelClassid,String extGuid)
 	{
 		System.out.println("start transfer extGuid--------"+ System.currentTimeMillis());
 		long recordNum =0;
@@ -296,9 +265,9 @@ public class SysKernelService {
 		}
 		try 
 		{
-			resultNum = this.tlGammaTaskKernelRepository.createTaskFilter(taskGuid, tmpGuid, filterNum);
+			resultNum = this.tlGammaKernelSubsetRepository.createExtFilter(extGuid, tmpGuid, filterNum);
 
-			logger.warn("insert task num =="+taskGuid+"  "+resultNum);
+			logger.warn("insert task num =="+extGuid+"  "+resultNum);
 			///TODO
 			///DELETE TMP TABLE RECORDS
 			this.tlGammaTaskTmpRepository.deleteTaskTmp(tmpGuid);

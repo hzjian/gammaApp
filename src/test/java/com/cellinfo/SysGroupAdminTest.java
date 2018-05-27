@@ -29,7 +29,7 @@ public class SysGroupAdminTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1MjcxMjUzODksImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.zJbkEHu-FizjdfnVAPoQ3GcKfxgIBNKhMEltX5XVO4ySucTM8W_79gpzskmKu2MNyAtQi4tkJ3HjCZa8OyhcnA";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjc1MTkxMzYsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.5MWY79xXotfe3PkCXHC6MjWGgBwlqiDnf9GX-7UY4dk5KtCnhFM9nE2J4VEZIzAESfmJ3WPZM6iGUg8cToxUmQ";
 	
 	@Test
     public void longin() throws Exception {
@@ -189,6 +189,31 @@ public class SysGroupAdminTest {
         System.out.println("-----------------/service/group/kernels---------end-----------  ");
     }
 	
+	@Test
+    public void kernelinfo() throws Exception {
+		System.out.println("-----------------/service/group/kernel/query---------start-----------  ");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        
+       String kernelClassid1 ="0fd5f2e6-2bb9-423b-bd97-790940f9997e";
+       
+       KernelParameter kParam = new KernelParameter();
+       kParam.setClassId("0fd5f2e6-2bb9-423b-bd97-790940f9997e");
+        
+        HttpEntity<KernelParameter> entity = new HttpEntity<KernelParameter>(kParam, headers);
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/query",entity,Result.class);
+        Map<String ,Object> rlist = result.getData();
+        if(rlist!= null)
+        {
+	        rlist.keySet().stream().forEach(item-> {
+	        	System.out.println(item+" " + rlist.get(item));
+	        });	
+        }
+        Assert.assertEquals(result.getMsg(),"成功");
+        
+        System.out.println("-----------------/service/group/kernel/query---------end-----------  ");
+    }
+	
 	
 	@Test
     public void groupKernelSave() throws Exception {
@@ -232,21 +257,7 @@ public class SysGroupAdminTest {
         System.out.println("-----------------/service/group/kernel/addattr---------end-----------  ");
     }
 	
-	@Test
-    public void groupKernelquery() throws Exception {
-		System.out.println("-----------------/service/group/kernel/query---------start-----------  ");
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("x-auth-token", token );
-        
-        String para ="7d3ec60f-d0a5-4d84-a774-343bb9b6c92a";
-        HttpEntity<String> entity = new HttpEntity<String>(para, headers);
-        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/query",entity,Result.class);
-        System.out.println(result.getData());
-        Assert.assertEquals(result.getMsg(),"成功");
-        
-        System.out.println("-----------------/service/group/kernel/query---------end-----------  ");
-    }
-	
+		
 	@Test
     public void groupKernelUpdate() throws Exception {
 		System.out.println("-----------------/service/group/kernel/update---------start-----------  ");

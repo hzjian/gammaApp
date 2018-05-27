@@ -5,8 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 
 /**
@@ -14,8 +15,14 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="view_layer_kernel")
-@NamedQuery(name="ViewLayerKernel.findAll", query="SELECT t FROM ViewLayerKernel t")
+//@Table(name="view_layer_kernel")
+//@NamedQuery(name="ViewLayerKernel.findAll", query="SELECT t FROM ViewLayerKernel t")
+@Immutable
+@Subselect("select kernel_guid,kernel_classid from tl_gamma_layer_line " + 
+		"union all " + 
+		"select kernel_guid,kernel_classid from tl_gamma_layer_point " + 
+		"union all " + 
+		"select kernel_guid,kernel_classid from tl_gamma_layer_polygon")
 public class ViewLayerKernel implements Serializable {
 	private static final long serialVersionUID = 1L;
 

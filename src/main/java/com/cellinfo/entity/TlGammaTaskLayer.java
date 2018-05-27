@@ -4,10 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -17,31 +15,23 @@ import javax.persistence.Table;
  * 
  */
 @Entity
-@Table(name="tl_gamma_task_ext")
-@NamedQuery(name="TlGammaTaskExt.findAll", query="SELECT t FROM TlGammaTaskExt t")
-public class TlGammaTaskExt implements Serializable {
+@Table(name="tl_gamma_task_layer")
+@NamedQuery(name="TlGammaTaskLayer.findAll", query="SELECT t FROM TlGammaTaskLayer t")
+public class TlGammaTaskLayer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id 
-	@SequenceGenerator(name="seq_task_ext", sequenceName="seq_task_ext",allocationSize=1)
-	@GeneratedValue(generator="seq_task_ext")
-	private Long id;
+	@Column(name="layer_guid", length=36)
+	private String layerGuid;
 	
 	@Column(name="task_guid", length=36)
 	private String taskGuid;
 	
-	
 	@Column(name="kernel_classid",length=36)
 	private String kernelClassid;
 	
-	@Column(name="kernel_classname", length=256)
-	private String kernelClassname;
-
 	@Column(name="ext_guid", length=36)
 	private String extGuid;
-
-	@Column(name="ext_name",length=128)
-	private String extName;
 	
 	@Column(name="kernel_num", length=36)
 	private Integer kernelNum;
@@ -50,24 +40,24 @@ public class TlGammaTaskExt implements Serializable {
 	 * 1 ---- 可编辑
 	 * 0 -----参考
 	 */
-	@Column(name="kernel_grade")
-	private Integer  kernelGrade;
+	@Column(name="layer_grade")
+	private Integer  layerGrade;
 
-	public TlGammaTaskExt() {
+	public TlGammaTaskLayer() {
+	}
+	
+	/**
+	 * @return the layerGuid
+	 */
+	public String getLayerGuid() {
+		return layerGuid;
 	}
 
 	/**
-	 * @return the id
+	 * @param layerGuid the layerGuid to set
 	 */
-	public Long getId() {
-		return id;
-	}
-
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(Long id) {
-		this.id = id;
+	public void setLayerGuid(String layerGuid) {
+		this.layerGuid = layerGuid;
 	}
 
 	/**
@@ -111,34 +101,6 @@ public class TlGammaTaskExt implements Serializable {
 	public void setExtGuid(String extGuid) {
 		this.extGuid = extGuid;
 	}
-	
-	/**
-	 * @return the kernelClassname
-	 */
-	public String getKernelClassname() {
-		return kernelClassname;
-	}
-
-	/**
-	 * @param kernelClassname the kernelClassname to set
-	 */
-	public void setKernelClassname(String kernelClassname) {
-		this.kernelClassname = kernelClassname;
-	}
-
-	/**
-	 * @return the extName
-	 */
-	public String getExtName() {
-		return extName;
-	}
-
-	/**
-	 * @param extName the extName to set
-	 */
-	public void setExtName(String extName) {
-		this.extName = extName;
-	}
 
 	/**
 	 * @return the kernelNum
@@ -155,20 +117,17 @@ public class TlGammaTaskExt implements Serializable {
 	}
 
 	/**
-	 * @return the kernelGrade
+	 * @return the layerGrade
 	 */
-	public Integer getKernelGrade() {
-		return kernelGrade;
+	public Integer getLayerGrade() {
+		return layerGrade;
 	}
 
 	/**
-	 * @param kernelGrade the kernelGrade to set
+	 * @param layerGrade the layerGrade to set
 	 */
-	public void setKernelGrade(Integer kernelGrade) {
-		this.kernelGrade = kernelGrade;
+	public void setLayerGrade(Integer layerGrade) {
+		this.layerGrade = layerGrade;
 	}
-
-	
-	
-	
+		
 }

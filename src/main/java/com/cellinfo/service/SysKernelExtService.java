@@ -82,7 +82,7 @@ public class SysKernelExtService {
 				
 				Map<String ,String >  subType = new HashMap<String ,String>();
 				subType.put("extDesc", ext.getExtDesc());
-				subType.put("extGuid", ext.getExtGuid());
+				subType.put("extId", ext.getExtGuid());
 				subType.put("extName", ext.getExtName());
 
 				subTypeList.add(subType);
@@ -102,7 +102,7 @@ public class SysKernelExtService {
 			{
 				Map<String ,String >  subType = new HashMap<String ,String>();
 				subType.put("extDesc", ext.getExtDesc());
-				subType.put("extGuid", ext.getExtGuid());
+				subType.put("extId", ext.getExtGuid());
 				subType.put("extName", ext.getExtName());
 				
 				kList.add(subType);

@@ -6,9 +6,8 @@ public class SpatialQueryParameter {
 
 	private Map<String,Object> queryRange;
 	
-	private String classId;
-	
-	private String taskGuid;
+	private String layerId;
+
 	/**
 	 * @return the queryRange
 	 */
@@ -24,31 +23,16 @@ public class SpatialQueryParameter {
 	}
 
 	/**
-	 * @return the classId
+	 * @return the layerId
 	 */
-	public String getClassId() {
-		return classId;
+	public String getLayerId() {
+		return layerId;
 	}
 
 	/**
-	 * @param classId the classId to set
+	 * @param layerId the layerId to set
 	 */
-	public void setClassId(String classId) {
-		this.classId = classId;
+	public void setLayerId(String layerId) {
+		this.layerId = layerId;
 	}
-
-	/**
-	 * @return the taskGuid
-	 */
-	public String getTaskGuid() {
-		return taskGuid;
-	}
-
-	/**
-	 * @param taskGuid the taskGuid to set
-	 */
-	public void setTaskGuid(String taskGuid) {
-		this.taskGuid = taskGuid;
-	}
-
 }
