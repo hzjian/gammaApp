@@ -44,5 +44,43 @@ public class ViewTaskAttrPK implements Serializable{
 		this.attrGuid = attrGuid;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((attrGuid == null) ? 0 : attrGuid.hashCode());
+		result = prime * result + ((taskGuid == null) ? 0 : taskGuid.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ViewTaskAttrPK other = (ViewTaskAttrPK) obj;
+		if (attrGuid == null) {
+			if (other.attrGuid != null)
+				return false;
+		} else if (!attrGuid.equals(other.attrGuid))
+			return false;
+		if (taskGuid == null) {
+			if (other.taskGuid != null)
+				return false;
+		} else if (!taskGuid.equals(other.taskGuid))
+			return false;
+		return true;
+	}
+
+	
 	
 }

@@ -92,7 +92,7 @@ public class SysUserTaskTest {
         
         para.setExtDesc("extDesc"+UUID.randomUUID().toString());
         para.setExtName("extName"+UUID.randomUUID().toString());
-        para.setKernelClassid("54b63474-112d-447f-ba01-4628b7386c0b");
+        para.setClassId("54b63474-112d-447f-ba01-4628b7386c0b");
         
         List<FilterParameter> fList = new LinkedList<FilterParameter>();
         FilterParameter fpara1 = new FilterParameter();

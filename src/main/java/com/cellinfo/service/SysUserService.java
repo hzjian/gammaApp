@@ -87,4 +87,8 @@ public class SysUserService implements UserDetailsService {
 		// TODO Auto-generated method stub
 		return this.tlGammaUserRepository.getGroupAdminUsers(sKey,groupGuid,pageInfo);
 	}
+	public Page<TlGammaUser> getGroupAdminUsers(String sKey ,PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.tlGammaUserRepository.getGroupAdminUsers(sKey,pageInfo);
+	}
 }

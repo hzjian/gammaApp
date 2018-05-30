@@ -23,4 +23,5 @@ public class ReturnDesc {
 	public static final String DICT_ITEM_NAME_IS_EXIST = "该数据字典项已存在！";
 	public static final String EXT_NAME_IS_EXIST = "标签已存在";
 	public static final String THIS_ATTR_IS_INUSED = "该字段已被使用";
+	public static final String THIS_ATTR_IS_NOT_EXIST = "该字段不存在";
 }

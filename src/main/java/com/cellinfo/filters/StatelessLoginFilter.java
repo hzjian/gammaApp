@@ -57,15 +57,13 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
-                                                HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-        
-        // logger.info(username+" "+ password);
+                                                HttpServletResponse response) 
+        throws AuthenticationException, IOException, ServletException {
     	
     	final TlGammaUser user = toUser(request);
         
     	// final TlGammaUser realUser = this.sysUserService.findOne(user.getUsername());
 
-        
         final UsernamePasswordAuthenticationToken loginToken = user.toAuthenticationToken();
         return getAuthenticationManager().authenticate(loginToken);
     }

@@ -21,7 +21,12 @@ public class AttrParameter {
 	 * USERGRADE 不同用户保留多份数据
 	 */
 	private String attrGrade;
-	private String attrEnum;
+	private String dictId;
+	
+	private String minValue;
+	private String maxValue;
+	
+	private String attrDesc;
 	
 	private String taskId;
 	
@@ -109,17 +114,18 @@ public class AttrParameter {
 	public void setAttrGrade(String attrGrade) {
 		this.attrGrade = attrGrade;
 	}
+	
 	/**
-	 * @return the attrEnum
+	 * @return the dictId
 	 */
-	public String getAttrEnum() {
-		return attrEnum;
+	public String getDictId() {
+		return dictId;
 	}
 	/**
-	 * @param attrEnum the attrEnum to set
+	 * @param dictId the dictId to set
 	 */
-	public void setAttrEnum(String attrEnum) {
-		this.attrEnum = attrEnum;
+	public void setDictId(String dictId) {
+		this.dictId = dictId;
 	}
 	/**
 	 * @return the taskId
@@ -133,6 +139,43 @@ public class AttrParameter {
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
 	}
+	/**
+	 * @return the minValue
+	 */
+	public String getMinValue() {
+		return minValue;
+	}
+	/**
+	 * @param minValue the minValue to set
+	 */
+	public void setMinValue(String minValue) {
+		this.minValue = minValue;
+	}
+	/**
+	 * @return the maxValue
+	 */
+	public String getMaxValue() {
+		return maxValue;
+	}
+	/**
+	 * @param maxValue the maxValue to set
+	 */
+	public void setMaxValue(String maxValue) {
+		this.maxValue = maxValue;
+	}
+	/**
+	 * @return the attrDesc
+	 */
+	public String getAttrDesc() {
+		return attrDesc;
+	}
+	/**
+	 * @param attrDesc the attrDesc to set
+	 */
+	public void setAttrDesc(String attrDesc) {
+		this.attrDesc = attrDesc;
+	}
+	
 	
 
 }

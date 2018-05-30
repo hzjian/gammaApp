@@ -121,7 +121,7 @@ public class SysBusdataService {
 	}
 	
 	private  List<Map<String, Object>> getPointGeojsonList(String kernelClassId,Geometry filterGeom) {	
-		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<TlGammaLayerPoint> pointlist = this.tlGammaLayerPointRepository.getDataByFilter(kernelClassId,filterGeom, pageInfo);
 
@@ -141,7 +141,7 @@ public class SysBusdataService {
 	}
 
 	private  List<Map<String, Object>> getLineGeojsonList(String kernelClassId,Geometry filterGeom) {	
-		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<TlGammaLayerLine> linelist = this.tlGammaLayerLineRepository.getDataByFilter(kernelClassId,filterGeom, pageInfo);
 
@@ -161,7 +161,7 @@ public class SysBusdataService {
 	}
 	
 	private  List<Map<String, Object>> getPolygonGeojsonList(String kernelClassId,Geometry filterGeom) {	
-		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<TlGammaLayerPolygon> polygonlist = this.tlGammaLayerPolygonRepository.getDataByFilter(kernelClassId,filterGeom, pageInfo);
 
@@ -212,7 +212,7 @@ public class SysBusdataService {
 		return dataCount;
 	}
 	private  List<Map<String, Object>> getExtPointGeojsonList(String kernelClassId,String extGuid,Geometry filterGeom) {	
-		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<ViewTaskPoint> pointlist = this.viewTaskPointRepository.getDataByFilter(kernelClassId,extGuid,filterGeom, pageInfo);
 
@@ -232,7 +232,7 @@ public class SysBusdataService {
 	}
 
 	private  List<Map<String, Object>> getExtLineGeojsonList(String kernelClassId,String extGuid,Geometry filterGeom) {	
-		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<ViewTaskLine> linelist = this.viewTaskLineRepository.getDataByFilter(kernelClassId,extGuid,filterGeom, pageInfo);
 
@@ -252,7 +252,7 @@ public class SysBusdataService {
 	}
 	
 	private  List<Map<String, Object>> getExtPolygonGeojsonList(String kernelClassId,String extGuid,Geometry filterGeom) {	
-		PageRequest pageInfo = PageRequest.of(0, MAX_LOADELEMENT_NUM);
+		PageRequest pageInfo = new PageRequest(0, MAX_LOADELEMENT_NUM);
 		List<Map<String, Object>> geoList =  new LinkedList<Map<String, Object>>();
 		List<ViewTaskPolygon> polygonlist = this.viewTaskPolygonRepository.getDataByFilter(kernelClassId,extGuid,filterGeom, pageInfo);
 

@@ -130,4 +130,14 @@ public class SysKernelExtService {
 		// TODO Auto-generated method stub
 		return this.tlGammaKernelExtRepository.getKernelExtByName(extName,userName);
 	}
+
+	public List<TlGammaKernelGeoFilter> getGeoFilter(String extGuid) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelGeoFilterRepository.findByExtGuid(extGuid);
+	}
+
+	public List<TlGammaKernelFilter> getFilter(String extGuid) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelFilterRepository.findByExtGuid(extGuid);
+	}
 }

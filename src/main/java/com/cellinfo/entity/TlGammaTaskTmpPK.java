@@ -44,6 +44,42 @@ public class TlGammaTaskTmpPK implements Serializable{
 		this.kernelGuid = kernelGuid;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((kernelGuid == null) ? 0 : kernelGuid.hashCode());
+		result = prime * result + ((tmpGuid == null) ? 0 : tmpGuid.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TlGammaTaskTmpPK other = (TlGammaTaskTmpPK) obj;
+		if (kernelGuid == null) {
+			if (other.kernelGuid != null)
+				return false;
+		} else if (!kernelGuid.equals(other.kernelGuid))
+			return false;
+		if (tmpGuid == null) {
+			if (other.tmpGuid != null)
+				return false;
+		} else if (!tmpGuid.equals(other.tmpGuid))
+			return false;
+		return true;
+	}
 	
 	
 }

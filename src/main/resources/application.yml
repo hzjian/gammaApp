@@ -11,9 +11,12 @@ spring:
   datasource:
     driver-class-name: net.sf.log4jdbc.DriverSpy
     url: jdbc:log4jdbc:postgresql://127.0.0.1:5432/gamma
+    #url: jdbc:log4jdbc:postgresql://47.94.88.135:5432/gammaa
     username: gamma
     password: gamma
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
     properties:
       hibernate:
         dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
@@ -33,6 +36,8 @@ logging:
         security: WARN
         web: WARN    
       hibernate: WARN
+gammasecurity:
+  enabled: false
 jwt:
   subject: GAMMA
   tokenName: x-auth-token

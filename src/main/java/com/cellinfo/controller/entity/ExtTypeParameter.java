@@ -2,29 +2,13 @@ package com.cellinfo.controller.entity;
 
 public class ExtTypeParameter {
 
-	private String extGuid;
+	private String extId;
 
 	private String extName;
 
-	private String kernelClassid;
+	private String classId;
 
 	private String extDesc;
-	
-	
-	
-	/**
-	 * @return the extGuid
-	 */
-	public String getExtGuid() {
-		return extGuid;
-	}
-
-	/**
-	 * @param extGuid the extGuid to set
-	 */
-	public void setExtGuid(String extGuid) {
-		this.extGuid = extGuid;
-	}
 
 	/**
 	 * @return the extName
@@ -41,20 +25,6 @@ public class ExtTypeParameter {
 	}
 
 	/**
-	 * @return the kernelClassid
-	 */
-	public String getKernelClassid() {
-		return kernelClassid;
-	}
-
-	/**
-	 * @param kernelClassid the kernelClassid to set
-	 */
-	public void setKernelClassid(String kernelClassid) {
-		this.kernelClassid = kernelClassid;
-	}
-
-	/**
 	 * @return the extDesc
 	 */
 	public String getExtDesc() {
@@ -67,5 +37,34 @@ public class ExtTypeParameter {
 	public void setExtDesc(String extDesc) {
 		this.extDesc = extDesc;
 	}
+
+	/**
+	 * @return the extId
+	 */
+	public String getExtId() {
+		return extId;
+	}
+
+	/**
+	 * @param extId the extId to set
+	 */
+	public void setExtId(String extId) {
+		this.extId = extId;
+	}
+
+	/**
+	 * @return the classId
+	 */
+	public String getClassId() {
+		return classId;
+	}
+
+	/**
+	 * @param classId the classId to set
+	 */
+	public void setClassId(String classId) {
+		this.classId = classId;
+	}
+	
 
 }

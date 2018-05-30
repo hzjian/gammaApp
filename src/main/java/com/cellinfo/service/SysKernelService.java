@@ -249,14 +249,21 @@ public class SysKernelService {
 							resultNum = this.tlGammaLayerAttributeRepository.insertLTTimeStampValue(tmpGuid,filter.getAttrGuid(), maxvalue);
 					}
 				}
-				if(kernelAtrr.get().getAttrType().equalsIgnoreCase("STRING"))
+				if(kernelAtrr.get().getAttrType().equalsIgnoreCase("STRING") )
 				{
 					if(filter.getMinValue()!=null && filter.getMinValue().length()>0)
 					{
-						if(filterNum>0)
-							resultNum = this.tlGammaLayerAttributeRepository.updateLikeStringValue(tmpGuid,filterNum,filter.getAttrGuid(), filter.getMinValue());
-						else
-							resultNum = this.tlGammaLayerAttributeRepository.insertLikeStringValue(tmpGuid,filter.getAttrGuid(), filter.getMinValue());
+						if(kernelAtrr.get().getDictId()==null)
+						{
+							if(filterNum>0)
+								resultNum = this.tlGammaLayerAttributeRepository.updateLikeStringValue(tmpGuid,filterNum,filter.getAttrGuid(), filter.getMinValue());
+							else
+								resultNum = this.tlGammaLayerAttributeRepository.insertLikeStringValue(tmpGuid,filter.getAttrGuid(), filter.getMinValue());
+						}
+						else //enum
+						{
+							
+						}
 					}
 				}
 				filterNum +=1;
@@ -283,5 +290,15 @@ public class SysKernelService {
 	public void deleteKernelAttr( String attrId) {
 		// TODO Auto-generated method stub
 		this.tlGammaKernelAttrRepository.deleteById(attrId);
+	}
+
+	public Optional<TlGammaKernelAttr> getAttrById(String attrId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelAttrRepository.findById(attrId);
+	}
+
+	public void updateKernelAttr(TlGammaKernelAttr attr) {
+		// TODO Auto-generated method stub
+		this.tlGammaKernelAttrRepository.save(attr);
 	}
 }

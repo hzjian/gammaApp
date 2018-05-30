@@ -215,7 +215,6 @@ public class CommonExceptionAdvice {
   @ExceptionHandler(IllegalArgumentException.class)
   public Result<String> IllegalArgumentExceptionException(IllegalArgumentException e) {
 	  
-	  
     logger.error(ExceptionDesc.ILLEGAL_ARGUMENT, e);
     return ResultUtil.error(500,ExceptionDesc.ILLEGAL_ARGUMENT);
   }
@@ -227,5 +226,4 @@ public class CommonExceptionAdvice {
     logger.error(ExceptionDesc.WRONG_USER_STATUS, e);
     return ResultUtil.error(500,ExceptionDesc.WRONG_USER_STATUS);
   }
-  
 }

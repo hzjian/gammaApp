@@ -115,7 +115,7 @@ public class SysGroupUserController {
 		} else {
 			sort = new Sort(Direction.DESC, sortField);
 		}
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo =new  PageRequest(pageNumber, pageSize, sort);
 
 		String filterStr ="";
 		if(para.getSkey()!=null&&para.getSkey().length()>0)
@@ -414,7 +414,7 @@ public class SysGroupUserController {
 		} else {
 			sort = new Sort(Direction.DESC, para.getSortField());
 		}
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		
 		if(para.getSkey()!= null && para.getSkey().length()>0)
 		{
@@ -453,7 +453,7 @@ public class SysGroupUserController {
 		} else {
 			sort = new Sort(Direction.DESC, para.getSortField());
 		}
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		
 		if(para.getSkey()!= null && para.getSkey().length()>0)
 		{
@@ -486,7 +486,7 @@ public class SysGroupUserController {
 			if(task.isPresent())
 			{
 				TlGammaKernelAttr kernelattr = new TlGammaKernelAttr();
-				kernelattr.setAttrEnum(attrParam.getAttrEnum());
+				kernelattr.setDictId(attrParam.getDictId());
 				kernelattr.setAttrFgrade(attrParam.getAttrGrade());
 				kernelattr.setAttrName(attrParam.getAttrName());
 				kernelattr.setAttrField(this.utilService.generateShortUuid());
@@ -626,7 +626,7 @@ public class SysGroupUserController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaKernel eachKernel : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
@@ -664,7 +664,8 @@ public class SysGroupUserController {
 			fieldMap.put("attrName",item.getAttrName());
 			fieldMap.put("attrType",item.getAttrType());
 			fieldMap.put("attrGrade",item.getAttrFgrade());
-			fieldMap.put("attrEnum",item.getAttrEnum());
+			fieldMap.put("attrEnum",item.getDictId());
+			fieldMap.put("dictId",item.getDictId());
 			return fieldMap;
 		}).collect(Collectors.toList());
 		
@@ -691,7 +692,7 @@ public class SysGroupUserController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		
@@ -715,7 +716,7 @@ public class SysGroupUserController {
 		ext.setExtGuid(UUID.randomUUID().toString());
 		ext.setExtDesc(para.getExtDesc());
 		ext.setExtName(para.getExtName());
-		ext.setKernelClassid(para.getKernelClassid());
+		ext.setKernelClassid(para.getClassId());
 		ext.setUserName(cUser.getUserName());
 
 		TlGammaKernelExt tmp = this.sysKernelExtService.saveKernelExt(ext);
@@ -752,9 +753,9 @@ public class SysGroupUserController {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 
-		if(para.getExtGuid()!= null)
+		if(para.getExtId()!= null)
 		{
-			Optional<TlGammaKernelExt> kernelExt =  this.sysKernelExtService.getKernelExt(para.getExtGuid());
+			Optional<TlGammaKernelExt> kernelExt =  this.sysKernelExtService.getKernelExt(para.getExtId());
 			if(kernelExt.isPresent())
 			{
 				TlGammaKernelExt tmpExt = kernelExt.get();
@@ -863,13 +864,41 @@ public class SysGroupUserController {
 	}
 	
 	
+	@PostMapping(value = "/kernel/exttype/filterlist")
+	public Result<List<Map<String,String>>> kernelExttypeInfo(HttpServletRequest request ,@RequestBody ExtTypeParameter extParam, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		List<Map<String,String>> list = new LinkedList<Map<String,String>>();
+		
+		List<TlGammaKernelFilter> filterList = this.sysKernelExtService.getFilter(extParam.getExtId());
+		for(TlGammaKernelFilter filter : filterList)
+		{
+			Optional<TlGammaKernelAttr> kernelAttr = this.sysKernelService.getAttrById(filter.getAttrGuid());
+			if(kernelAttr.isPresent())
+			{
+				Map<String,String> filterMap = new HashMap<String,String>();
+				filterMap.put("filterId", filter.getFilterGuid());
+				filterMap.put("attrId", filter.getAttrGuid());
+				filterMap.put("attrName", kernelAttr.get().getAttrName());
+				filterMap.put("attrType", kernelAttr.get().getAttrType());
+				filterMap.put("maxValue", filter.getMaxValue());
+				filterMap.put("minValue", filter.getMinValue());
+				list.add(filterMap);
+			}
+		}
+		
+		return ResultUtil.success(list);
+	}
+	
+	
 	@PostMapping(value = "/kernel/exttype/delete")
-	public Result<TlGammaKernelExt> kernelExttype(HttpServletRequest request ,@RequestBody String extGuid, BindingResult bindingResult) {
+	public Result<TlGammaKernelExt> kernelExttype(HttpServletRequest request ,@RequestBody ExtTypeParameter extParam, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 
-		this.sysKernelExtService.deleteKernelExt(extGuid);
+		this.sysKernelExtService.deleteKernelExt(extParam.getExtId());
 		
 		return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
 	}

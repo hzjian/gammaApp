@@ -13,6 +13,11 @@ public class UserParameter implements GammaParameter{
 	private String userCnname;
 	
 	private String userEmail;
+	/**
+	 * 1-- normal
+	 * 0-- disable
+	 */
+	private Integer userStatus;
 
 	/**
 	 * @return the userName
@@ -106,6 +111,19 @@ public class UserParameter implements GammaParameter{
 		// TODO Auto-generated method stub
 		return "userName:"+this.userName+" groupGuid:"+this.groupGuid;
 	}
-	
-	
+
+	/**
+	 * @return the userStatus
+	 */
+	public Integer getUserStatus() {
+		return userStatus;
+	}
+
+	/**
+	 * @param userStatus the userStatus to set
+	 */
+	public void setUserStatus(Integer userStatus) {
+		this.userStatus = userStatus;
+	}
+
 }

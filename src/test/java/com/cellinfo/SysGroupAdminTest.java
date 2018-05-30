@@ -28,8 +28,10 @@ public class SysGroupAdminTest {
 	private String serverPath1 = "http://47.94.88.135:8181/gammaa";
 	
 	private String serverPath = "http://127.0.0.1:8081";
+	
+	private String serverPath3 = "http://127.0.0.1:8080/gamma";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjc1MTkxMzYsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.5MWY79xXotfe3PkCXHC6MjWGgBwlqiDnf9GX-7UY4dk5KtCnhFM9nE2J4VEZIzAESfmJ3WPZM6iGUg8cToxUmQ";
+	private String token = "gamma.tl.22eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjc2OTI0MzMsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.slKp-H1jKrDFuJHghpPi4uC0PHQGgLd4p9kiAHezvcBJTiqa9uQz-Y1Td7kM8WjK3XJw4lzOVWqRafCzxIZmWQ";
 	
 	@Test
     public void longin() throws Exception {
@@ -243,7 +245,7 @@ public class SysGroupAdminTest {
         String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
         AttrParameter para = new AttrParameter();
         para.setAttrAlias("attrAlias");
-        para.setAttrEnum("attrEnum");
+        para.setDictId(UUID.randomUUID().toString());
         para.setAttrGrade("NORMAL");
         para.setAttrName(testname);
         para.setAttrType("STRING");
@@ -253,10 +255,9 @@ public class SysGroupAdminTest {
         Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/addattr",entity,Result.class);
         System.out.println(result.getData());
         Assert.assertEquals(result.getMsg(),"成功");
-        
+   
         System.out.println("-----------------/service/group/kernel/addattr---------end-----------  ");
     }
-	
 		
 	@Test
     public void groupKernelUpdate() throws Exception {

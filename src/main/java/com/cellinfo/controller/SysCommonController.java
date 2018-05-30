@@ -165,7 +165,7 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 		{
 			filterStr = para.getSkey();
 		}
-		PageRequest pageInfo =  PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new  PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaDict> mList = this.sysDictService.getDictsByGroupGuid(cUser.getGroupGuid(),filterStr,pageInfo);
 		for (TlGammaDict eachDict : mList.getContent()) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
@@ -253,8 +253,8 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 			return ResultUtil.error(400, ReturnDesc.DICT_ITEM_NAME_IS_EXIST);
 		}
 		
-		if(item.getDictId()!= null && item.getDictId().length()>1 && 
-				item.getDictItem()!= null && item.getDictItem().length()>1) {
+		if(item.getDictId()!= null && item.getDictId().length()>0 && 
+				item.getDictItem()!= null && item.getDictItem().length()>0) {
 			return ResultUtil.success(this.sysDictService.addDictItem(item.getDictId(),item.getDictItem()));
 		}
 		return ResultUtil.error(400, ReturnDesc.INPUT_PARAMETER_ERROR);
@@ -262,13 +262,13 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 	
 	//删除数据字典项目
 	@PostMapping(value = "/dict/deleteitem")
-	public Result<String> deleteDictItem(HttpServletRequest request ,@RequestBody @Valid Long itemId, BindingResult bindingResult) {
+	public Result<String> deleteDictItem(HttpServletRequest request ,@RequestBody @Valid DictItemParameter item, BindingResult bindingResult) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 
-		this.sysDictService.deleteItem(itemId);
+		this.sysDictService.deleteItem(item.getId());
 		return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
 	}
 }

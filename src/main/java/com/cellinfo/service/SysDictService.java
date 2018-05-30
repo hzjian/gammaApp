@@ -1,6 +1,7 @@
 package com.cellinfo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -64,5 +65,10 @@ public class SysDictService {
 	public List<TlGammaDictItem> getDictItemByName(String dictId, String dictItem) {
 		// TODO Auto-generated method stub
 		return this.tlGammaDictItemRepository.findByDictIdAndDictItem(dictId, dictItem);
+	}
+
+	public Optional<TlGammaDict> getDictbyId(String dictId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaDictRepository.findById(dictId);
 	}
 }

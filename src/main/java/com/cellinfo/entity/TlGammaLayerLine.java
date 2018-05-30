@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -16,9 +17,9 @@ import com.vividsolutions.jts.geom.LineString;
  * 
  */
 @Entity
-@Table(name="tl_gamma_layer_line"/*,indexes = {
+@Table(name="tl_gamma_layer_line",indexes = {
         @Index(columnList = "kernel_classid", name = "idx_line_kernel_classid")
-        }*/)
+        })
 @NamedQuery(name="TlGammaLayerLine.findAll", query="SELECT t FROM TlGammaLayerLine t")
 public class TlGammaLayerLine implements Serializable {
 	private static final long serialVersionUID = 1L;

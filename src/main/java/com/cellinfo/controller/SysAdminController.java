@@ -104,12 +104,16 @@ public class SysAdminController {
 			filterStr = para.getSkey();
 		}
 
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaUser> tmpList = null;
 		
 		if(para.getGroupGuid()!= null)
 		{
 			tmpList = this.sysUserService.getGroupAdminUsers(filterStr,para.getGroupGuid(),pageInfo);
+		}
+		else
+		{
+			tmpList = this.sysUserService.getGroupAdminUsers(filterStr,pageInfo);
 		}
 		
 		if(tmpList!= null)
@@ -207,6 +211,8 @@ public class SysAdminController {
 	
 				if(user.getUserPassword()!=null && !user.getUserPassword().equalsIgnoreCase(DEFAULT_PASSWORD))
 					realUser.setUserPassword(encoder.encode(user.getUserPassword()));	
+				if(user.getUserStatus()!=null)
+					realUser.setAccountEnabled(user.getUserStatus()==1?true:false);
 				
 				UserParameter resUser= new UserParameter();
 				TlGammaUser saveUser = this.sysUserService.save(realUser);

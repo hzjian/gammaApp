@@ -3,6 +3,7 @@ package com.cellinfo.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private static final Logger logger = LoggerFactory.getLogger(WebSecurityConfig.class);
 	
+	@Value("${gammasecurity.enabled:true}")
+	private boolean securityEnabled;
 	
 	@Autowired  
     private SysUserService userService;
@@ -53,9 +56,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationTokenFilter();
     }
 
+//	@Override
+//    public void configure(WebSecurity web) throws Exception {
+//        if (!securityEnabled)
+//            web.ignoring().antMatchers("/**");
+//    }
+
+	
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-
+        
     	httpSecurity
     	// .cors().and()
         // 由于使用的是JWT，我们这里不需要csrf,csrf又称跨域请求伪造，攻击方通过伪造用户请求访问受信任站点
@@ -95,17 +105,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 除上面外的所有请求全部需要鉴权认证
         .authenticated();
 
-    	
 		// 禁用缓存
     	httpSecurity.headers().cacheControl();
     	
     	httpSecurity.addFilterBefore(
                 new StatelessLoginFilter("/service/auth/login", tokenAuthenticationService, userService,sysLogService, authenticationManager()),
                 UsernamePasswordAuthenticationFilter.class);
-		
     	httpSecurity.addFilterBefore(authenticationTokenFilterBean(),  UsernamePasswordAuthenticationFilter.class);
-
-   	
     }
     
     @Autowired
@@ -114,7 +120,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(this.userService)
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
-    
     
     @Override
     protected UserDetailsService userDetailsService() {

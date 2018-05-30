@@ -23,8 +23,8 @@ public class TlGammaKernelAttr implements Serializable {
 	@Column(name="attr_guid")
 	private String attrGuid;
 	
-	@Column(name="attr_enum", length=128)
-	private String attrEnum;
+	@Column(name="dict_id", length=36)
+	private String dictId;
 
 	@Column(name="attr_field", length=64)
 	private String attrField;
@@ -43,7 +43,6 @@ public class TlGammaKernelAttr implements Serializable {
 	 * INTEGER
 	 * NUMBER
 	 * DATETIME
-	 * GEOMETRY
 	 */
 
 	@Column(name="attr_type", length=64)
@@ -57,20 +56,33 @@ public class TlGammaKernelAttr implements Serializable {
 	 * TASKGRADE 不同任务保留多份数据
 	 * USERGRADE 不同用户保留多份数据
 	 */
-	@Column(name="attr_fgrade")
+	@Column(name="attr_fgrade", length=32)
 	private String attrFgrade;
 	
+	@Column(name="attr_min", length=32)
+	private String attrMin;
 	
+	@Column(name="attr_max", length=32)
+	private String attrMax;
+	
+	@Column(name="attr_desc", length=256)
+	private String attrDesc;
 
 	public TlGammaKernelAttr() {
 	}
-
-	public String getAttrEnum() {
-		return this.attrEnum;
+	
+	/**
+	 * @return the dictId
+	 */
+	public String getDictId() {
+		return dictId;
 	}
 
-	public void setAttrEnum(String attrEnum) {
-		this.attrEnum = attrEnum;
+	/**
+	 * @param dictId the dictId to set
+	 */
+	public void setDictId(String dictId) {
+		this.dictId = dictId;
 	}
 
 	public String getAttrField() {
@@ -142,4 +154,48 @@ public class TlGammaKernelAttr implements Serializable {
 	public void setAttrFgrade(String attrFgrade) {
 		this.attrFgrade = attrFgrade;
 	}
+
+	/**
+	 * @return the attrMin
+	 */
+	public String getAttrMin() {
+		return attrMin;
+	}
+
+	/**
+	 * @param attrMin the attrMin to set
+	 */
+	public void setAttrMin(String attrMin) {
+		this.attrMin = attrMin;
+	}
+
+	/**
+	 * @return the attrMax
+	 */
+	public String getAttrMax() {
+		return attrMax;
+	}
+
+	/**
+	 * @param attrMax the attrMax to set
+	 */
+	public void setAttrMax(String attrMax) {
+		this.attrMax = attrMax;
+	}
+
+	/**
+	 * @return the attrDesc
+	 */
+	public String getAttrDesc() {
+		return attrDesc;
+	}
+
+	/**
+	 * @param attrDesc the attrDesc to set
+	 */
+	public void setAttrDesc(String attrDesc) {
+		this.attrDesc = attrDesc;
+	}
+	
+	
 }

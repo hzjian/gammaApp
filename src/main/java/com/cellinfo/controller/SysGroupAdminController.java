@@ -34,12 +34,14 @@ import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
+import com.cellinfo.entity.TlGammaDict;
 import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.entity.ViewTaskUser;
 import com.cellinfo.security.UserInfo;
+import com.cellinfo.service.SysDictService;
 import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysTaskService;
 import com.cellinfo.service.SysUserService;
@@ -76,6 +78,9 @@ public class SysGroupAdminController {
 	@Autowired
 	private SysTaskService sysTaskService;
 	
+	@Autowired
+	private SysDictService sysDictService;
+	
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");   
 	
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
@@ -102,13 +107,16 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaKernel eachKernel : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("classId", eachKernel.getKernelClassid());
 			tMap.put("className", eachKernel.getKernelClassname());
 			tMap.put("descInfo", eachKernel.getKernelClassdesc());
+			tMap.put("geoType",eachKernel.getGeomType());
+			tMap.put("kernelnum","");
+			tMap.put("tasknum","");
 			list.add(tMap);
 		}
 		
@@ -167,7 +175,15 @@ public class SysGroupAdminController {
 			fieldMap.put("attrName",item.getAttrName());
 			fieldMap.put("attrType",item.getAttrType());
 			fieldMap.put("attrGrade",item.getAttrFgrade());
-			fieldMap.put("attrEnum",item.getAttrEnum());
+			if(item.getDictId()!=null)
+			{
+				Optional<TlGammaDict> opDict = this.sysDictService.getDictbyId(item.getDictId());
+				if(opDict.isPresent())
+				{
+					fieldMap.put("attrEnum",opDict.get().getDictName());
+					fieldMap.put("dictId",item.getDictId());
+				}
+			}
 			return fieldMap;
 		}).collect(Collectors.toList());
 		result.put("attrs", fieldList);
@@ -215,14 +231,46 @@ public class SysGroupAdminController {
 		attr.setAttrName(attrPara.getAttrName());
 		attr.setAttrField("F_"+this.utilService.generateShortUuid());
 		attr.setAttrType(attrPara.getAttrType());
-		attr.setAttrEnum(attrPara.getAttrEnum());
+		attr.setDictId(attrPara.getAttrId());
 		attr.setAttrFgrade(attrPara.getAttrGrade());
+		attr.setAttrMax(attrPara.getMaxValue());
+		attr.setAttrMin(attrPara.getMinValue());
+		attr.setAttrDesc(attrPara.getAttrDesc());
 		TlGammaKernelAttr  tmp = this.sysKernelService.saveKernelAttr(attr);
 
 		result.put("attrId", tmp.getAttrGuid());
 		result.put("attrName", tmp.getAttrName());
 
 		return ResultUtil.success(result);
+	}
+	
+
+	@PostMapping(value = "/kernel/updateattr")
+	public Result<String> updateKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		Map<String,String> result = new HashMap<String,String>();
+		Optional<TlGammaKernelAttr> optionAttr = this.sysKernelService.getAttrById(attrPara.getAttrId());
+		if(!optionAttr.isPresent())
+		{
+			return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_NOT_EXIST);
+		}
+		TlGammaKernelAttr attr = optionAttr.get();
+		if(attrPara.getAttrDesc()!= null)
+			attr.setAttrDesc(attrPara.getAttrDesc());
+		if(attrPara.getAttrGrade()!=null)
+			attr.setAttrFgrade(attrPara.getAttrGrade());
+		if(attrPara.getMaxValue()!=null)
+			attr.setAttrMax(attrPara.getMaxValue());
+		if(attrPara.getMinValue()!=null)
+			attr.setAttrMin(attrPara.getMinValue());
+		
+		
+		this.sysKernelService.updateKernelAttr(attr);
+		
+		return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_INUSED);
 	}
 	
 	@PostMapping(value = "/kernel/deleteattr")
@@ -241,6 +289,19 @@ public class SysGroupAdminController {
 		return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_INUSED);
 	}
 	
+	
+	@PostMapping(value = "/kernel/attrapplynum")
+	public Result<Map<String,String>> kernelAttrApplyNumInTask(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		Map<String,String> result = new HashMap<String,String>();
+		long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
+		
+		result.put("applynum", String.valueOf(aNum));
+		return ResultUtil.success(result);
+	}
 	
 	
 	@PostMapping(value = "/kernel/delete")
@@ -275,7 +336,7 @@ public class SysGroupAdminController {
 			filterStr = para.getSkey();
 		}
 		
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaUser> mList = this.sysUserService.getGroupMember(pageInfo,filterStr,cUser.getGroupGuid());
 		for (TlGammaUser eachUser : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>();
@@ -345,6 +406,8 @@ public class SysGroupAdminController {
 			kuser.setUserEmail(member.getUserEmail());
 		if(member.getUserPassword()!=null && !member.getUserPassword().equalsIgnoreCase(DEFAULT_PASSWORD))
 			kuser.setUserPassword(encoder.encode(member.getUserPassword()));	
+		if(member.getUserStatus()!=null)
+			kuser.setAccountEnabled(member.getUserStatus()==1?true:false);
 
 		
 		TlGammaUser saveResult = this.sysUserService.save(kuser);	
@@ -380,7 +443,7 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 		
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaTask> mList = this.sysTaskService.getTaskByGroupGuid(cUser.getGroupGuid(),pageInfo);
 		for (TlGammaTask eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
@@ -418,7 +481,7 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 		
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaTask> mList = this.sysTaskService.getTaskByUsername(para.getSkey(),pageInfo);
 		for (TlGammaTask eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
@@ -457,7 +520,7 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 		
-		PageRequest pageInfo = PageRequest.of(pageNumber, pageSize, sort);
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<ViewTaskUser> mList = this.sysTaskService.getTaskByUserParticapate(para.getSkey(),pageInfo);
 		for (ViewTaskUser eachTask : mList) {
 			Map<String, Object> tMap = new HashMap<String, Object>(); 
