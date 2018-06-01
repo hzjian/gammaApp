@@ -107,8 +107,13 @@ public class SysGroupAdminController {
 			sort = new Sort(Direction.DESC, sortField);
 		}
 
+		String filterStr ="";
+		if(para.getSkey()!=null&&para.getSkey().length()>0)
+		{
+			filterStr = para.getSkey();
+		}
 		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),pageInfo);
+		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),filterStr,pageInfo);
 		for (TlGammaKernel eachKernel : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("classId", eachKernel.getKernelClassid());
@@ -291,15 +296,15 @@ public class SysGroupAdminController {
 	
 	
 	@PostMapping(value = "/kernel/attrapplynum")
-	public Result<Map<String,String>> kernelAttrApplyNumInTask(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
+	public Result<Map<String,Long>> kernelAttrApplyNumInTask(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		Map<String,String> result = new HashMap<String,String>();
-		long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
+		Map<String,Long> result = new HashMap<String,Long>();
+		Long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
 		
-		result.put("applynum", String.valueOf(aNum));
+		result.put("applynum",aNum);
 		return ResultUtil.success(result);
 	}
 	

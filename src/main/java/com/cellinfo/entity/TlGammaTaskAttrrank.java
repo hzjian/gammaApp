@@ -4,10 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -22,32 +20,34 @@ public class TlGammaTaskAttrrank implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq_task_attr_rank", sequenceName="seq_task_attr_rank",allocationSize=1)
-	@GeneratedValue(generator="seq_task_attr_rank")
-	private Long id;
-	
-	@Column(name="task_guid",length=36)
-	private String taskGuid;
+	@Column(name="rank_guid",length=36)
+	private String rankGuid;
 	
 	@Column(name="rank_name",length=64)
 	private String rankName;
+	
+	@Column(name="task_guid",length=36)
+	private String taskGuid;
 
 	public TlGammaTaskAttrrank() {
 	}
 
-	/**
-	 * @return the id
-	 */
-	public Long getId() {
-		return id;
-	}
 
 	/**
-	 * @param id the id to set
+	 * @return the rankGuid
 	 */
-	public void setId(Long id) {
-		this.id = id;
+	public String getRankGuid() {
+		return rankGuid;
 	}
+
+
+	/**
+	 * @param rankGuid the rankGuid to set
+	 */
+	public void setRankGuid(String rankGuid) {
+		this.rankGuid = rankGuid;
+	}
+
 
 	/**
 	 * @return the taskGuid

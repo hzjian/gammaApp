@@ -2,8 +2,8 @@ package com.cellinfo.controller.entity;
 
 import java.util.Map;
 
-public class PostGeoJsonParameter {
-
+public class GAGeoJsonParameter {
+	private String geoType;
 	private String taskGuid;
 	private String feaGuid;
 	private String feaClassid;
@@ -11,9 +11,17 @@ public class PostGeoJsonParameter {
 	private Map<String,Object> geoJson;
 
 	/**
-	 * @return the geoJson
+	 * @return the geoType
 	 */
-
+	public String getGeoType() {
+		return geoType;
+	}
+	/**
+	 * @param geoType the geoType to set
+	 */
+	public void setGeoType(String geoType) {
+		this.geoType = geoType;
+	}
 	/**
 	 * @return the taskGuid
 	 */

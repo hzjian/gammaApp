@@ -27,6 +27,9 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	@Column(name="filter_type" , length=64)
 	private String filterType;
 	
+	@Column(name="filter_name" , length=64)
+	private String filterName;
+	
 	@Column(name="filter_geom",columnDefinition = "geometry(Polygon,4326)")
 	private Polygon filterGeom;
 
@@ -88,5 +91,21 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	public void setFilterGeom(Polygon filterGeom) {
 		this.filterGeom = filterGeom;
 	}
+
+	/**
+	 * @return the filterName
+	 */
+	public String getFilterName() {
+		return filterName;
+	}
+
+	/**
+	 * @param filterName the filterName to set
+	 */
+	public void setFilterName(String filterName) {
+		this.filterName = filterName;
+	}
+	
+	
 	
 }

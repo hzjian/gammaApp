@@ -83,8 +83,12 @@ public class SysKernelExtService {
 				Map<String ,String >  subType = new HashMap<String ,String>();
 				subType.put("extDesc", ext.getExtDesc());
 				subType.put("extId", ext.getExtGuid());
+				subType.put("classId", ext.getKernelClassid());
 				subType.put("extName", ext.getExtName());
-
+				subType.put("extDesc", ext.getExtDesc());
+				subType.put("kernelNum", String.valueOf(ext.getKernelNum()));
+				subType.put("geoFilterNum", String.valueOf(ext.getGeofilterNum()));
+				subType.put("filterNum", String.valueOf(ext.getFilterNum()));
 				subTypeList.add(subType);
 			}
 		}

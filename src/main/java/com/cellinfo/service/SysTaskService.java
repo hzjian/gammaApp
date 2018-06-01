@@ -164,7 +164,7 @@ public class SysTaskService {
 		this.tlGammaTaskAttrRepository.deleteTaskAttr(taskGuid,fieldGuid);
 	}
 
-	public long getAttrApplyNum(String attrId) {
+	public Long getAttrApplyNum(String attrId) {
 		// TODO Auto-generated method stub
 		return this.tlGammaTaskAttrRepository.countByAttrGuid(attrId);
 	}

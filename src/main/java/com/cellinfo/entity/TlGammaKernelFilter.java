@@ -19,17 +19,19 @@ public class TlGammaKernelFilter implements Serializable {
 	@Column(name="filter_guid", nullable=false)
 	private String filterGuid;
 	
-	@Column(name="attr_guid")
+	@Column(name="attr_guid",length=36)
 	private String attrGuid;
 
-	@Column(name="ext_guid")
+	@Column(name="ext_guid",length=36)
 	private String extGuid;
 
+	@Column(name="enum_str",length=36)
+	private String enumStr;
 	
-	@Column(name="min_value")
+	@Column(name="min_value",length = 32)
 	private String minValue;
 	
-	@Column(name="max_value")
+	@Column(name="max_value",length = 32)
 	private String maxValue;
 
 	public TlGammaKernelFilter() {
@@ -105,5 +107,18 @@ public class TlGammaKernelFilter implements Serializable {
 		this.maxValue = maxValue;
 	}
 
-	
+	/**
+	 * @return the enumStr
+	 */
+	public String getEnumStr() {
+		return enumStr;
+	}
+
+	/**
+	 * @param enumStr the enumStr to set
+	 */
+	public void setEnumStr(String enumStr) {
+		this.enumStr = enumStr;
+	}
+
 }

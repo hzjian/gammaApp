@@ -8,6 +8,8 @@ public class FilterParameter {
 	
 	private String attrId;
 	
+	private String enumStr;
+	
 	/**
 	 * INTEGER
 	 * DOUBLE
@@ -109,6 +111,19 @@ public class FilterParameter {
 	public void setAttrId(String attrId) {
 		this.attrId = attrId;
 	}
-	
+
+	/**
+	 * @return the enumStr
+	 */
+	public String getEnumStr() {
+		return enumStr;
+	}
+
+	/**
+	 * @param enumStr the enumStr to set
+	 */
+	public void setEnumStr(String enumStr) {
+		this.enumStr = enumStr;
+	}
 	
 }

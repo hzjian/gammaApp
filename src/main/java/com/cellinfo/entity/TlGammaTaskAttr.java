@@ -32,6 +32,9 @@ public class TlGammaTaskAttr implements Serializable {
 	@Column(name="attr_guid",length=36)
 	private String attrGuid;
 
+	@Column(name="rank_guid",length=36)
+	private String rankGuid;
+	
 	@Column(name="attr_isedit")
 	private Integer attrIsedit;
 	
@@ -98,4 +101,19 @@ public class TlGammaTaskAttr implements Serializable {
 	public void setAttrIsedit(Integer attrIsedit) {
 		this.attrIsedit = attrIsedit;
 	}
+
+	/**
+	 * @return the rankGuid
+	 */
+	public String getRankGuid() {
+		return rankGuid;
+	}
+
+	/**
+	 * @param rankGuid the rankGuid to set
+	 */
+	public void setRankGuid(String rankGuid) {
+		this.rankGuid = rankGuid;
+	}
+	
 }

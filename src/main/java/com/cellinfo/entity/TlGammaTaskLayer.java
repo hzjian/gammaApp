@@ -35,7 +35,6 @@ public class TlGammaTaskLayer implements Serializable {
 	
 	@Column(name="kernel_num", length=36)
 	private Integer kernelNum;
-	
 	/**
 	 * 1 ---- 可编辑
 	 * 0 -----参考

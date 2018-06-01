@@ -15,6 +15,6 @@ public interface TlGammaTaskAttrRepository extends PagingAndSortingRepository<Tl
 	@Query(value = "delete from TlGammaTaskAttr a where a.taskGuid = ?1 and a.attrGuid =?2")
 	void deleteTaskAttr(String taskGuid, String fieldGuid);
 
-	long countByAttrGuid(String attrId);
+	Long countByAttrGuid(String attrId);
 
 }

@@ -108,6 +108,12 @@ public interface TlGammaLayerAttributeRepository  extends PagingAndSortingReposi
 	@Query(value = "insert into tl_gamma_task_tmp (tmp_guid,kernel_guid,f_num) (select ?1,a.kernel_guid,1 from tl_Gamma_Layer_Attribute a  where attr_guid = ?2 and attr_text like %?3% group by a.kernel_guid)",nativeQuery = true) 
 	public int insertLikeStringValue(String tmpGuid,String attrGuid,String value);
 
+	@Transactional
+	@Modifying
+	@Query(value = "insert into tl_gamma_task_tmp (tmp_guid,kernel_guid,f_num) (select ?1,a.kernel_guid,1 from tl_Gamma_Layer_Attribute a  where attr_guid = ?2 and attr_text in (?3) group by a.kernel_guid)",nativeQuery = true) 
+	public int insertInStringValue(String tmpGuid,String attrGuid,String value);
+
+	
 	//////////////// update
 	@Transactional
 	@Modifying
@@ -159,6 +165,10 @@ public interface TlGammaLayerAttributeRepository  extends PagingAndSortingReposi
 	@Query(value = "update tl_gamma_task_tmp set f_num= f_num+1 where tmp_guid = ?1 and f_num =?2 and kernel_guid in (select a.kernel_guid from tl_Gamma_Layer_Attribute a  where attr_guid = ?3 and attr_text like %?4% group by a.kernel_guid)",nativeQuery = true) 
 	public int updateLikeStringValue(String tmpGuid,Integer fNum,String attrGuid,String value);
 	
+	@Transactional
+	@Modifying
+	@Query(value = "update tl_gamma_task_tmp set f_num= f_num+1 where tmp_guid = ?1 and f_num =?2 and kernel_guid in (select a.kernel_guid from tl_Gamma_Layer_Attribute a  where attr_guid = ?3 and attr_text in (?4) group by a.kernel_guid)",nativeQuery = true) 
+	public int updateInStringValue(String tmpGuid,Integer fNum,String attrGuid,String value);
 	
 //	@Modifying
 //	@Query("update BsMicrogridEntity t set t.bsMicrogridRealarea =?1 where t.objectid = ?2")

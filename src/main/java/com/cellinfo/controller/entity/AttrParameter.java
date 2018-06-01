@@ -28,6 +28,8 @@ public class AttrParameter {
 	
 	private String attrDesc;
 	
+	private String rankId;
+	
 	private String taskId;
 	
 	/**
@@ -174,6 +176,18 @@ public class AttrParameter {
 	 */
 	public void setAttrDesc(String attrDesc) {
 		this.attrDesc = attrDesc;
+	}
+	/**
+	 * @return the rankId
+	 */
+	public String getRankId() {
+		return rankId;
+	}
+	/**
+	 * @param rankId the rankId to set
+	 */
+	public void setRankId(String rankId) {
+		this.rankId = rankId;
 	}
 	
 	

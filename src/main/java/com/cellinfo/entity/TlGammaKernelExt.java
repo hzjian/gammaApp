@@ -31,6 +31,17 @@ public class TlGammaKernelExt implements Serializable {
 
 	@Column(name="ext_desc",length=256)
 	private String extDesc;
+	//空间过滤条件数
+	@Column(name="geofilter_num")
+	private Integer geofilterNum;
+	
+	//条件过滤数
+	@Column(name="filter_num")
+	private Integer filterNum;
+	
+	//核心对象数
+	@Column(name="kernel_num")
+	private Integer kernelNum;
 	
 	/**
 	 * 用户创建自定义标签
@@ -111,5 +122,46 @@ public class TlGammaKernelExt implements Serializable {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
+
+	/**
+	 * @return the geofilterNum
+	 */
+	public Integer getGeofilterNum() {
+		return geofilterNum;
+	}
+
+	/**
+	 * @param geofilterNum the geofilterNum to set
+	 */
+	public void setGeofilterNum(Integer geofilterNum) {
+		this.geofilterNum = geofilterNum;
+	}
+
+	/**
+	 * @return the filterNum
+	 */
+	public Integer getFilterNum() {
+		return filterNum;
+	}
+
+	/**
+	 * @param filterNum the filterNum to set
+	 */
+	public void setFilterNum(Integer filterNum) {
+		this.filterNum = filterNum;
+	}
+
+	/**
+	 * @return the kernelNum
+	 */
+	public Integer getKernelNum() {
+		return kernelNum;
+	}
+
+	/**
+	 * @param kernelNum the kernelNum to set
+	 */
+	public void setKernelNum(Integer kernelNum) {
+		this.kernelNum = kernelNum;
+	}
 }

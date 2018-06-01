@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cellinfo.controller.entity.PropsQueryParameter;
 import com.cellinfo.entity.TlGammaDict;
 import com.cellinfo.entity.TlGammaDictItem;
 import com.cellinfo.entity.TlGammaGroup;
@@ -63,20 +62,6 @@ public class SysEnviService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SysEnviService.class);
 	
-	public void loadPropData()
-	{
-		PropsQueryParameter propsParam = new PropsQueryParameter();
-//		for ( PropsQueryParameter para : this.propertiesConfig.getKernel())
-//		{
-//			if(para.getClsname().trim().equalsIgnoreCase(clsname.trim()))
-//			{
-//				propsParam = para;
-//				break;
-//			}
-//		}
-		
-	}
-	
 	public void loadInitData() {
 		
 		this.groupList = this.tlGammaGroupRepository.findAll();
@@ -114,8 +99,8 @@ public class SysEnviService {
 		{
 			this.groupMap.put(group.getGroupGuid(), group);
 		}
-		
 	}
+	
 	public TlGammaUser getUserById(String userId)
 	{
 		for (TlGammaUser user: this.userList)

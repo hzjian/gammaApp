@@ -28,23 +28,10 @@ public class SysDataTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNzUyMDEwNCwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.JMzkgm6VyIKiKIT2aDefTjyVD7bzqlfs3PgOut-ldXq5R2agj67Tg00jUbdv7a_aBm6PWP0PbjrCj6-RUCplCg";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNzkyOTY1NiwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.3mTFjwm6rct93kfglEp0jMEyz5y50KNYvofVdgAtrfjAzcKkH4LoVUQbAibI_N_uompRiqbkBpOWgmVQFdfuEw";
 	
 	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 	
-	@Test
-    public void service_data_layerinfo() throws Exception {
-		System.out.println("-----------------/service/data/task/layerinfo---------start-----------  ");
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("x-auth-token", token );
-        String taskId = "1a8f242b-711c-4ece-bcfb-fafead63117b";
-
-        HttpEntity<String> entity = new HttpEntity<String>(taskId, headers);
-        Result<List<Map<String,String>>> result = testRestTemplate.postForObject(this.serverPath+"/service/data/task/layerinfo",entity,Result.class);
-        System.out.println(result.getData());
-        Assert.assertEquals(result.getMsg(),"成功");
-        System.out.println("-----------------/service/data/task/layerinfo---------end-----------  ");
-    }
 	
 	public Polygon createPolygonByWKT() throws ParseException{
         WKTReader reader = new WKTReader( geometryFactory );

@@ -35,7 +35,7 @@ public class SysUserTaskTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdHVzZXIxIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfVVNFUiJ9XSwibm9uX2V4cGlyZWQiOnRydWUsImV4cCI6MTUyNzQxMTcwNSwiZW5hYmxlZCI6dHJ1ZSwibm9uX2xvY2tlZCI6dHJ1ZSwiZ3JvdXAiOiIxMzkwMzY2Yi1mZWJkLTQ3NzYtYjRhOS05ZjhlMjhmMTgxYjcifQ.6fwRp_0_vfP44zZNN4j1IFnK908wPyJIyNEySVyLzqW6U8JT2bgYsoofpuQP3ndwuPorvQ3OIyX9WzpfTr-TRA";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjc4MzgxMDUsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.yd1u8AGfo-9wx51AfWTnleKt_wssZ5CIq4QM-UCC39oMFQqzeIzrlKG8dz7CQCJs4u-MRseEUo8fgMB2TxE63g";
 	
 	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
@@ -126,7 +126,42 @@ public class SysUserTaskTest {
         return mpolygon;
     }
 	
-
+	@Test
+	public void user_kernel_exttype_filterlist() throws Exception {
+		System.out.println("-----------------/service/user/kernel/exttype/filterlist---------start-----------  ");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        
+        String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
+        ExtTypeParameter para = new ExtTypeParameter();
+        
+        para.setExtId("a298e645-59aa-45bb-90dc-74eff3a18337");
+        
+        HttpEntity<ExtTypeParameter> entity = new HttpEntity<ExtTypeParameter>(para, headers);
+        Result<List<Map<String,String>>> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/exttype/filterlist",entity,Result.class);
+        System.out.println(result.getData());
+        Assert.assertEquals(result.getMsg(),"成功");   
+        System.out.println("-----------------/service/user/kernel/exttype/filterlist---------end-----------  "); 
+    }
+	
+	@Test
+	public void user_kernel_exttype_geofilterlist() throws Exception {
+		System.out.println("-----------------/service/user/kernel/exttype/geofilterlist---------start-----------  ");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        
+        String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
+        ExtTypeParameter para = new ExtTypeParameter();
+        
+        para.setExtId("a298e645-59aa-45bb-90dc-74eff3a18337");
+        
+        HttpEntity<ExtTypeParameter> entity = new HttpEntity<ExtTypeParameter>(para, headers);
+        Result<List<Map<String,String>>> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/exttype/geofilterlist",entity,Result.class);
+        System.out.println(result.getData());
+        Assert.assertEquals(result.getMsg(),"成功");   
+        System.out.println("-----------------/service/user/kernel/exttype/geofilterlist---------end-----------  "); 
+    }
+	
 	
     public void testTaskNoExtSave() throws Exception {
 		System.out.println("-----------------/service/user/task/save---------start-----------  ");

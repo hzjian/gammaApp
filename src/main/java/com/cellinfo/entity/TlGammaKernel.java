@@ -34,6 +34,9 @@ public class TlGammaKernel implements Serializable {
 
 	@Column(name="geom_type", length=16)
 	private String geomType;
+	
+	@Column(name="server_path", length=128)
+	private String serverPath;
 
 	public TlGammaKernel() {
 	}
@@ -84,6 +87,18 @@ public class TlGammaKernel implements Serializable {
 		this.geomType = geomType;
 	}
 
-	
+	/**
+	 * @return the serverPath
+	 */
+	public String getServerPath() {
+		return serverPath;
+	}
+
+	/**
+	 * @param serverPath the serverPath to set
+	 */
+	public void setServerPath(String serverPath) {
+		this.serverPath = serverPath;
+	}
 	
 }

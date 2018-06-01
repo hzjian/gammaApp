@@ -2,40 +2,41 @@ package com.cellinfo.controller.entity;
 
 import java.util.List;
 
-public class PostPropParameter {
+public class GAPropParameter {
 	
-	private String guid;
+	private String kernelGuid;
 	private String taskGuid;
 	private String userName;
 	
-	private List<PropItem> props;
+	private List<GAAttrItem> attrs;
+
 
 	/**
-	 * @return the props
+	 * @return the attrs
 	 */
-	public List<PropItem> getProps() {
-		return props;
+	public List<GAAttrItem> getAttrs() {
+		return attrs;
 	}
 
 	/**
-	 * @param props the props to set
+	 * @param attrs the attrs to set
 	 */
-	public void setProps(List<PropItem> props) {
-		this.props = props;
+	public void setAttrs(List<GAAttrItem> attrs) {
+		this.attrs = attrs;
 	}
 
 	/**
-	 * @return the guid
+	 * @return the kernelGuid
 	 */
-	public String getGuid() {
-		return guid;
+	public String getKernelGuid() {
+		return kernelGuid;
 	}
 
 	/**
-	 * @param guid the guid to set
+	 * @param kernelGuid the kernelGuid to set
 	 */
-	public void setGuid(String guid) {
-		this.guid = guid;
+	public void setKernelGuid(String kernelGuid) {
+		this.kernelGuid = kernelGuid;
 	}
 
 	/**
