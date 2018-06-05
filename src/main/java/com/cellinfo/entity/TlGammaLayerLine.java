@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,6 +49,10 @@ public class TlGammaLayerLine implements Serializable {
 	
 	@Column(name="kernel_anno", length=256)
 	private String kernelAnno;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
+
 	
 	public TlGammaLayerLine() {
 	}
@@ -149,6 +154,20 @@ public class TlGammaLayerLine implements Serializable {
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	

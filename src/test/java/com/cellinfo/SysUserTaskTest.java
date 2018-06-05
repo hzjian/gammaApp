@@ -35,7 +35,7 @@ public class SysUserTaskTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjc4MzgxMDUsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.yd1u8AGfo-9wx51AfWTnleKt_wssZ5CIq4QM-UCC39oMFQqzeIzrlKG8dz7CQCJs4u-MRseEUo8fgMB2TxE63g";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJncmV5a2trayIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0dST1VQX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3ODYyMzM1LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjQ3OTQ4YzI2LWE5YTItNDBkZS04MzM0LTFkNzc5N2NhMTg5OCJ9.hV44yeZp3HCUypkWA9TECIcL3WLgNR8LWJN81LnTVh9LmjhHQPzUbNxn9aVy7JHfvLuY9YD26RipnnvZTj3h-g";
 	
 	private GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
@@ -135,7 +135,7 @@ public class SysUserTaskTest {
         String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
         ExtTypeParameter para = new ExtTypeParameter();
         
-        para.setExtId("a298e645-59aa-45bb-90dc-74eff3a18337");
+        para.setExtId("ac5af310-915c-47bd-9985-2560a223ebc6");
         
         HttpEntity<ExtTypeParameter> entity = new HttpEntity<ExtTypeParameter>(para, headers);
         Result<List<Map<String,String>>> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/exttype/filterlist",entity,Result.class);

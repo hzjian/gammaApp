@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -103,11 +104,29 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 			roleName = "组织管理员";
 			roleKey = 200;
 		}
+		else
+		{
+			roleName = "组织用户";
+			roleKey = 300;
+		}
 		tokenMap.put("roleName", roleName);
 		tokenMap.put("roleKey", String.valueOf(roleKey));
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getWriter(), ResultUtil.success(tokenMap));
+        
+        
+        ///////
+        // TODO
+        
+        Optional<TlGammaUser> userOptional =  this.sysUserService.findOne(authenticatedUser.getUsername());
+        if(userOptional.isPresent())
+        {
+        	TlGammaUser rUser = userOptional.get();
+        	rUser.setLoginTime(new Timestamp(System.currentTimeMillis()));
+        	this.sysUserService.save(rUser);
+        }
+        
         
         try {
         	

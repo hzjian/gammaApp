@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.cellinfo.entity.TlGammaKernel;
@@ -131,5 +132,10 @@ public class SysKernelService {
 	public void updateKernelAttr(TlGammaKernelAttr attr) {
 		// TODO Auto-generated method stub
 		this.tlGammaKernelAttrRepository.save(attr);
+	}
+
+	public Page<TlGammaKernelAttr> getKernelAttrList(String classId, String filterStr,Pageable pageInfo) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelAttrRepository.getKernelAttrList( classId,  filterStr,  pageInfo);
 	}
 }

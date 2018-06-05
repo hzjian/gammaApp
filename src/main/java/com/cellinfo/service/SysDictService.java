@@ -1,5 +1,6 @@
 package com.cellinfo.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,6 +49,7 @@ public class SysDictService {
 		TlGammaDictItem tlGammaDictItem =new TlGammaDictItem();
 		tlGammaDictItem.setDictId(dictId);
 		tlGammaDictItem.setDictItem(dictItem);
+		tlGammaDictItem.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		return this.tlGammaDictItemRepository.save(tlGammaDictItem);
 		
 	}

@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,9 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	
 	@Column(name="filter_geom",columnDefinition = "geometry(Polygon,4326)")
 	private Polygon filterGeom;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 
 	public TlGammaKernelGeoFilter() {
 	}
@@ -104,6 +108,20 @@ public class TlGammaKernelGeoFilter implements Serializable {
 	 */
 	public void setFilterName(String filterName) {
 		this.filterName = filterName;
+	}
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 	
 	

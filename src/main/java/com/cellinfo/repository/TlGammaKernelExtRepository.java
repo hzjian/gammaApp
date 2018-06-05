@@ -12,10 +12,16 @@ import com.cellinfo.entity.TlGammaKernelExt;
 public interface TlGammaKernelExtRepository extends PagingAndSortingRepository<TlGammaKernelExt,String>{
 
 	Page<TlGammaKernelExt> findByKernelClassidAndUserName(String kernelClassid, String userName,Pageable pageable);
+	
+	@Query("select u from TlGammaKernelExt u where u.extName like %?1% and u.userName = ?2")
+	Page<TlGammaKernelExt> filterByExtName(String filterStr, String userName,Pageable pageable);
+	
 
 	List<TlGammaKernelExt> findByKernelClassidAndUserName(String kernelClassid, String userName);
 
 	@Query("select u from TlGammaKernelExt u where u.extName = ?1 and u.userName = ?2")
 	List<TlGammaKernelExt> getKernelExtByName(String extName, String userName);
+
+	Page<TlGammaKernelExt> findByUserName(String userName, Pageable pageable);
 
 }

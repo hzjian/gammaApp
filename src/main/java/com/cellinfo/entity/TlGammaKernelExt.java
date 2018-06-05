@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,11 +44,18 @@ public class TlGammaKernelExt implements Serializable {
 	@Column(name="kernel_num")
 	private Integer kernelNum;
 	
+	@Column(name="ext_grade" ,length=32)
+	private String extGrade;
+	
 	/**
 	 * 用户创建自定义标签
 	 */
 	@Column(name="user_name", length=64)
 	private String userName;
+	
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 	
 
 	public TlGammaKernelExt() {
@@ -164,4 +172,34 @@ public class TlGammaKernelExt implements Serializable {
 	public void setKernelNum(Integer kernelNum) {
 		this.kernelNum = kernelNum;
 	}
+	
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	/**
+	 * @return the extGrade
+	 */
+	public String getExtGrade() {
+		return extGrade;
+	}
+
+	/**
+	 * @param extGrade the extGrade to set
+	 */
+	public void setExtGrade(String extGrade) {
+		this.extGrade = extGrade;
+	}
+	
+	
 }

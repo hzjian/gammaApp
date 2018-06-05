@@ -2,7 +2,9 @@ package com.cellinfo.entity;
 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -36,6 +38,9 @@ public class TlGammaFile implements Serializable {
 	private String relateid;
 	
 	private String fdesc;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 
 	
 	/**
@@ -121,6 +126,20 @@ public class TlGammaFile implements Serializable {
 	 */
 	public void setFdesc(String fdesc) {
 		this.fdesc = fdesc;
+	}
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	

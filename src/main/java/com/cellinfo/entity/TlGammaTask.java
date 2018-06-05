@@ -50,6 +50,9 @@ public class TlGammaTask implements Serializable {
 
 	@Column(name="user_name", length=64)
 	private String userName;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 
 	public TlGammaTask() {
 	}
@@ -142,6 +145,20 @@ public class TlGammaTask implements Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	

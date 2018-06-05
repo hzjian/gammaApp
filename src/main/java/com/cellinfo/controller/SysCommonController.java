@@ -1,5 +1,6 @@
 package com.cellinfo.controller;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,17 +83,25 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 				logger.info("user=="+user);
 				tMap.put("username", user.getUsername());
 				tMap.put("usercnname", user.getUserCnname());	
+				tMap.put("userEmail", user.getUserEmail());
 				String roleName = "组织用户";
 				Integer roleKey = 300;
 				if(user.getRoleId().equalsIgnoreCase("ROLE_ADMIN"))
 				{
 					roleName= "系统管理员";
 					roleKey = 100;
+					tMap.put("groupname", "图理科技（北京）有限公司");
+					tMap.put("roleKey", String.valueOf(roleKey));
 				}
 				else if(user.getRoleId().equalsIgnoreCase("ROLE_GROUP_ADMIN"))
 				{
 					roleName = "组织管理员";
 					roleKey = 200;
+				}
+				else
+				{
+					roleName = "组织用户";
+					roleKey = 300;
 				}
 				tMap.put("rolename", roleName);
 				if(cUser.getGroupGuid()!= null)
@@ -153,7 +162,7 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 		int pageSize = para.getPageSize();
 
 		Sort sort = null;
-		String sortField ="dictName";
+		String sortField ="updateTime";
 		
 		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
 			sort = new Sort(Direction.ASC, sortField);
@@ -206,6 +215,8 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 			tmpDict.setDictName(dict.getDictName());
 		if(dict.getDictDesc()!=null)
 			tmpDict.setDictDesc(dict.getDictDesc());
+		
+		tmpDict.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		this.sysDictService.save(tmpDict);
 		return ResultUtil.success(tmpDict);
 	}

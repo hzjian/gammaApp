@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,9 @@ public class TlGammaDictItem implements Serializable {
 
 	@Column(name="dict_item", length=64)
 	private String dictItem;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 
 	public TlGammaDictItem() {
 	}
@@ -63,5 +67,21 @@ public class TlGammaDictItem implements Serializable {
 	public void setDictItem(String dictItem) {
 		this.dictItem = dictItem;
 	}
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+	
+	
 
 }

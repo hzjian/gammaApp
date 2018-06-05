@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -63,6 +64,12 @@ public class TlGammaUser implements Serializable , UserDetails{
 	
 	@Column(name="account_non_locked")
 	private Integer accNonLocked;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
+	
+	@Column(name="login_time")
+	private Timestamp loginTime;
 	
 	public TlGammaUser() {
 	}
@@ -173,7 +180,11 @@ public class TlGammaUser implements Serializable , UserDetails{
 		// TODO Auto-generated method stub
 		return this.userName;
 	}
-
+	public Integer getAccountStatus()
+	{
+		return this.accEnabled;
+	}
+	
 	public void setAccountNonExpired(boolean account_non_expired)
 	{
 		if(account_non_expired)
@@ -234,6 +245,34 @@ public class TlGammaUser implements Serializable , UserDetails{
 	 */
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
+	}
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	/**
+	 * @return the loginTime
+	 */
+	public Timestamp getLoginTime() {
+		return loginTime;
+	}
+
+	/**
+	 * @param loginTime the loginTime to set
+	 */
+	public void setLoginTime(Timestamp loginTime) {
+		this.loginTime = loginTime;
 	}
 	
 	

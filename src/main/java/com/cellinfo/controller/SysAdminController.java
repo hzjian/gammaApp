@@ -1,5 +1,7 @@
 package com.cellinfo.controller;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +73,8 @@ public class SysAdminController {
 	
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	
+	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	
 	private final static String DEFAULT_PASSWORD = "PASSWORD";
 
 	/**
@@ -82,7 +86,7 @@ public class SysAdminController {
 	@PostMapping(value = "/users")
 	public Result<Page<UserParameter>> userList(@RequestBody RequestParameter para, BindingResult bindingResult) {
 		
-		List<Map<String,String>> mlist = new LinkedList<Map<String,String>>();
+		List<Map<String,Object>> mlist = new LinkedList<Map<String,Object>>();
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
@@ -91,7 +95,7 @@ public class SysAdminController {
 		int pageSize = para.getPageSize();
 
 		Sort sort = null;
-		String sortField ="userName";
+		String sortField ="updateTime";
 		
 		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
 			sort = new Sort(Direction.ASC, sortField);
@@ -107,9 +111,9 @@ public class SysAdminController {
 		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		Page<TlGammaUser> tmpList = null;
 		
-		if(para.getGroupGuid()!= null)
+		if(para.getGroupId()!= null)
 		{
-			tmpList = this.sysUserService.getGroupAdminUsers(filterStr,para.getGroupGuid(),pageInfo);
+			tmpList = this.sysUserService.getGroupAdminUsers(filterStr,para.getGroupId(),pageInfo);
 		}
 		else
 		{
@@ -119,7 +123,7 @@ public class SysAdminController {
 		if(tmpList!= null)
 		{
 			mlist = tmpList.getContent().stream().map(item -> {
-				Map<String,String> tmp = new HashMap<String,String>();
+				Map<String,Object> tmp = new HashMap<String,Object>();
 				tmp.put("groupGuid", item.getGroupGuid());
 				tmp.put("userCnname",item.getUserCnname());
 				if(item.getGroupGuid()!=null)
@@ -129,9 +133,13 @@ public class SysAdminController {
 						tmp.put("groupName",group.get().getGroupName());
 				}
 				tmp.put("userName",item.getUsername());
+				tmp.put("userStatus", item.getAccountStatus());
+				tmp.put("userEmail", item.getUserEmail());
+				if(item.getLoginTime()!= null)
+					tmp.put("lastLoginTime", df.format(item.getLoginTime()));
 				return tmp;
 			}).collect(Collectors.toList());
-			Page<Map<String,String>> userPage = new PageImpl<Map<String,String>>(mlist,pageInfo,tmpList.getTotalElements());
+			Page<Map<String,Object>> userPage = new PageImpl<Map<String,Object>>(mlist,pageInfo,tmpList.getTotalElements());
 			return ResultUtil.success(userPage);
 		}
 		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
@@ -177,6 +185,7 @@ public class SysAdminController {
 		tmpUser.setAccountEnabled(true);
 		tmpUser.setAccountNonExpired(true);
 		tmpUser.setAccountNonLocked(true);
+		tmpUser.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		UserParameter resUser= new UserParameter();
 		TlGammaUser saveUser = this.sysUserService.save(tmpUser);
 		Map<String,String> saveResult = new HashMap<String,String>();
@@ -213,7 +222,7 @@ public class SysAdminController {
 					realUser.setUserPassword(encoder.encode(user.getUserPassword()));	
 				if(user.getUserStatus()!=null)
 					realUser.setAccountEnabled(user.getUserStatus()==1?true:false);
-				
+				realUser.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 				UserParameter resUser= new UserParameter();
 				TlGammaUser saveUser = this.sysUserService.save(realUser);
 				//resUser.setUserGuid(saveUser.getUserGuid());
@@ -277,7 +286,7 @@ public class SysAdminController {
 		int pageNumber = para.getPage();
 		int pageSize = para.getPageSize();
 		
-		String sortField = "groupName";
+		String sortField = "updateTime";
 		if(para.getSortField()!= null && para.getSortField().equalsIgnoreCase("name"))
 			sortField = "groupName";
 
@@ -323,6 +332,7 @@ public class SysAdminController {
 		refgroup.setGroupPic(group.getGroupPic());
 		refgroup.setGroupService(group.getGroupService());
 		refgroup.setGroupStatus(group.getGroupStatus());
+		refgroup.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		
 		return ResultUtil.success(this.sysGroupService.addGroup(refgroup));
 	}
@@ -367,7 +377,7 @@ public class SysAdminController {
 				refgroup.setGroupService(group.getGroupService());
 			if(group.getGroupStatus()!=null)
 				refgroup.setGroupStatus(group.getGroupStatus());
-			
+			refgroup.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 			return ResultUtil.success(this.sysGroupService.updateGroup(refgroup));
 		}
 		return ResultUtil.error(400, ReturnDesc.GROUP_NAME_IS_NOT_EXIST);

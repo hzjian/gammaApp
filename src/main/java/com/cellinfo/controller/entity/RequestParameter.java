@@ -12,7 +12,9 @@ public class RequestParameter implements GammaParameter{
 	
 	private Integer ikey;
 	
-	private String groupGuid;
+	private String groupId;
+	
+	private String classId;
 	
 	/**
 	 * @return the page
@@ -86,17 +88,32 @@ public class RequestParameter implements GammaParameter{
 	public void setIkey(Integer ikey) {
 		this.ikey = ikey;
 	}
+
+	
+	
 	/**
-	 * @return the groupGuid
+	 * @return the groupId
 	 */
-	public String getGroupGuid() {
-		return groupGuid;
+	public String getGroupId() {
+		return groupId;
 	}
 	/**
-	 * @param groupGuid the groupGuid to set
+	 * @param groupId the groupId to set
 	 */
-	public void setGroupGuid(String groupGuid) {
-		this.groupGuid = groupGuid;
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+	/**
+	 * @return the classId
+	 */
+	public String getClassId() {
+		return classId;
+	}
+	/**
+	 * @param classId the classId to set
+	 */
+	public void setClassId(String classId) {
+		this.classId = classId;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

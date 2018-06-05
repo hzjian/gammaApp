@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +34,9 @@ public class TlGammaKernelFilter implements Serializable {
 	
 	@Column(name="max_value",length = 32)
 	private String maxValue;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 
 	public TlGammaKernelFilter() {
 	}
@@ -121,4 +125,18 @@ public class TlGammaKernelFilter implements Serializable {
 		this.enumStr = enumStr;
 	}
 
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+	
 }

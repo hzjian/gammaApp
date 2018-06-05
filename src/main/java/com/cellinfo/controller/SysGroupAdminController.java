@@ -1,5 +1,6 @@
 package com.cellinfo.controller;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -34,7 +34,6 @@ import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
-import com.cellinfo.entity.TlGammaDict;
 import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
@@ -86,48 +85,6 @@ public class SysGroupAdminController {
 	private BCryptPasswordEncoder  encoder =new BCryptPasswordEncoder();
 	
 	private final static String DEFAULT_PASSWORD = "PASSWORD";
-
-	@PostMapping(value = "/kernels")
-	public Result<Page<Map<String, Object>>> kernelList(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
-		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
-		UserInfo cUser = this.utilService.getCurrentUser(request);
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
-		logger.info("kernels");
-		int pageNumber = para.getPage();
-		int pageSize = para.getPageSize();
-
-		Sort sort = null;
-		String sortField ="kernelClassname";
-		
-		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
-			sort = new Sort(Direction.ASC, sortField);
-		} else {
-			sort = new Sort(Direction.DESC, sortField);
-		}
-
-		String filterStr ="";
-		if(para.getSkey()!=null&&para.getSkey().length()>0)
-		{
-			filterStr = para.getSkey();
-		}
-		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),filterStr,pageInfo);
-		for (TlGammaKernel eachKernel : mList) { 
-			Map<String, Object> tMap = new HashMap<String, Object>();
-			tMap.put("classId", eachKernel.getKernelClassid());
-			tMap.put("className", eachKernel.getKernelClassname());
-			tMap.put("descInfo", eachKernel.getKernelClassdesc());
-			tMap.put("geoType",eachKernel.getGeomType());
-			tMap.put("kernelnum","");
-			tMap.put("tasknum","");
-			list.add(tMap);
-		}
-		
-		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
-		return ResultUtil.success(resPage);
-	}
 	
 	@PostMapping(value = "/kernel/save")
 	public Result<Map<String,String>> addKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernel, BindingResult bindingResult) {
@@ -142,6 +99,7 @@ public class SysGroupAdminController {
 		tmpKernel.setKernelClassdesc(kernel.getDescInfo());
 		tmpKernel.setKernelClassname(kernel.getClassName());
 		tmpKernel.setGeomType(kernel.getGeomType());
+		tmpKernel.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		
 		List<TlGammaKernel> kernellist = this.sysKernelService.getByKernelClassname(tmpKernel.getKernelClassname());
 		if(kernellist!=null && kernellist.iterator().hasNext())
@@ -156,44 +114,7 @@ public class SysGroupAdminController {
 		return ResultUtil.success(result);
 	}
 	
-	@PostMapping(value = "/kernel/query")
-	public Result<Map<String,Object>> queryKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernelParam) {
-		UserInfo cUser = this.utilService.getCurrentUser(request);
-		Map<String,Object> result = new HashMap<String,Object>();
-		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(kernelParam.getClassId());
-		if(!kernel.isPresent() )
-		{
-			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
-		}
-		else
-		{
-			result.put("classId",kernel.get().getKernelClassid());
-			result.put("className",kernel.get().getKernelClassname());
-			result.put("descInfo",kernel.get().getKernelClassdesc());
-			result.put("geoType",kernel.get().getGeomType());
-		}
-		List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(kernelParam.getClassId());
-		
-		List<Map<String,Object>> fieldList = attrList.stream().map(item ->{
-			Map<String,Object> fieldMap = new HashMap<String,Object>();
-			fieldMap.put("attrId", item.getAttrGuid());
-			fieldMap.put("attrName",item.getAttrName());
-			fieldMap.put("attrType",item.getAttrType());
-			fieldMap.put("attrGrade",item.getAttrFgrade());
-			if(item.getDictId()!=null)
-			{
-				Optional<TlGammaDict> opDict = this.sysDictService.getDictbyId(item.getDictId());
-				if(opDict.isPresent())
-				{
-					fieldMap.put("attrEnum",opDict.get().getDictName());
-					fieldMap.put("dictId",item.getDictId());
-				}
-			}
-			return fieldMap;
-		}).collect(Collectors.toList());
-		result.put("attrs", fieldList);
-		return ResultUtil.success(result);
-	}
+	
 	
 	@PostMapping(value = "/kernel/update")
 	public Result<Map<String,String>> updateKernel(HttpServletRequest request ,@RequestBody @Valid KernelParameter kernel, BindingResult bindingResult) {
@@ -214,6 +135,7 @@ public class SysGroupAdminController {
 		if(kernel.getGeomType()!=null)
 			tmpKernel.setGeomType(kernel.getGeomType());
 
+		tmpKernel.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		Map<String,String> result = new HashMap<String,String>();
 		TlGammaKernel saveKernel = this.sysKernelService.addGroupKernel(tmpKernel);
 		
@@ -241,6 +163,8 @@ public class SysGroupAdminController {
 		attr.setAttrMax(attrPara.getMaxValue());
 		attr.setAttrMin(attrPara.getMinValue());
 		attr.setAttrDesc(attrPara.getAttrDesc());
+		attr.setDictId(attrPara.getDictId());
+		attr.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		TlGammaKernelAttr  tmp = this.sysKernelService.saveKernelAttr(attr);
 
 		result.put("attrId", tmp.getAttrGuid());
@@ -263,6 +187,8 @@ public class SysGroupAdminController {
 			return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_NOT_EXIST);
 		}
 		TlGammaKernelAttr attr = optionAttr.get();
+		if(attrPara.getAttrType()!= null)
+			attr.setAttrType(attrPara.getAttrType());
 		if(attrPara.getAttrDesc()!= null)
 			attr.setAttrDesc(attrPara.getAttrDesc());
 		if(attrPara.getAttrGrade()!=null)
@@ -271,11 +197,13 @@ public class SysGroupAdminController {
 			attr.setAttrMax(attrPara.getMaxValue());
 		if(attrPara.getMinValue()!=null)
 			attr.setAttrMin(attrPara.getMinValue());
+		if(attrPara.getDictId()!=null)
+			attr.setDictId(attrPara.getDictId());
 		
-		
+		attr.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		this.sysKernelService.updateKernelAttr(attr);
 		
-		return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_INUSED);
+		return ResultUtil.success("ok");
 	}
 	
 	@PostMapping(value = "/kernel/deleteattr")
@@ -285,8 +213,10 @@ public class SysGroupAdminController {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 		Map<String,String> result = new HashMap<String,String>();
+		
+		
 		long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
-		if(aNum>0)///判断该字段是否被使用
+		if(aNum < 1)///判断该字段是否被使用
 		{
 			this.sysKernelService.deleteKernelAttr(attrPara.getAttrId());
 			return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
@@ -327,7 +257,7 @@ public class SysGroupAdminController {
 		int pageSize = para.getPageSize();
 
 		Sort sort = null; 
-		String sortField ="userName";
+		String sortField ="updateTime";
 		
 		if (para.getSortDirection()!=null && para.getSortDirection().equalsIgnoreCase("ASC")) {
 			sort = new Sort(Direction.ASC, sortField);
@@ -348,6 +278,7 @@ public class SysGroupAdminController {
 			tMap.put("userName", eachUser.getUserName());
 			tMap.put("userCnname", eachUser.getUserCnname());
 			tMap.put("userEmail",eachUser.getUserEmail());
+			tMap.put("userStatus", eachUser.getAccountStatus());
 			list.add(tMap);
 		}
 		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
@@ -387,7 +318,7 @@ public class SysGroupAdminController {
 		tmpUser.setAccountEnabled(true);
 		tmpUser.setAccountNonExpired(true);
 		tmpUser.setAccountNonLocked(true);
-		
+		tmpUser.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		TlGammaUser saveResult = this.sysUserService.save(tmpUser);	
 		tMap.put("userName", saveResult.getUsername());
 		tMap.put("userEmail", saveResult.getUserEmail());
@@ -414,7 +345,7 @@ public class SysGroupAdminController {
 		if(member.getUserStatus()!=null)
 			kuser.setAccountEnabled(member.getUserStatus()==1?true:false);
 
-		
+		kuser.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 		TlGammaUser saveResult = this.sysUserService.save(kuser);	
 		tMap.put("userName", saveResult.getUsername());
 		tMap.put("userEmail", saveResult.getUserEmail());

@@ -22,7 +22,7 @@ public class SysCommonTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 	
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3NDEyMDQ0LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.zbtYSFbemVePfcNq4Bhjq3uU-XKYW4Vld6cCUTOTMtoGY59jcIr-pSeznR7ZW6QTVowZcCY0cEHjaUh_WhAkiw";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI4MjA1OTI0LCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.5ef_lppfK1i7xqsO6QH9bX2qE9Cnpvw9K0OCHQo0E_dBDTn5DiVgYYNWsD5BmK4WynYQGzr1gO0IvZo0zmGLOg";
 	
 	@Test
 	public void common_dict_save() throws Exception {
@@ -78,5 +78,20 @@ public class SysCommonTest {
 	    rlist.keySet().stream().forEach(key -> System.out.println(key+" " + rlist.get(key)));
 	    Assert.assertEquals(result.getMsg(),"成功");
 	    System.out.println("-----------------/service/common/dict/additem---------end-----------  ");
+	}
+	
+	@Test
+	public void common_user_info() throws Exception {
+		System.out.println("-----------------/service/common/userinfo---------start-----------  ");
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.add("x-auth-token", token );
+	   
+	    
+	    HttpEntity entity = new HttpEntity(null, headers);
+	    Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/common/userinfo",entity,Result.class);
+	    Map<String ,Object> rlist = result.getData();
+	    rlist.keySet().stream().forEach(key -> System.out.println(key+" " + rlist.get(key)));
+	    Assert.assertEquals(result.getMsg(),"成功");
+	    System.out.println("-----------------/service/common/userinfo---------end-----------  ");
 	}
 }

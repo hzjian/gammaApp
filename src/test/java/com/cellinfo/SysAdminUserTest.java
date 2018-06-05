@@ -36,7 +36,7 @@ public class SysAdminUserTest {
         para.setPage(0);
         para.setPageSize(10);
         para.setSortDirection("DESC");
-        para.setGroupGuid("367e5da5-6f34-4c68-b34d-6af2f1f41a14");
+        para.setGroupId("367e5da5-6f34-4c68-b34d-6af2f1f41a14");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
         Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/api/users",entity,Result.class);

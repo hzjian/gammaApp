@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -68,6 +69,9 @@ public class TlGammaKernelAttr implements Serializable {
 	@Column(name="attr_desc", length=256)
 	private String attrDesc;
 
+	@Column(name="update_time")
+	private Timestamp updateTime;
+	
 	public TlGammaKernelAttr() {
 	}
 	
@@ -195,6 +199,20 @@ public class TlGammaKernelAttr implements Serializable {
 	 */
 	public void setAttrDesc(String attrDesc) {
 		this.attrDesc = attrDesc;
+	}
+	
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 	
 	

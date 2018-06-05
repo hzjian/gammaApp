@@ -6,6 +6,8 @@ public class GeoFilterParameter {
 	
 	private String filterId;
 	
+	private String filterName;
+	
 	private String extId;
 	
 	//geojson
@@ -52,6 +54,21 @@ public class GeoFilterParameter {
 	public void setFilterGeom(Map<String, Object> filterGeom) {
 		this.filterGeom = filterGeom;
 	}
+
+	/**
+	 * @return the filterName
+	 */
+	public String getFilterName() {
+		return filterName;
+	}
+
+	/**
+	 * @param filterName the filterName to set
+	 */
+	public void setFilterName(String filterName) {
+		this.filterName = filterName;
+	}
+	
 	
 	
 	

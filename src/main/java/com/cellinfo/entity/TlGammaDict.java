@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,6 +33,8 @@ public class TlGammaDict implements Serializable {
 	@Column(name="group_guid", length=36)
 	private String groupGuid;
 
+	@Column(name="update_time")
+	private Timestamp updateTime;
 	
 	public TlGammaDict() {
 	}
@@ -72,6 +75,20 @@ public class TlGammaDict implements Serializable {
 	 */
 	public void setGroupGuid(String groupGuid) {
 		this.groupGuid = groupGuid;
+	}
+	
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 	
 

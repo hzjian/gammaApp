@@ -94,7 +94,6 @@ public class SysDataController {
 					geoList = this.sysDataService.getKernelData(para.getKernelClassid(),para.getGeoType(),filterGeom);
 				System.out.println("222");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ResultUtil.success(geoList);
@@ -115,7 +114,6 @@ public class SysDataController {
 					dataCount = this.sysDataService.getKernelDataCount(para.getKernelClassid(),para.getGeoType(),filterGeom);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return ResultUtil.success(dataCount);

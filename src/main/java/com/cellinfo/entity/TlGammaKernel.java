@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,10 +21,10 @@ public class TlGammaKernel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="kernel_classid", nullable=false)
+	@Column(name="kernel_classid", length=36)
 	private String kernelClassid;
 	
-	@Column(name="group_guid", nullable=false)
+	@Column(name="group_guid", length=36)
 	private String groupGuid;
 
 	@Column(name="kernel_classdesc", length=512)
@@ -34,6 +35,9 @@ public class TlGammaKernel implements Serializable {
 
 	@Column(name="geom_type", length=16)
 	private String geomType;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 	
 	@Column(name="server_path", length=128)
 	private String serverPath;
@@ -99,6 +103,20 @@ public class TlGammaKernel implements Serializable {
 	 */
 	public void setServerPath(String serverPath) {
 		this.serverPath = serverPath;
+	}
+	
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 	
 }

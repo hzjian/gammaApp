@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -41,6 +42,9 @@ public class TlGammaGroup implements Serializable {
 	@Column(name="group_pic", length=128)
 	private String groupPic;
 
+	@Column(name="update_time")
+	private Timestamp updateTime;
+	
 	@Column(name="group_status")
 	private Integer groupStatus;
 	
@@ -127,5 +131,20 @@ public class TlGammaGroup implements Serializable {
 	public void setGroupService(String groupService) {
 		this.groupService = groupService;
 	}
+	
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
+	
 
 }

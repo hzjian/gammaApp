@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -58,12 +60,20 @@ public class SysKernelExtService {
 		return this.tlGammaKernelFilterRepository.findByExtGuid(extGuid);
 	}
 	
-	
+	@Transactional
 	public void deleteKernelExt(String extGuid)
 	{
-		this.tlGammaKernelFilterRepository.deleteByExtGuid(extGuid);
-		this.tlGammaKernelGeoFilterRepository.deleteByExtGuid(extGuid);
-		this.tlGammaKernelExtRepository.deleteById(extGuid);
+		try {
+			this.tlGammaKernelFilterRepository.deleteByExtGuid(extGuid);
+			this.tlGammaKernelGeoFilterRepository.deleteByExtGuid(extGuid);
+			this.tlGammaKernelExtRepository.deleteById(extGuid);
+			//删除核心对象所在节点的标签
+			//TODO
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -72,9 +82,14 @@ public class SysKernelExtService {
 		return this.tlGammaKernelAttrRepository.findById(attrguid);
 	}
 
-	public Page<Map<String ,String >> getKernelExtList(String kernelClassid,String userName,Pageable pageable) {
+	public Page<Map<String ,String >> getKernelExtList(String filterStr,String userName,Pageable pageable) {
 		List<Map<String ,String >> subTypeList = new LinkedList<Map<String ,String >>();
-		Page<TlGammaKernelExt> extList = this.tlGammaKernelExtRepository.findByKernelClassidAndUserName(kernelClassid,userName,pageable);
+		Page<TlGammaKernelExt> extList = null;
+		if(filterStr!= null && filterStr.length()>0)
+			extList = this.tlGammaKernelExtRepository.filterByExtName(filterStr,userName,pageable);
+		else
+			extList = this.tlGammaKernelExtRepository.findByUserName(userName,pageable);
+			
 		if(extList!= null && extList.getSize()>0)
 		{
 			for(TlGammaKernelExt ext: extList.getContent())
@@ -116,32 +131,31 @@ public class SysKernelExtService {
 	}
 
 	public void deleteGeoFilter(String filterId) {
-		// TODO Auto-generated method stub
 		this.tlGammaKernelGeoFilterRepository.deleteById(filterId);
 	}
 
 	public void deleteFilter(String filterId) {
-		// TODO Auto-generated method stub
 		this.tlGammaKernelFilterRepository.deleteById(filterId);
 	}
 
 	public TlGammaKernelFilter saveFilter(TlGammaKernelFilter nFilter) {
-		// TODO Auto-generated method stub
 		return this.tlGammaKernelFilterRepository.save(nFilter);
 	}
 
 	public List<TlGammaKernelExt> getKernelExtByName(String extName, String userName) {
-		// TODO Auto-generated method stub
 		return this.tlGammaKernelExtRepository.getKernelExtByName(extName,userName);
 	}
 
 	public List<TlGammaKernelGeoFilter> getGeoFilter(String extGuid) {
-		// TODO Auto-generated method stub
 		return this.tlGammaKernelGeoFilterRepository.findByExtGuid(extGuid);
 	}
 
 	public List<TlGammaKernelFilter> getFilter(String extGuid) {
-		// TODO Auto-generated method stub
 		return this.tlGammaKernelFilterRepository.findByExtGuid(extGuid);
+	}
+
+	public Optional<TlGammaKernelGeoFilter> getGeoFilterByFilterId(String filterId) {
+		return this.tlGammaKernelGeoFilterRepository.findById(filterId);
+		
 	}
 }
