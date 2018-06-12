@@ -25,12 +25,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
+import com.cellinfo.entity.TlGammaGroup;
 import com.cellinfo.entity.TlGammaLog;
 import com.cellinfo.entity.TlGammaUser;
+import com.cellinfo.exception.GroupDisableException;
 import com.cellinfo.security.TokenAuthenticationService;
 import com.cellinfo.security.UserAuthentication;
 import com.cellinfo.service.SysLogService;
 import com.cellinfo.service.SysUserService;
+import com.cellinfo.utils.ExceptionDesc;
 import com.cellinfo.utils.FuncDesc;
 import com.cellinfo.utils.ModuleDesc;
 import com.cellinfo.utils.ResultUtil;
@@ -44,7 +47,6 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
     private SysUserService sysUserService;
     
-
     private SysLogService sysLogService;
 
     public StatelessLoginFilter(String urlMapping,TokenAuthenticationService tokenAuthenticationService,
@@ -63,7 +65,15 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
     	
     	final TlGammaUser user = toUser(request);
         
-    	// final TlGammaUser realUser = this.sysUserService.findOne(user.getUsername());
+    	final Optional<TlGammaUser> realUser = this.sysUserService.findOne(user.getUsername());
+    	if(realUser.isPresent())
+    	{
+    		Optional<TlGammaGroup>  optinalgroup = this.sysUserService.findGroupById(realUser.get().getGroupGuid());
+    		if(optinalgroup.isPresent() && optinalgroup.get().getGroupStatus()!= 1)
+    		{
+    			throw new GroupDisableException (ExceptionDesc.GROUP_IS_DISABLED);
+    		}
+    	}
 
         final UsernamePasswordAuthenticationToken loginToken = user.toAuthenticationToken();
         return getAuthenticationManager().authenticate(loginToken);
@@ -115,10 +125,6 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getWriter(), ResultUtil.success(tokenMap));
         
-        
-        ///////
-        // TODO
-        
         Optional<TlGammaUser> userOptional =  this.sysUserService.findOne(authenticatedUser.getUsername());
         if(userOptional.isPresent())
         {
@@ -126,7 +132,6 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         	rUser.setLoginTime(new Timestamp(System.currentTimeMillis()));
         	this.sysUserService.save(rUser);
         }
-        
         
         try {
         	

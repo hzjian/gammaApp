@@ -134,8 +134,24 @@ public class SysKernelService {
 		this.tlGammaKernelAttrRepository.save(attr);
 	}
 
-	public Page<TlGammaKernelAttr> getKernelAttrList(String classId, String filterStr,Pageable pageInfo) {
+	public Page<TlGammaKernelAttr> getKernelAttrList(String classId,String userName, String filterStr,Pageable pageInfo) {
 		// TODO Auto-generated method stub
-		return this.tlGammaKernelAttrRepository.getKernelAttrList( classId,  filterStr,  pageInfo);
+		return this.tlGammaKernelAttrRepository.getKernelAttrList(classId,userName,  filterStr,  pageInfo);
+	}
+
+	public List<TlGammaKernelAttr> getAttrByName(String classId,String attrName) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelAttrRepository.findAllByAttrName(classId,attrName);
+	}
+
+	public List<TlGammaKernelAttr> getTaskAttrAvalialble(String classId,String userName, String taskId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelAttrRepository.getTaskAttrAvalialble(classId,userName, taskId);
+	}
+
+	public List<TlGammaKernel> getTaskKernelAvaliable(String groupId,String taskId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelRepository.getTaskKernelAvaliable(groupId,taskId);
+		
 	}
 }

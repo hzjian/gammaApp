@@ -10,6 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
+import com.cellinfo.controller.entity.GAParameter;
 import com.cellinfo.controller.entity.GroupParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
@@ -24,7 +25,7 @@ public class SysAdminUserTest {
 	
 	private String serverPath = "http://127.0.0.1:8081";
 
-	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI3NDExNzgwLCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.qno-KEB8nm0KOOgi5MAksT0VQMKie9rB8LTJQ7gPdAhCWsrffZPh0ZG71Zc7Mzj1UTiQPRYGxQCihJ2B3WLYNg";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJub25fZXhwaXJlZCI6dHJ1ZSwiZXhwIjoxNTI5Mjg4ODczLCJlbmFibGVkIjp0cnVlLCJub25fbG9ja2VkIjp0cnVlLCJncm91cCI6IjEwMDAwIn0.LHwQZ8WtLSyiSXJuK92U2RJav7LWPqtt8-2eT68ysb5ndx1ManzRbH_Q7oVlE3c_y5xh4AGb2Yt3oTWwsGVkhQ";
 	
 	@Test
     public void sysAminuserList() throws Exception {
@@ -159,6 +160,25 @@ public class SysAdminUserTest {
         Assert.assertEquals(result.getMsg(),"成功");
         
         System.out.println("-----------------/service/api/groups---------end-----------  ");
+    }
+	
+	@Test
+    public void service_api_group() throws Exception {
+		System.out.println("-----------------/service/api/group---------start-----------  ");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("x-auth-token", token );
+        
+        GAParameter para = new GAParameter();
+        para.setId("0fd5f2e6-2bb9-423b-bd97-790940f9997e");
+        
+        HttpEntity<GAParameter> entity = new HttpEntity<GAParameter>(para, headers);
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/api/group",entity,Result.class);
+        Map<String ,Object> rlist = result.getData();
+        
+        System.out.println(rlist);
+        Assert.assertEquals(result.getMsg(),"成功");
+        
+        System.out.println("-----------------/service/api/group---------end-----------  ");
     }
 	
 	@Test

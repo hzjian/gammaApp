@@ -31,4 +31,13 @@ public interface TlGammaUserRepository extends PagingAndSortingRepository<TlGamm
 	@Query("select u from TlGammaUser u where u.userName like %?1% and u.groupGuid = ?2 and u.roleId = 'ROLE_GROUP_ADMIN'")
 	public Page<TlGammaUser> getGroupAdminUsers(String nameFilter,String groupGuid,Pageable pageInfo);
 
+	@Query("select u from TlGammaUser u where u.userName= ?1 and u.roleId = 'ROLE_GROUP_ADMIN'")
+	public List<TlGammaUser> findGroupAdminUser(String id);
+
+	@Query("select u from TlGammaUser u where u.userName= ?1 and u.roleId = 'ROLE_USER'")
+	public List<TlGammaUser> findGroupMemberUser(String id);
+
+	@Query("select u from TlGammaUser u where u.groupGuid= ?1 and u.roleId = 'ROLE_USER' and u.userName not in (select userName from TlGammaTaskUser where taskGuid = ?2)")
+	public List<TlGammaUser> getGroupMemberAvaliable(String groupGuid, String taskId);
+
 }

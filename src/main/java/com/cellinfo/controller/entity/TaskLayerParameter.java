@@ -1,41 +1,32 @@
 package com.cellinfo.controller.entity;
 
-public class TaskUserParameter {
+public class TaskLayerParameter {
 
 	private String taskId;
-	
-	private String userName;
-
-	
-
+	private String layerId;
 	/**
 	 * @return the taskId
 	 */
 	public String getTaskId() {
 		return taskId;
 	}
-
 	/**
 	 * @param taskId the taskId to set
 	 */
 	public void setTaskId(String taskId) {
 		this.taskId = taskId;
 	}
-
 	/**
-	 * @return the userName
+	 * @return the layerId
 	 */
-	public String getUserName() {
-		return userName;
+	public String getLayerId() {
+		return layerId;
 	}
-
 	/**
-	 * @param userName the userName to set
+	 * @param layerId the layerId to set
 	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLayerId(String layerId) {
+		this.layerId = layerId;
 	}
-	
-	
 	
 }

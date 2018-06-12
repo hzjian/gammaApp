@@ -24,6 +24,9 @@ public class TlGammaTaskLayer implements Serializable {
 	@Column(name="layer_guid", length=36)
 	private String layerGuid;
 	
+	@Column(name="layer_name", length=128)
+	private String layerName;
+	
 	@Column(name="task_guid", length=36)
 	private String taskGuid;
 	
@@ -128,5 +131,20 @@ public class TlGammaTaskLayer implements Serializable {
 	public void setLayerGrade(Integer layerGrade) {
 		this.layerGrade = layerGrade;
 	}
+
+	/**
+	 * @return the layerName
+	 */
+	public String getLayerName() {
+		return layerName;
+	}
+
+	/**
+	 * @param layerName the layerName to set
+	 */
+	public void setLayerName(String layerName) {
+		this.layerName = layerName;
+	}
 		
+	
 }

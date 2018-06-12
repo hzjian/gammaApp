@@ -24,7 +24,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
-import com.cellinfo.controller.entity.GammaParameter;
+import com.cellinfo.controller.entity.GAParameter;
 import com.cellinfo.entity.TlGammaLog;
 import com.cellinfo.security.JwtTokenHandler;
 import com.cellinfo.service.SysLogService;
@@ -130,7 +130,7 @@ public class HttpAspect {
 				}
 				for(Object arg :pjp.getArgs())
 				{
-					if(arg instanceof GammaParameter)
+					if(arg instanceof GAParameter)
 					{
 						operDesc+= arg.toString();
 					}

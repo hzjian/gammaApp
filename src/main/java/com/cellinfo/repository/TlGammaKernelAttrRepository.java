@@ -13,7 +13,13 @@ public interface TlGammaKernelAttrRepository extends PagingAndSortingRepository<
 
 	List<TlGammaKernelAttr> findByKernelClassid(String kernelClassid);
 
-	@Query("select a from TlGammaKernelAttr a  where a.kernelClassid = ?1 and a.attrName like %?2%") 
-	Page<TlGammaKernelAttr> getKernelAttrList(String classId, String filterStr, Pageable pageInfo);
+	@Query("select a from TlGammaKernelAttr a  where a.kernelClassid = ?1 and ( a.userName= ?2 or a.shareGrade='GROUP' ) and a.attrName like %?3%") 
+	Page<TlGammaKernelAttr> getKernelAttrList(String classId,String userName, String filterStr, Pageable pageInfo);
+
+	@Query("select a from TlGammaKernelAttr a  where a.kernelClassid = ?1 and a.attrName = ?2") 
+	List<TlGammaKernelAttr> findAllByAttrName(String classId,String attrName);
+
+	@Query("select a from TlGammaKernelAttr a  where a.kernelClassid = ?1 and ( a.userName= ?2 or a.shareGrade='GROUP' ) and a.attrGuid not in (select attrGuid from TlGammaTaskAttr where taskGuid =?3)") 
+	List<TlGammaKernelAttr> getTaskAttrAvalialble(String classId,String userName,String taskId);
 
 }

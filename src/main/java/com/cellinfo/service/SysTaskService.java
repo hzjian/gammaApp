@@ -3,23 +3,28 @@ package com.cellinfo.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaTaskAttr;
+import com.cellinfo.entity.TlGammaTaskAttrrank;
 import com.cellinfo.entity.TlGammaTaskLayer;
 import com.cellinfo.entity.TlGammaTaskUser;
 import com.cellinfo.entity.ViewTaskAttr;
 import com.cellinfo.entity.ViewTaskExt;
 import com.cellinfo.entity.ViewTaskUser;
+import com.cellinfo.entity.ViewTaskUserPK;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
+import com.cellinfo.repository.TlGammaKernelFilterRepository;
 import com.cellinfo.repository.TlGammaKernelSubsetRepository;
 import com.cellinfo.repository.TlGammaTaskAttrRepository;
+import com.cellinfo.repository.TlGammaTaskAttrrankRepository;
 import com.cellinfo.repository.TlGammaTaskLayerRepository;
 import com.cellinfo.repository.TlGammaTaskRepository;
 import com.cellinfo.repository.TlGammaTaskUserRepository;
@@ -57,6 +62,12 @@ public class SysTaskService {
 	
 	@Autowired
 	private ViewTaskExtRepository viewTaskExtRepository;
+	
+	@Autowired
+	private TlGammaKernelFilterRepository tlGammaKernelFilterRepository;
+	
+	@Autowired
+	private TlGammaTaskAttrrankRepository tlGammaTaskAttrrankRepository;
 	
 	
 	public Page<TlGammaTask> getAll(PageRequest pageInfo) {
@@ -121,17 +132,10 @@ public class SysTaskService {
 		return this.tlGammaTaskRepository.getUserCreateTasks(groupGuid,userName,strFilter,pageable);
 	}
 
+	@Transactional
 	public void deleteTaskUser(String taskGuid, String userName) {
 		// TODO Auto-generated method stub
 		this.tlGammaTaskUserRepository.deleteByTaskGuidAndUserName(taskGuid,userName);
-	}
-
-	public TlGammaTaskAttr addTaskField(TlGammaKernelAttr kernelattr, TlGammaTaskAttr taskattr) {
-		// TODO Auto-generated method stub
-		
-		this.tlGammaKernelAttrRepository.save(kernelattr);
-		
-		return this.tlGammaTaskAttrRepository.save(taskattr);
 	}
 	
 	public TlGammaTaskAttr addTaskField(TlGammaTaskAttr taskattr) {
@@ -179,6 +183,61 @@ public class SysTaskService {
 			PageRequest pageInfo) {
 		// TODO Auto-generated method stub
 		return this.viewTaskUserRepository.getPasswordTasks(userName,filterStr,pageInfo);
+	}
+
+	public long getExtApplyNum(String attrId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelFilterRepository.countByAttrGuid(attrId);
+	}
+
+	public List<TlGammaTaskLayer> getTaskLayerList(String taskId, Integer status) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskLayerRepository.getLayerList(taskId,status);
+	}
+
+	public void deleteTaskLayer(String layerId) {
+		// TODO Auto-generated method stub
+		this.tlGammaTaskLayerRepository.deleteById(layerId);
+	}
+
+	public List<TlGammaTaskAttrrank> getTaskAttrRankList(String taskId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskAttrrankRepository.findByTaskGuid(taskId);
+		
+	}
+
+	public Optional<TlGammaTaskAttrrank>  getTaskRank(String rankId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskAttrrankRepository.findById(rankId);
+	}
+
+	public TlGammaTaskAttrrank saveTaskAttrRank(TlGammaTaskAttrrank rank) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskAttrrankRepository.save(rank);
+	}
+
+	public TlGammaTaskAttr getTaskAttr(String taskId, String attrId) {
+		List<TlGammaTaskAttr> taskAttrList = this.tlGammaTaskAttrRepository.findByTaskGuidAndAttrGuid(taskId,attrId);
+		if(taskAttrList!=null && taskAttrList.size()>0)
+			return taskAttrList.get(0);
+		else
+			return null;
+		
+	}
+
+	public TlGammaTaskAttr saveTaskAttr(TlGammaTaskAttr taskAttr) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskAttrRepository.save(taskAttr);
+	}
+
+	public Optional<TlGammaTask> getTaskbyId(String taskId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskRepository.findById(taskId);
+	}
+
+	public Optional<ViewTaskUser> getTaskUser(String taskId, String userName) {
+		// TODO Auto-generated method stub
+		return this.viewTaskUserRepository.findById(new ViewTaskUserPK(taskId,userName));
 	}
 	
 	

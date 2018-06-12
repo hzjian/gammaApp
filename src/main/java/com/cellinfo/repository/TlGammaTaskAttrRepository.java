@@ -1,5 +1,7 @@
 package com.cellinfo.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,5 +18,9 @@ public interface TlGammaTaskAttrRepository extends PagingAndSortingRepository<Tl
 	void deleteTaskAttr(String taskGuid, String fieldGuid);
 
 	Long countByAttrGuid(String attrId);
+
+	List<TlGammaTaskAttr> findByTaskGuidAndAttrGuid(String taskId, String attrId);
+	
+	
 
 }

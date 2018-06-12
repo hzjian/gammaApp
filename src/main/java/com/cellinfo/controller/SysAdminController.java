@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
+import com.cellinfo.controller.entity.GAParameter;
 import com.cellinfo.controller.entity.GroupParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
@@ -124,7 +125,7 @@ public class SysAdminController {
 		{
 			mlist = tmpList.getContent().stream().map(item -> {
 				Map<String,Object> tmp = new HashMap<String,Object>();
-				tmp.put("groupGuid", item.getGroupGuid());
+				tmp.put("groupId", item.getGroupGuid());
 				tmp.put("userCnname",item.getUserCnname());
 				if(item.getGroupGuid()!=null)
 				{
@@ -143,6 +144,33 @@ public class SysAdminController {
 			return ResultUtil.success(userPage);
 		}
 		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
+	}
+
+	@PostMapping(value = "/user")
+	public Result<Map<String,Object>> adminUser(@RequestBody GAParameter para, BindingResult bindingResult) {
+		Map<String,Object> tmp = new HashMap<String,Object>();
+		if(para.getId()!= null)
+		{
+			TlGammaUser tmpUser = this.sysUserService.getGroupAdminUser(para.getId());
+			if(tmpUser!= null)
+			{
+				tmp.put("groupId", tmpUser.getGroupGuid());
+				tmp.put("userCnname",tmpUser.getUserCnname());
+				if(tmpUser.getGroupGuid()!=null)
+				{
+					Optional<TlGammaGroup> group = this.sysGroupService.findOne(tmpUser.getGroupGuid());
+					if(group.isPresent())
+						tmp.put("groupName",group.get().getGroupName());
+				}
+				tmp.put("userName",tmpUser.getUsername());
+				tmp.put("userStatus", tmpUser.getAccountStatus());
+				tmp.put("userEmail", tmpUser.getUserEmail());
+				if(tmpUser.getLoginTime()!= null)
+					tmp.put("lastLoginTime", df.format(tmpUser.getLoginTime()));
+			}
+		}
+		
+		return ResultUtil.success(tmp);
 	}
 
 	/**
@@ -256,27 +284,6 @@ public class SysAdminController {
 	}
 	
 	
-	@GetMapping(value = "/group/query")
-	public Result<GroupParameter> groupFindOne( @RequestBody @Valid String groupGuid) {
-		
-		Optional<TlGammaGroup>  groupOptional = this.sysGroupService.findOne(groupGuid);
-		if(!groupOptional.isPresent())
-			return ResultUtil.error(400, ReturnDesc.GROUP_IS_NOT_EXIST);
-		
-		TlGammaGroup group = groupOptional.get();
-		GroupParameter refgroup = new GroupParameter();
-		refgroup.setGroupGuid(group.getGroupGuid());
-		refgroup.setGroupAddress(group.getGroupAddress());
-		refgroup.setGroupCode(group.getGroupCode());
-		refgroup.setGroupEmail(group.getGroupEmail());
-		refgroup.setGroupName(group.getGroupName());
-		refgroup.setGroupPhone(group.getGroupPhone());
-		refgroup.setGroupPic(group.getGroupPic());
-		refgroup.setGroupService(group.getGroupService());
-		refgroup.setGroupStatus(group.getGroupStatus());
-
-		return ResultUtil.success(refgroup);
-	}
 	@PostMapping(value = "/groups")
 	public Result<Page<TlGammaGroup>> groupList(@RequestBody RequestParameter para, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
@@ -305,6 +312,28 @@ public class SysAdminController {
 		
 		Page<TlGammaGroup> mList = this.sysGroupService.queryGroupListByName(filterStr,pageInfo);
 		return ResultUtil.success(mList);
+	}
+	
+	@PostMapping(value = "/group")
+	public Result<Map<String,Object>> groupInfo(@RequestBody GAParameter para) {
+		Map<String,Object> tmp = new HashMap<String,Object>();
+		if(para.getId()!=null)
+		{
+			Optional<TlGammaGroup>  groupOptional =  this.sysGroupService.findOne(para.getId());
+			if(groupOptional.isPresent())
+			{
+				TlGammaGroup tGroup = groupOptional.get();
+				tmp.put("groupAddress", tGroup.getGroupAddress());
+				tmp.put("groupCode", tGroup.getGroupCode());
+				tmp.put("groupEmail", tGroup.getGroupEmail());
+				tmp.put("groupId", tGroup.getGroupGuid());
+				tmp.put("groupName", tGroup.getGroupName());
+				tmp.put("groupPhone", tGroup.getGroupPhone());
+				tmp.put("groupStatus", tGroup.getGroupStatus());
+			}
+		}
+		
+		return ResultUtil.success(tmp);
 	}
 	/**
 	 * 创建组织

@@ -18,7 +18,7 @@ import org.hibernate.annotations.Subselect;
 //@Table(name="view_task_attr")
 //@NamedQuery(name="ViewTaskAttr.findAll", query="SELECT s FROM ViewTaskAttr s")
 @Immutable
-@Subselect("select a.task_guid,b.attr_guid,c.kernel_classid,c.attr_name,c.attr_field,c.attr_type,c.attr_enum "
+@Subselect("select a.task_guid,b.attr_guid,b.rank_guid,c.kernel_classid,c.attr_name,c.attr_field,c.attr_type,c.attr_enum "
 		+ "from tl_gamma_task a, tl_gamma_task_attr b, tl_gamma_kernel_attr c "
 		+ "where a.task_guid = b.task_guid and b.attr_guid = c.attr_guid")
 public class ViewTaskAttr implements Serializable {
@@ -41,6 +41,9 @@ public class ViewTaskAttr implements Serializable {
 	
 	@Column(name="attr_isedit")
 	private Integer attrIsedit;
+	
+	@Column(name="rank_guid")
+	private String rankGuid;
 	
 	@Column(name="attr_fgrade")
 	private String attrFgrade;
@@ -177,6 +180,22 @@ public class ViewTaskAttr implements Serializable {
 	 */
 	public void setLayerGrade(Integer layerGrade) {
 		this.layerGrade = layerGrade;
+	}
+
+
+	/**
+	 * @return the rankGuid
+	 */
+	public String getRankGuid() {
+		return rankGuid;
+	}
+
+
+	/**
+	 * @param rankGuid the rankGuid to set
+	 */
+	public void setRankGuid(String rankGuid) {
+		this.rankGuid = rankGuid;
 	}
 
 	

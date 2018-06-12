@@ -24,4 +24,7 @@ public class ReturnDesc {
 	public static final String EXT_NAME_IS_EXIST = "标签已存在";
 	public static final String THIS_ATTR_IS_INUSED = "该字段已被使用";
 	public static final String THIS_ATTR_IS_NOT_EXIST = "该字段不存在";
+	public static final String ATTR_NAME_IS_EXIST = "该属性字段名称已存在";
+	public static final String TASK_USER_IS_EXIST  ="此任务中用户已存在";
+
 }

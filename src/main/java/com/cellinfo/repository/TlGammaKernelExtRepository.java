@@ -17,6 +17,7 @@ public interface TlGammaKernelExtRepository extends PagingAndSortingRepository<T
 	Page<TlGammaKernelExt> filterByExtName(String filterStr, String userName,Pageable pageable);
 	
 
+	@Query("select u from TlGammaKernelExt u where u.kernelClassid = ?1 and (u.userName = ?2 or u.extGrade = 'GROUP')")
 	List<TlGammaKernelExt> findByKernelClassidAndUserName(String kernelClassid, String userName);
 
 	@Query("select u from TlGammaKernelExt u where u.extName = ?1 and u.userName = ?2")

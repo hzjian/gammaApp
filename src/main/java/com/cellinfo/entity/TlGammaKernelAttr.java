@@ -72,6 +72,23 @@ public class TlGammaKernelAttr implements Serializable {
 	@Column(name="update_time")
 	private Timestamp updateTime;
 	
+	@Column(name="create_time")
+	private Timestamp createTime;
+	
+	@Column(name="user_name", length=64)
+	private String userName;
+	
+	@Column(name="apply_num")
+	private Integer applyNum;
+	
+	/**
+	 * TASK 任务内部共享
+	 * GROUP 组织内部共享
+	 * 
+	 */
+	@Column(name="share_grade", length=32)
+	private String shareGrade;
+	
 	public TlGammaKernelAttr() {
 	}
 	
@@ -213,6 +230,62 @@ public class TlGammaKernelAttr implements Serializable {
 	 */
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the applyNum
+	 */
+	public Integer getApplyNum() {
+		return applyNum;
+	}
+
+	/**
+	 * @param applyNum the applyNum to set
+	 */
+	public void setApplyNum(Integer applyNum) {
+		this.applyNum = applyNum;
+	}
+
+	/**
+	 * @return the shareGrade
+	 */
+	public String getShareGrade() {
+		return shareGrade;
+	}
+
+	/**
+	 * @param shareGrade the shareGrade to set
+	 */
+	public void setShareGrade(String shareGrade) {
+		this.shareGrade = shareGrade;
+	}
+
+	/**
+	 * @return the createTime
+	 */
+	public Timestamp getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * @param createTime the createTime to set
+	 */
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
 	}
 	
 	

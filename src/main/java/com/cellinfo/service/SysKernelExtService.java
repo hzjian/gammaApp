@@ -18,10 +18,12 @@ import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaKernelExt;
 import com.cellinfo.entity.TlGammaKernelFilter;
 import com.cellinfo.entity.TlGammaKernelGeoFilter;
+import com.cellinfo.entity.ViewKernelExt;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaKernelExtRepository;
 import com.cellinfo.repository.TlGammaKernelFilterRepository;
 import com.cellinfo.repository.TlGammaKernelGeoFilterRepository;
+import com.cellinfo.repository.ViewKernelExtRepository;
 
 @Service
 public class SysKernelExtService {
@@ -39,6 +41,9 @@ public class SysKernelExtService {
 	@Autowired
 	private TlGammaKernelGeoFilterRepository tlGammaKernelGeoFilterRepository ;
 	
+	@Autowired
+	private ViewKernelExtRepository viewKernelExtRepository;
+	 
 	
 	public TlGammaKernelExt saveKernelExt(TlGammaKernelExt ext)
 	{				
@@ -84,21 +89,23 @@ public class SysKernelExtService {
 
 	public Page<Map<String ,String >> getKernelExtList(String filterStr,String userName,Pageable pageable) {
 		List<Map<String ,String >> subTypeList = new LinkedList<Map<String ,String >>();
-		Page<TlGammaKernelExt> extList = null;
+		Page<ViewKernelExt> extList = null;
 		if(filterStr!= null && filterStr.length()>0)
-			extList = this.tlGammaKernelExtRepository.filterByExtName(filterStr,userName,pageable);
+			extList = this.viewKernelExtRepository.filterByExtName(filterStr,userName,pageable);
 		else
-			extList = this.tlGammaKernelExtRepository.findByUserName(userName,pageable);
+			extList = this.viewKernelExtRepository.findByUserName(userName,pageable);
 			
 		if(extList!= null && extList.getSize()>0)
 		{
-			for(TlGammaKernelExt ext: extList.getContent())
+			for(ViewKernelExt ext: extList.getContent())
 			{
 				
 				Map<String ,String >  subType = new HashMap<String ,String>();
 				subType.put("extDesc", ext.getExtDesc());
 				subType.put("extId", ext.getExtGuid());
 				subType.put("classId", ext.getKernelClassid());
+				subType.put("className", ext.getKernelClassname());
+				subType.put("geoType", ext.getGeomType());
 				subType.put("extName", ext.getExtName());
 				subType.put("extDesc", ext.getExtDesc());
 				subType.put("kernelNum", String.valueOf(ext.getKernelNum()));
@@ -157,5 +164,10 @@ public class SysKernelExtService {
 	public Optional<TlGammaKernelGeoFilter> getGeoFilterByFilterId(String filterId) {
 		return this.tlGammaKernelGeoFilterRepository.findById(filterId);
 		
+	}
+
+	public Optional<TlGammaKernelExt> getExtById(String id) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelExtRepository.findById(id);
 	}
 }

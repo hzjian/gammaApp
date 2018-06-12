@@ -1,6 +1,6 @@
 package com.cellinfo.controller.entity;
 
-public class TaskParameter implements GammaParameter{
+public class TaskParameter extends GAParameter{
 
 	private String taskName;
 

@@ -1,6 +1,6 @@
 package com.cellinfo.controller.entity;
 
-public class RequestParameter implements GammaParameter{
+public class RequestParameter extends GAParameter{
 
 	private Integer page;
 	private Integer pageSize;

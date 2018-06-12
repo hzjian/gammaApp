@@ -28,6 +28,8 @@ spring:
     generate-ddl: true
   session:
     store-type: none
+  jmx:
+    default-domain: gammaapp  
 logging:
   level: 
     root: WARN
@@ -42,10 +44,9 @@ jwt:
   subject: GAMMA
   tokenName: x-auth-token
   secret: TLKJGA_Secret
-  expiration: 3600
   tokenHead: "gamma.tl."
   access_token:
-    expiration: 86400
+    expiration: 604800
   refresh_token:
     expiration: 3600
   route:

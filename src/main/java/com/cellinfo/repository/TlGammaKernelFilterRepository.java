@@ -12,4 +12,6 @@ public interface TlGammaKernelFilterRepository extends PagingAndSortingRepositor
 	
 	int deleteByExtGuid(String extGuid);
 
+	long countByAttrGuid(String attrGuid);
+
 }

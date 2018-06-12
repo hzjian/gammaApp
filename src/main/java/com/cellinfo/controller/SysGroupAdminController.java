@@ -29,18 +29,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cellinfo.annotation.ServiceLog;
-import com.cellinfo.controller.entity.AttrParameter;
+import com.cellinfo.controller.entity.GAParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
+import com.cellinfo.entity.TlGammaGroup;
 import com.cellinfo.entity.TlGammaKernel;
-import com.cellinfo.entity.TlGammaKernelAttr;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.entity.ViewTaskUser;
 import com.cellinfo.security.UserInfo;
-import com.cellinfo.service.SysDictService;
+import com.cellinfo.service.SysGroupService;
 import com.cellinfo.service.SysKernelService;
 import com.cellinfo.service.SysTaskService;
 import com.cellinfo.service.SysUserService;
@@ -78,7 +78,7 @@ public class SysGroupAdminController {
 	private SysTaskService sysTaskService;
 	
 	@Autowired
-	private SysDictService sysDictService;
+	private SysGroupService sysGroupService;
 	
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");   
 	
@@ -131,7 +131,14 @@ public class SysGroupAdminController {
 		if(kernel.getDescInfo()!=null)
 			tmpKernel.setKernelClassdesc(kernel.getDescInfo());
 		if(kernel.getClassName()!=null)
+		{
+			List<TlGammaKernel> kernellist = this.sysKernelService.getByKernelClassname(kernel.getClassName());
+			if(kernellist!=null && kernellist.iterator().hasNext())
+			{
+				return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);
+			}
 			tmpKernel.setKernelClassname(kernel.getClassName());
+		}
 		if(kernel.getGeomType()!=null)
 			tmpKernel.setGeomType(kernel.getGeomType());
 
@@ -145,106 +152,13 @@ public class SysGroupAdminController {
 		return ResultUtil.success(result);
 	}
 	
-	@PostMapping(value = "/kernel/addattr")
-	public Result<Map<String,String>> addKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
-		UserInfo cUser = this.utilService.getCurrentUser(request);
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
-		Map<String,String> result = new HashMap<String,String>();
-		TlGammaKernelAttr  attr = new TlGammaKernelAttr();
-		attr.setAttrGuid(UUID.randomUUID().toString());
-		attr.setKernelClassid(attrPara.getClassId());
-		attr.setAttrName(attrPara.getAttrName());
-		attr.setAttrField("F_"+this.utilService.generateShortUuid());
-		attr.setAttrType(attrPara.getAttrType());
-		attr.setDictId(attrPara.getAttrId());
-		attr.setAttrFgrade(attrPara.getAttrGrade());
-		attr.setAttrMax(attrPara.getMaxValue());
-		attr.setAttrMin(attrPara.getMinValue());
-		attr.setAttrDesc(attrPara.getAttrDesc());
-		attr.setDictId(attrPara.getDictId());
-		attr.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-		TlGammaKernelAttr  tmp = this.sysKernelService.saveKernelAttr(attr);
-
-		result.put("attrId", tmp.getAttrGuid());
-		result.put("attrName", tmp.getAttrName());
-
-		return ResultUtil.success(result);
-	}
-	
-
-	@PostMapping(value = "/kernel/updateattr")
-	public Result<String> updateKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
-		UserInfo cUser = this.utilService.getCurrentUser(request);
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
-		Map<String,String> result = new HashMap<String,String>();
-		Optional<TlGammaKernelAttr> optionAttr = this.sysKernelService.getAttrById(attrPara.getAttrId());
-		if(!optionAttr.isPresent())
-		{
-			return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_NOT_EXIST);
-		}
-		TlGammaKernelAttr attr = optionAttr.get();
-		if(attrPara.getAttrType()!= null)
-			attr.setAttrType(attrPara.getAttrType());
-		if(attrPara.getAttrDesc()!= null)
-			attr.setAttrDesc(attrPara.getAttrDesc());
-		if(attrPara.getAttrGrade()!=null)
-			attr.setAttrFgrade(attrPara.getAttrGrade());
-		if(attrPara.getMaxValue()!=null)
-			attr.setAttrMax(attrPara.getMaxValue());
-		if(attrPara.getMinValue()!=null)
-			attr.setAttrMin(attrPara.getMinValue());
-		if(attrPara.getDictId()!=null)
-			attr.setDictId(attrPara.getDictId());
-		
-		attr.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-		this.sysKernelService.updateKernelAttr(attr);
-		
-		return ResultUtil.success("ok");
-	}
-	
-	@PostMapping(value = "/kernel/deleteattr")
-	public Result<String> deleteKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
-		UserInfo cUser = this.utilService.getCurrentUser(request);
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
-		Map<String,String> result = new HashMap<String,String>();
-		
-		
-		long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
-		if(aNum < 1)///判断该字段是否被使用
-		{
-			this.sysKernelService.deleteKernelAttr(attrPara.getAttrId());
-			return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
-		}
-		return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_INUSED);
-	}
-	
-	
-	@PostMapping(value = "/kernel/attrapplynum")
-	public Result<Map<String,Long>> kernelAttrApplyNumInTask(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
-		UserInfo cUser = this.utilService.getCurrentUser(request);
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
-		Map<String,Long> result = new HashMap<String,Long>();
-		Long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
-		
-		result.put("applynum",aNum);
-		return ResultUtil.success(result);
-	}
-	
 	
 	@PostMapping(value = "/kernel/delete")
 	public Result<String> updateKernel(@RequestBody @Valid String kernelGuid) {
 
 		return ResultUtil.success(this.sysKernelService.deleteGroupKernel(kernelGuid));
 	}
-	
+
 	//group member 
 	@PostMapping(value = "/members")
 	public Result<Page<Map<String, Object>>> groupMemberList(HttpServletRequest request,@RequestBody RequestParameter para, BindingResult bindingResult) {
@@ -279,12 +193,40 @@ public class SysGroupAdminController {
 			tMap.put("userCnname", eachUser.getUserCnname());
 			tMap.put("userEmail",eachUser.getUserEmail());
 			tMap.put("userStatus", eachUser.getAccountStatus());
+			if(eachUser.getLoginTime()!= null)
+				tMap.put("lastLoginTime", df.format(eachUser.getLoginTime()));
 			list.add(tMap);
 		}
 		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
 		return ResultUtil.success(resPage);
 	}
-
+	
+	@PostMapping(value = "/member")
+	public Result<Map<String,Object>> adminUser(@RequestBody GAParameter para, BindingResult bindingResult) {
+		Map<String,Object> tmp = new HashMap<String,Object>();
+		if(para.getId()!= null)
+		{
+			TlGammaUser tmpUser = this.sysUserService.getGroupMemberUser(para.getId());
+			if(tmpUser!= null)
+			{
+				tmp.put("groupId", tmpUser.getGroupGuid());
+				tmp.put("userCnname",tmpUser.getUserCnname());
+				if(tmpUser.getGroupGuid()!=null)
+				{
+					Optional<TlGammaGroup> group = this.sysGroupService.findOne(tmpUser.getGroupGuid());
+					if(group.isPresent())
+						tmp.put("groupName",group.get().getGroupName());
+				}
+				tmp.put("userName",tmpUser.getUsername());
+				tmp.put("userStatus", tmpUser.getAccountStatus());
+				tmp.put("userEmail", tmpUser.getUserEmail());
+				if(tmpUser.getLoginTime()!= null)
+					tmp.put("lastLoginTime", df.format(tmpUser.getLoginTime()));
+			}
+		}
+		
+		return ResultUtil.success(tmp);
+	}
 	@PostMapping(value = "/member/testname")
 	public Result<TlGammaUser> testGroupMemberName(HttpServletRequest request,@RequestBody @Valid String membername, BindingResult bindingResult) {	
 		Optional<TlGammaUser> kuser = this.sysUserService.findOne(membername);

@@ -21,16 +21,16 @@ public class TlGammaTask implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="task_guid", nullable=false)
+	@Column(name="task_guid", length=36, nullable=false)
 	private String taskGuid;
 	
 	@Column(name="business_password", length=256)
 	private String businessPassword;
 
-	@Column(name="group_guid")
+	@Column(name="group_guid", length=36)
 	private String groupGuid;
 
-	@Column(name="kernel_classid", nullable=false)
+	@Column(name="kernel_classid", length=36, nullable=false)
 	private String kernelClassid;
 
 	/**
@@ -53,6 +53,12 @@ public class TlGammaTask implements Serializable {
 	
 	@Column(name="update_time")
 	private Timestamp updateTime;
+	
+	@Column(name="create_time")
+	private Timestamp createTime;
+	
+	@Column(name="task_desc", length=512)
+	private String taskDesc;
 
 	public TlGammaTask() {
 	}
@@ -161,5 +167,34 @@ public class TlGammaTask implements Serializable {
 		this.updateTime = updateTime;
 	}
 
+	/**
+	 * @return the createTime
+	 */
+	public Timestamp getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * @param createTime the createTime to set
+	 */
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+	/**
+	 * @return the taskDesc
+	 */
+	public String getTaskDesc() {
+		return taskDesc;
+	}
+
+	/**
+	 * @param taskDesc the taskDesc to set
+	 */
+	public void setTaskDesc(String taskDesc) {
+		this.taskDesc = taskDesc;
+	}
+	
+	
 	
 }

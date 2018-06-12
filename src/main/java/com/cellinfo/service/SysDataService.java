@@ -40,7 +40,7 @@ import com.vividsolutions.jts.geom.Geometry;
 @Service
 public class SysDataService {
  
-	private final static int  MAX_LOADELEMENT_NUM = 1000;
+	private final static int  MAX_LOADELEMENT_NUM = 2000;
 	
 	private static Logger logger = LoggerFactory.getLogger(SysDataService.class);
 	

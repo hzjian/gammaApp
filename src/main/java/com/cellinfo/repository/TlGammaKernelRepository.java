@@ -18,4 +18,7 @@ public interface TlGammaKernelRepository extends PagingAndSortingRepository<TlGa
 
 	public List<TlGammaKernel> findByKernelClassname(String kernelClassname);
 
+	@Query("select a from TlGammaKernel a  where a.groupGuid = ?1 and a.kernelClassid not in (select kernelClassid  from TlGammaTaskLayer where taskGuid = ?2)") 
+	public List<TlGammaKernel> getTaskKernelAvaliable(String groupId, String taskId);
+
 }

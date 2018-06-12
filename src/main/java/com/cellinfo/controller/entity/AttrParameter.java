@@ -32,6 +32,8 @@ public class AttrParameter {
 	
 	private String taskId;
 	
+	private String shareGrade;
+	
 	/**
 	 * @return the classId
 	 */
@@ -188,6 +190,18 @@ public class AttrParameter {
 	 */
 	public void setRankId(String rankId) {
 		this.rankId = rankId;
+	}
+	/**
+	 * @return the shareGrade
+	 */
+	public String getShareGrade() {
+		return shareGrade;
+	}
+	/**
+	 * @param shareGrade the shareGrade to set
+	 */
+	public void setShareGrade(String shareGrade) {
+		this.shareGrade = shareGrade;
 	}
 	
 	

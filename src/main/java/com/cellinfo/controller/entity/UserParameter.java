@@ -1,6 +1,6 @@
 package com.cellinfo.controller.entity;
 
-public class UserParameter implements GammaParameter{
+public class UserParameter extends GAParameter{
 
 	private String userName;
 	

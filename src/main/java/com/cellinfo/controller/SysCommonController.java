@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.controller.entity.DictItemParameter;
+import com.cellinfo.controller.entity.GAParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
 import com.cellinfo.entity.Result;
@@ -152,7 +153,7 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 	}
 	
 	@PostMapping(value = "/dicts")
-	public Result<Page<Map<String, Object>>> groupDict(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
+	public Result<Page<Map<String, Object>>> groupDictList(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
 		List<Map<String, Object>> list = new LinkedList<Map<String, Object>>();
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
@@ -185,6 +186,24 @@ private final static Logger logger = LoggerFactory.getLogger(SysCommonController
 		}
 		Page<Map<String, Object>> resPage = new PageImpl<Map<String, Object>>(list,pageInfo,mList.getTotalElements());
 		return ResultUtil.success(resPage);
+	}
+	
+	@PostMapping(value = "/dict")
+	public Result<Page<Map<String, Object>>> groupDict(@RequestBody GAParameter para) {
+		Map<String, Object> tMap = new HashMap<String, Object>();
+		
+		if(para.getId()!=null && para.getId().length()>0)
+		{
+			Optional<TlGammaDict> optionaldict =  this.sysDictService.getDictbyId(para.getId());
+			if(optionaldict.isPresent())
+			{
+				TlGammaDict dict = optionaldict.get();
+				tMap.put("dictId", dict.getDictId());
+				tMap.put("dictName", dict.getDictName());
+				tMap.put("dictDesc", dict.getDictDesc());
+			}
+		}
+		return ResultUtil.success(tMap);
 	}
 	
 	@PostMapping(value = "/dict/save")

@@ -73,7 +73,8 @@ public class SysDataAgentController {
 	@Autowired
 	private SysKernelService sysKernelService;
 	
-	private RestTemplate restTemplate = new RestTemplate();
+	@Autowired
+	private RestTemplate restTemplate;
 	
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	
@@ -98,6 +99,7 @@ public class SysDataAgentController {
 		        {
 		        	HttpHeaders headers = new HttpHeaders();
 		        	String serverPath = kernelOptional.get().getServerPath();
+		        	//未配置服务地址
 		        	if(serverPath== null || serverPath.length()<1)
 		        	{
 		        		String tmp = request.getRequestURL().toString();
@@ -106,6 +108,7 @@ public class SysDataAgentController {
 		        	}
 			        HttpEntity<GAQueryParameter> entity = new HttpEntity<GAQueryParameter>(qPara,headers);
 			        System.out.println("serverPath=="+serverPath);
+			        System.out.println("qPara=="+  qPara);
 			        return restTemplate.postForObject(serverPath+"ga/query",entity,Result.class);
 		        }
 			}

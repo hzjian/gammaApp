@@ -12,9 +12,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.cellinfo.entity.TlGammaGroup;
 import com.cellinfo.entity.TlGammaUser;
 import com.cellinfo.enums.ResultEnum;
 import com.cellinfo.exception.NetException;
+import com.cellinfo.repository.TlGammaGroupRepository;
 import com.cellinfo.repository.TlGammaUserRepository;
 
 
@@ -25,6 +27,9 @@ public class SysUserService implements UserDetailsService {
 	
     @Autowired
     private TlGammaUserRepository tlGammaUserRepository;
+    
+    @Autowired 
+    private TlGammaGroupRepository tlGammaGroupRepository;
     
     //@Transactional
    
@@ -90,5 +95,36 @@ public class SysUserService implements UserDetailsService {
 	public Page<TlGammaUser> getGroupAdminUsers(String sKey ,PageRequest pageInfo) {
 		// TODO Auto-generated method stub
 		return this.tlGammaUserRepository.getGroupAdminUsers(sKey,pageInfo);
+	}
+
+	public Optional<TlGammaGroup> findGroupById(String groupGuid) {
+		// TODO Auto-generated method stub
+		return this.tlGammaGroupRepository.findById(groupGuid);
+	}
+
+	public TlGammaUser getGroupAdminUser(String id) {
+		// TODO Auto-generated method stub
+		List<TlGammaUser> uList =  this.tlGammaUserRepository.findGroupAdminUser(id);
+		if(uList!=null && uList.size() == 1)
+		{
+			return uList.get(0);
+		}
+		return null;
+	}
+
+	public TlGammaUser getGroupMemberUser(String id) {
+		// TODO Auto-generated method stub
+		List<TlGammaUser> uList =  this.tlGammaUserRepository.findGroupMemberUser(id);
+		if(uList!=null && uList.size() == 1)
+		{
+			return uList.get(0);
+		}
+		return null;
+	}
+
+	public List<TlGammaUser> getGroupMemberAvaliable(String groupGuid, String taskId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaUserRepository.getGroupMemberAvaliable(groupGuid,taskId);
+		
 	}
 }

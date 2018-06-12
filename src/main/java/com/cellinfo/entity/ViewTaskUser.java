@@ -19,7 +19,7 @@ import org.hibernate.annotations.Subselect;
 //@Table(name="view_task_user")
 //@NamedQuery(name="ViewTaskUser.findAll", query="SELECT s FROM ViewTaskUser s")
 @Immutable
-@Subselect( "SELECT a.task_guid, a.user_name, b.user_cnname, b.user_email, c.task_name, c.business_password, c.terminal_time, c.start_time " + 
+@Subselect( "SELECT a.task_guid, a.user_name, b.user_cnname, b.user_email, c.task_name, c.business_password, c.terminal_time, c.start_time,c.update_time " + 
 			"FROM tl_gamma_task_user a,tl_gamma_user b,tl_gamma_task c " + 
 			"WHERE a.user_name = b.user_name AND a.task_guid = c.task_guid")
 public class ViewTaskUser implements Serializable {
@@ -46,6 +46,9 @@ public class ViewTaskUser implements Serializable {
 	
 	@Column(name="business_password")
 	private String businessPassword;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 	
 	public ViewTaskUser() {
 	}
@@ -148,7 +151,19 @@ public class ViewTaskUser implements Serializable {
 	public void setBusinessPassword(String businessPassword) {
 		this.businessPassword = businessPassword;
 	}
-	
-	
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
+	}
 	
 }
