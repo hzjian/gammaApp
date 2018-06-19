@@ -18,8 +18,6 @@ public class TaskParameter extends GAParameter{
 	
 	private String refClassId;
 	
-	private String refExtId;
-	
 	private String fileId;
 	
 	private String busPassword;
@@ -139,20 +137,6 @@ public class TaskParameter extends GAParameter{
 	 */
 	public void setRefClassId(String refClassId) {
 		this.refClassId = refClassId;
-	}
-
-	/**
-	 * @return the refExtId
-	 */
-	public String getRefExtId() {
-		return refExtId;
-	}
-
-	/**
-	 * @param refExtId the refExtId to set
-	 */
-	public void setRefExtId(String refExtId) {
-		this.refExtId = refExtId;
 	}
 
 	/**

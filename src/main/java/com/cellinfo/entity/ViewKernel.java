@@ -6,46 +6,48 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.Subselect;
 
 
-/**
- * The persistent class for the tl_gamma_group_kernel database table.
- * 
- */
 @Entity
-@Table(name="tl_gamma_kernel")
-@NamedQuery(name="TlGammaKernel.findAll", query="SELECT t FROM TlGammaKernel t")
-public class TlGammaKernel implements Serializable {
+@Immutable
+@Subselect("select a.kernel_classid,a.group_guid,a.kernel_classdesc,a.kernel_classname,a.geom_type,a.update_time,a.server_path,a.kernel_num,"
+		+ " (select count(*) from tl_gamma_task where kernel_classid = a.kernel_classid) task_num "
+		+ " from tl_gamma_kernel a ")
+public class ViewKernel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="kernel_classid", length=36)
+	@Column(name="kernel_classid")
 	private String kernelClassid;
 	
-	@Column(name="group_guid", length=36)
+	@Column(name="group_guid")
 	private String groupGuid;
 
-	@Column(name="kernel_classdesc", length=512)
+	@Column(name="kernel_classdesc")
 	private String kernelClassdesc;
 
-	@Column(name="kernel_classname", length=256)
+	@Column(name="kernel_classname")
 	private String kernelClassname;
-	
-	@Column(name="kernel_num")
-	private Long kernelNum;
 
-	@Column(name="geom_type", length=16)
+	@Column(name="geom_type")
 	private String geomType;
 	
 	@Column(name="update_time")
 	private Timestamp updateTime;
 	
-	@Column(name="server_path", length=128)
+	@Column(name="server_path")
 	private String serverPath;
+	
+	@Column(name="kernel_num")
+	private Long kernelNum;
+	
+	@Column(name="task_num")
+	private Long taskNum;
 
-	public TlGammaKernel() {
+	public ViewKernel() {
 	}
 
 	public String getGroupGuid() {
@@ -135,6 +137,19 @@ public class TlGammaKernel implements Serializable {
 	public void setKernelNum(Long kernelNum) {
 		this.kernelNum = kernelNum;
 	}
-	
-	
+
+	/**
+	 * @return the taskNum
+	 */
+	public Long getTaskNum() {
+		return taskNum;
+	}
+
+	/**
+	 * @param taskNum the taskNum to set
+	 */
+	public void setTaskNum(Long taskNum) {
+		this.taskNum = taskNum;
+	}
+
 }

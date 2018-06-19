@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 import com.cellinfo.controller.entity.AttrParameter;
+import com.cellinfo.controller.entity.GAParameter;
 import com.cellinfo.controller.entity.KernelParameter;
 import com.cellinfo.controller.entity.RequestParameter;
 import com.cellinfo.controller.entity.UserParameter;
@@ -31,7 +32,7 @@ public class SysGroupAdminTest {
 	
 	private String serverPath3 = "http://127.0.0.1:8080/gamma";
 
-	private String token = "gamma.tl.22eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjc2OTI0MzMsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.slKp-H1jKrDFuJHghpPi4uC0PHQGgLd4p9kiAHezvcBJTiqa9uQz-Y1Td7kM8WjK3XJw4lzOVWqRafCzxIZmWQ";
+	private String token = "gamma.tl.eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqdGFkbWluIiwic2NvcGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfR1JPVVBfQURNSU4ifV0sIm5vbl9leHBpcmVkIjp0cnVlLCJleHAiOjE1Mjk0MDAyNDIsImVuYWJsZWQiOnRydWUsIm5vbl9sb2NrZWQiOnRydWUsImdyb3VwIjoiMTM5MDM2NmItZmViZC00Nzc2LWI0YTktOWY4ZTI4ZjE4MWI3In0.nx5y9K9CvvImtHDpoU0mfd1CGkcPDGrsMRqZMCUJIhG0zaZByjQW3_NAa9gzUhFtkWmIAqG-w0pfNWFnEXUC3A";
 	
 	@Test
     public void longin() throws Exception {
@@ -171,7 +172,7 @@ public class SysGroupAdminTest {
 	
 	@Test
     public void kernelsList() throws Exception {
-		System.out.println("-----------------/service/group/kernels---------start-----------  ");
+		System.out.println("-----------------/service/user/kernels---------start-----------  ");
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-auth-token", token );
         
@@ -181,29 +182,29 @@ public class SysGroupAdminTest {
         para.setSortDirection("DESC");
         
         HttpEntity<RequestParameter> entity = new HttpEntity<RequestParameter>(para, headers);
-        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernels",entity,Result.class);
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernels",entity,Result.class);
         Map<String ,Object> rlist = result.getData();
         rlist.keySet().stream().forEach(item-> {
         	System.out.println(item+" " + rlist.get(item));
         });
         Assert.assertEquals(result.getMsg(),"成功");
         
-        System.out.println("-----------------/service/group/kernels---------end-----------  ");
+        System.out.println("-----------------/service/user/kernels---------end-----------  ");
     }
 	
 	@Test
     public void kernelinfo() throws Exception {
-		System.out.println("-----------------/service/group/kernel/query---------start-----------  ");
+		System.out.println("-----------------/service/user/kernel---------start-----------  ");
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-auth-token", token );
         
        String kernelClassid1 ="0fd5f2e6-2bb9-423b-bd97-790940f9997e";
        
-       KernelParameter kParam = new KernelParameter();
-       kParam.setClassId("0fd5f2e6-2bb9-423b-bd97-790940f9997e");
+       GAParameter kParam = new GAParameter();
+       kParam.setId("0fd5f2e6-2bb9-423b-bd97-790940f9997e");
         
-        HttpEntity<KernelParameter> entity = new HttpEntity<KernelParameter>(kParam, headers);
-        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/query",entity,Result.class);
+        HttpEntity<GAParameter> entity = new HttpEntity<GAParameter>(kParam, headers);
+        Result<Map<String ,Object>> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel",entity,Result.class);
         Map<String ,Object> rlist = result.getData();
         if(rlist!= null)
         {
@@ -213,7 +214,7 @@ public class SysGroupAdminTest {
         }
         Assert.assertEquals(result.getMsg(),"成功");
         
-        System.out.println("-----------------/service/group/kernel/query---------end-----------  ");
+        System.out.println("-----------------/service/user/kernel---------end-----------  ");
     }
 	
 	
@@ -239,7 +240,7 @@ public class SysGroupAdminTest {
 	
 	@Test
     public void groupKernelAddAttr() throws Exception {
-		System.out.println("-----------------/service/group/kernel/addattr---------start-----------  ");
+		System.out.println("-----------------/service/user/kernel/addattr---------start-----------  ");
         HttpHeaders headers = new HttpHeaders();
         headers.add("x-auth-token", token );
         String testname ="test_"+ UUID.randomUUID().toString().substring(0, 7);
@@ -252,11 +253,11 @@ public class SysGroupAdminTest {
         para.setClassId("d3ec60f-d0a5-4d84-a774-343bb9b6c92a");
         
         HttpEntity<AttrParameter> entity = new HttpEntity<AttrParameter>(para, headers);
-        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/group/kernel/addattr",entity,Result.class);
+        Result<TlGammaUser> result = testRestTemplate.postForObject(this.serverPath+"/service/user/kernel/addattr",entity,Result.class);
         System.out.println(result.getData());
         Assert.assertEquals(result.getMsg(),"成功");
    
-        System.out.println("-----------------/service/group/kernel/addattr---------end-----------  ");
+        System.out.println("-----------------/service/user/kernel/addattr---------end-----------  ");
     }
 		
 	@Test

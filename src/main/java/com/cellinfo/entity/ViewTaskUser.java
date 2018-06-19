@@ -19,9 +19,11 @@ import org.hibernate.annotations.Subselect;
 //@Table(name="view_task_user")
 //@NamedQuery(name="ViewTaskUser.findAll", query="SELECT s FROM ViewTaskUser s")
 @Immutable
-@Subselect( "SELECT a.task_guid, a.user_name, b.user_cnname, b.user_email, c.task_name, c.business_password, c.terminal_time, c.start_time,c.update_time " + 
-			"FROM tl_gamma_task_user a,tl_gamma_user b,tl_gamma_task c " + 
-			"WHERE a.user_name = b.user_name AND a.task_guid = c.task_guid")
+@Subselect( "SELECT a.task_guid, a.user_name, b.user_cnname, b.user_email, c.task_name, c.business_password, "
+		  + "c.terminal_time, c.start_time,c.update_time,c.create_time,c.task_desc,c.kernel_classid,d.kernel_classname, "
+		  + " (select count(*) from tl_gamma_task_user where task_guid = a.task_guid) user_num " 
+		  +	"FROM tl_gamma_task_user a,tl_gamma_user b,tl_gamma_task c,tl_gamma_kernel d " 
+		  + "WHERE a.user_name = b.user_name AND a.task_guid = c.task_guid and c.kernel_classid = d.kernel_classid ")
 public class ViewTaskUser implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +33,6 @@ public class ViewTaskUser implements Serializable {
 	@Column(name="user_cnname", length=32)
 	private String userCnname;
 
-	
 	@Column(name="user_email", length=64)
 	private String userEmail;
 	
@@ -49,6 +50,22 @@ public class ViewTaskUser implements Serializable {
 	
 	@Column(name="update_time")
 	private Timestamp updateTime;
+	
+	@Column(name="create_time")
+	private Timestamp createTime;
+	
+	@Column(name="task_desc")
+	private String taskDesc;
+	
+	@Column(name="kernel_classid")
+	private String kernelClassid;
+	
+	@Column(name="kernel_classname")
+	private String kernelClassname;
+	
+	@Column(name="user_num")
+	private Integer userNum;
+
 	
 	public ViewTaskUser() {
 	}
@@ -165,5 +182,76 @@ public class ViewTaskUser implements Serializable {
 	public void setUpdateTime(Timestamp updateTime) {
 		this.updateTime = updateTime;
 	}
+
+	/**
+	 * @return the taskDesc
+	 */
+	public String getTaskDesc() {
+		return taskDesc;
+	}
+
+	/**
+	 * @param taskDesc the taskDesc to set
+	 */
+	public void setTaskDesc(String taskDesc) {
+		this.taskDesc = taskDesc;
+	}
+
+	/**
+	 * @return the createTime
+	 */
+	public Timestamp getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * @param createTime the createTime to set
+	 */
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+	/**
+	 * @return the kernelClassid
+	 */
+	public String getKernelClassid() {
+		return kernelClassid;
+	}
+
+	/**
+	 * @param kernelClassid the kernelClassid to set
+	 */
+	public void setKernelClassid(String kernelClassid) {
+		this.kernelClassid = kernelClassid;
+	}
+
+	/**
+	 * @return the kernelClassname
+	 */
+	public String getKernelClassname() {
+		return kernelClassname;
+	}
+
+	/**
+	 * @param kernelClassname the kernelClassname to set
+	 */
+	public void setKernelClassname(String kernelClassname) {
+		this.kernelClassname = kernelClassname;
+	}
+
+	/**
+	 * @return the userNum
+	 */
+	public Integer getUserNum() {
+		return userNum;
+	}
+
+	/**
+	 * @param userNum the userNum to set
+	 */
+	public void setUserNum(Integer userNum) {
+		this.userNum = userNum;
+	}
+	
 	
 }

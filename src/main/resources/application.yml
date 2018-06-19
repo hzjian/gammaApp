@@ -7,11 +7,11 @@ spring:
   http:
     encoding:
       force: true
-      charset: UTF-8
+      charset: UTF-8  
   datasource:
     driver-class-name: net.sf.log4jdbc.DriverSpy
-    url: jdbc:log4jdbc:postgresql://127.0.0.1:5432/gamma
-    #url: jdbc:log4jdbc:postgresql://47.94.88.135:5432/gammaa
+    #url: jdbc:log4jdbc:postgresql://127.0.0.1:5432/gamma
+    url: jdbc:log4jdbc:postgresql://47.94.88.135:5432/gammaa
     username: gamma
     password: gamma
   jpa:
@@ -29,7 +29,11 @@ spring:
   session:
     store-type: none
   jmx:
-    default-domain: gammaapp  
+    default-domain: gammaapp
+  servlet:
+    multipart:
+      max-file-size: 52428800
+      max-request-size: 52428800
 logging:
   level: 
     root: WARN

@@ -330,6 +330,8 @@ public class SysAdminController {
 				tmp.put("groupName", tGroup.getGroupName());
 				tmp.put("groupPhone", tGroup.getGroupPhone());
 				tmp.put("groupStatus", tGroup.getGroupStatus());
+				tmp.put("groupService", tGroup.getGroupService());
+				tmp.put("groupPic", tGroup.getGroupPic());
 			}
 		}
 		

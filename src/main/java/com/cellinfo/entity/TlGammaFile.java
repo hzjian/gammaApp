@@ -6,12 +6,9 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -19,129 +16,132 @@ import org.hibernate.annotations.GenericGenerator;
  * 
  */
 @Entity
-@Table(name="tl_gamma_relate_file")
+@Table(name="tl_gamma_file")
 @NamedQuery(name="TlGammaFile.findAll", query="SELECT s FROM TlGammaFile s")
 public class TlGammaFile implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid",strategy="uuid")
-	private String fileid;
+	@Column(name="file_guid", length=36, nullable=false)
+	private String fileGuid;
 
-	private String fname;
+	@Column(name="file_name", length=128)
+	private String fileName;
 	
-	private String ftype;
+	@Column(name="file_type", length=128)
+	private String fileType;
 	
-	private String ptype;
+	@Column(name="relate_type", length=36)
+	private String relateType;
 	
-	private String relateid;
+	@Column(name="relate_id", length=36)
+	private String relateId;
 	
-	private String fdesc;
+	@Column(name="file_desc", length=256)
+	private String fileDesc;
 	
-	@Column(name="update_time")
-	private Timestamp updateTime;
+	@Column(name="create_time")
+	private Timestamp createTime;
 
-	
 	/**
-	 * @return the fileid
+	 * @return the fileGuid
 	 */
-	public String getFileid() {
-		return fileid;
+	public String getFileGuid() {
+		return fileGuid;
 	}
 
 	/**
-	 * @param fileid the fileid to set
+	 * @param fileGuid the fileGuid to set
 	 */
-	public void setFileid(String fileid) {
-		this.fileid = fileid;
+	public void setFileGuid(String fileGuid) {
+		this.fileGuid = fileGuid;
 	}
 
 	/**
-	 * @return the fname
+	 * @return the fileName
 	 */
-	public String getFname() {
-		return fname;
+	public String getFileName() {
+		return fileName;
 	}
 
 	/**
-	 * @param fname the fname to set
+	 * @param fileName the fileName to set
 	 */
-	public void setFname(String fname) {
-		this.fname = fname;
-	}
-
-	/**
-	 * @return the ftype
-	 */
-	public String getFtype() {
-		return ftype;
-	}
-
-	/**
-	 * @param ftype the ftype to set
-	 */
-	public void setFtype(String ftype) {
-		this.ftype = ftype;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 	
-	
 	/**
-	 * @return the ptype
+	 * @return the fileType
 	 */
-	public String getPtype() {
-		return ptype;
+	public String getFileType() {
+		return fileType;
 	}
 
 	/**
-	 * @param ptype the ptype to set
+	 * @param fileType the fileType to set
 	 */
-	public void setPtype(String ptype) {
-		this.ptype = ptype;
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
 	}
 
 	/**
-	 * @return the relateid
+	 * @return the relateType
 	 */
-	public String getRelateid() {
-		return relateid;
+	public String getRelateType() {
+		return relateType;
 	}
 
 	/**
-	 * @param relateid the relateid to set
+	 * @param relateType the relateType to set
 	 */
-	public void setRelateid(String relateid) {
-		this.relateid = relateid;
+	public void setRelateType(String relateType) {
+		this.relateType = relateType;
 	}
 
 	/**
-	 * @return the fdesc
+	 * @return the relateId
 	 */
-	public String getFdesc() {
-		return fdesc;
+	public String getRelateId() {
+		return relateId;
 	}
 
 	/**
-	 * @param fdesc the fdesc to set
+	 * @param relateId the relateId to set
 	 */
-	public void setFdesc(String fdesc) {
-		this.fdesc = fdesc;
+	public void setRelateId(String relateId) {
+		this.relateId = relateId;
 	}
 
 	/**
-	 * @return the updateTime
+	 * @return the fileDesc
 	 */
-	public Timestamp getUpdateTime() {
-		return updateTime;
+	public String getFileDesc() {
+		return fileDesc;
 	}
 
 	/**
-	 * @param updateTime the updateTime to set
+	 * @param fileDesc the fileDesc to set
 	 */
-	public void setUpdateTime(Timestamp updateTime) {
-		this.updateTime = updateTime;
+	public void setFileDesc(String fileDesc) {
+		this.fileDesc = fileDesc;
 	}
 
-	
+	/**
+	 * @return the createTime
+	 */
+	public Timestamp getCreateTime() {
+		return createTime;
+	}
+
+	/**
+	 * @param createTime the createTime to set
+	 */
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
+
+
+
 
 }

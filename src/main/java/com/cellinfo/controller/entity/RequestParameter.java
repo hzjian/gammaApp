@@ -16,6 +16,8 @@ public class RequestParameter extends GAParameter{
 	
 	private String classId;
 	
+	private String taskId;
+	
 	/**
 	 * @return the page
 	 */
@@ -122,6 +124,18 @@ public class RequestParameter extends GAParameter{
 	public String toString() {
 		// TODO Auto-generated method stub
 		return "page:"+this.page+"skey "+this.skey;
+	}
+	/**
+	 * @return the taskId
+	 */
+	public String getTaskId() {
+		return taskId;
+	}
+	/**
+	 * @param taskId the taskId to set
+	 */
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
 	}
 	
 	

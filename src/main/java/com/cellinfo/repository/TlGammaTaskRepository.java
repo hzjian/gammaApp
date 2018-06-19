@@ -1,5 +1,7 @@
 package com.cellinfo.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -9,12 +11,12 @@ import com.cellinfo.entity.TlGammaTask;
 
 public interface TlGammaTaskRepository extends PagingAndSortingRepository<TlGammaTask, String>{
 
-	Iterable<TlGammaTask> findByTaskName(String taskName);
+	List<TlGammaTask> findByTaskName(String taskName);
 	
 	Page<TlGammaTask> findByGroupGuid(String groupGuid,Pageable pageable);
 	
 	Page<TlGammaTask> findByUserName(String userName,Pageable pageable);
-	
-	@Query("select u from TlGammaTask u where u.groupGuid = ?1 and u.userName = ?2 and u.taskName like %?3%")
-	Page<TlGammaTask> getUserCreateTasks(String groupGuid,String userName,String strFilter,Pageable pageable);
+
+	@Query("select u from TlGammaTask u where u.taskGuid <> ?1 and u.groupGuid= ?2 and u.taskName = ?3")
+	List<TlGammaTask> getByTaskNameExclude(String taskId,String groupId, String taskName);
 }

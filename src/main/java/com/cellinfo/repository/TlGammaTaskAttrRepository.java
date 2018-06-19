@@ -20,6 +20,8 @@ public interface TlGammaTaskAttrRepository extends PagingAndSortingRepository<Tl
 	Long countByAttrGuid(String attrId);
 
 	List<TlGammaTaskAttr> findByTaskGuidAndAttrGuid(String taskId, String attrId);
+
+	void deleteByTaskGuid(String taskGuid);
 	
 	
 

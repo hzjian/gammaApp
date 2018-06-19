@@ -1,6 +1,7 @@
 package com.cellinfo.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -18,7 +19,8 @@ import org.hibernate.annotations.Subselect;
 //@Table(name="view_task_attr")
 //@NamedQuery(name="ViewTaskAttr.findAll", query="SELECT s FROM ViewTaskAttr s")
 @Immutable
-@Subselect("select a.task_guid,b.attr_guid,b.rank_guid,c.kernel_classid,c.attr_name,c.attr_field,c.attr_type,c.attr_enum "
+@Subselect("select a.task_guid,b.attr_guid,b.rank_guid,c.kernel_classid,c.attr_name,c.attr_field,c.attr_type,c.attr_enum ,"
+		+ "c.update_time,c.attr_fgrade,b.attr_isedit,b.layer_grade "
 		+ "from tl_gamma_task a, tl_gamma_task_attr b, tl_gamma_kernel_attr c "
 		+ "where a.task_guid = b.task_guid and b.attr_guid = c.attr_guid")
 public class ViewTaskAttr implements Serializable {
@@ -50,6 +52,9 @@ public class ViewTaskAttr implements Serializable {
 	
 	@Column(name="layer_grade")
 	private Integer layerGrade;
+	
+	@Column(name="update_time")
+	private Timestamp updateTime;
 
 	public ViewTaskAttr() {
 	}
@@ -196,6 +201,22 @@ public class ViewTaskAttr implements Serializable {
 	 */
 	public void setRankGuid(String rankGuid) {
 		this.rankGuid = rankGuid;
+	}
+
+
+	/**
+	 * @return the updateTime
+	 */
+	public Timestamp getUpdateTime() {
+		return updateTime;
+	}
+
+
+	/**
+	 * @param updateTime the updateTime to set
+	 */
+	public void setUpdateTime(Timestamp updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	

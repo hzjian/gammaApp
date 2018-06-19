@@ -21,4 +21,7 @@ public interface TlGammaKernelRepository extends PagingAndSortingRepository<TlGa
 	@Query("select a from TlGammaKernel a  where a.groupGuid = ?1 and a.kernelClassid not in (select kernelClassid  from TlGammaTaskLayer where taskGuid = ?2)") 
 	public List<TlGammaKernel> getTaskKernelAvaliable(String groupId, String taskId);
 
+	@Query("select a from TlGammaKernel a  where a.kernelClassid <> ?1 and a.kernelClassname = ?2")
+	public List<TlGammaKernel> getByKernelClassnameExclude(String classId, String className);
+
 }

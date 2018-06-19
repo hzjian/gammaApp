@@ -38,6 +38,7 @@ import org.springframework.web.client.RestTemplate;
 import com.cellinfo.annotation.OperLog;
 import com.cellinfo.annotation.ServiceLog;
 import com.cellinfo.controller.entity.AttrParameter;
+import com.cellinfo.controller.entity.CommentParameter;
 import com.cellinfo.controller.entity.ExtTypeParameter;
 import com.cellinfo.controller.entity.FilterParameter;
 import com.cellinfo.controller.entity.GAExtParameter;
@@ -60,9 +61,13 @@ import com.cellinfo.entity.TlGammaKernelGeoFilter;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaTaskAttr;
 import com.cellinfo.entity.TlGammaTaskAttrrank;
+import com.cellinfo.entity.TlGammaTaskComment;
 import com.cellinfo.entity.TlGammaTaskLayer;
 import com.cellinfo.entity.TlGammaTaskUser;
 import com.cellinfo.entity.TlGammaUser;
+import com.cellinfo.entity.ViewKernel;
+import com.cellinfo.entity.ViewKernelExt;
+import com.cellinfo.entity.ViewTask;
 import com.cellinfo.entity.ViewTaskAttr;
 import com.cellinfo.entity.ViewTaskExt;
 import com.cellinfo.entity.ViewTaskUser;
@@ -178,12 +183,58 @@ public class SysGroupUserController {
 				result.put("attrName", tmp.getAttrName());
 				return ResultUtil.success(result);
 			}
+			else
+			{
+				ResultUtil.error(400,ReturnDesc.KERNEL_CLASS_NOT_EXIST);
+			}
 		}
 		return ResultUtil.error(400,ReturnDesc.UNKNOW_ERROR);
 	}
 	
 	@PostMapping(value = "/kernel/updateattr")
 	public Result<String> updateKernelAttr(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		Map<String,String> result = new HashMap<String,String>();
+		Optional<TlGammaKernelAttr> optionAttr = this.sysKernelService.getAttrById(attrPara.getAttrId());
+		if(!optionAttr.isPresent())
+		{
+			return ResultUtil.error(400,ReturnDesc.THIS_ATTR_IS_NOT_EXIST);
+		}
+		TlGammaKernelAttr attr = optionAttr.get();
+		if(attrPara.getAttrType()!= null)
+			attr.setAttrType(attrPara.getAttrType());
+		if(attrPara.getAttrDesc()!= null)
+			attr.setAttrDesc(attrPara.getAttrDesc());
+		if(attrPara.getAttrGrade()!=null)
+			attr.setAttrFgrade(attrPara.getAttrGrade());
+		if(attrPara.getMaxValue()!=null)
+			attr.setAttrMax(attrPara.getMaxValue());
+		if(attrPara.getMinValue()!=null)
+			attr.setAttrMin(attrPara.getMinValue());
+		if(attrPara.getDictId()!=null)
+			attr.setDictId(attrPara.getDictId());
+		if(attrPara.getShareGrade() != null && 
+				(attrPara.getShareGrade().equalsIgnoreCase("GROUP") ||
+				 attrPara.getShareGrade().equalsIgnoreCase("TASK")))
+		{
+			attr.setShareGrade(attrPara.getShareGrade().toUpperCase());
+		}
+		else
+		{
+			attr.setShareGrade("GROUP");
+		}
+		
+		attr.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+		this.sysKernelService.updateKernelAttr(attr);
+		
+		return ResultUtil.success("ok");
+	}
+	
+	@PostMapping(value = "/kernel/updateattr_bak")
+	public Result<String> updateKernelAttr_bak(HttpServletRequest request ,@RequestBody @Valid AttrParameter attrPara, BindingResult bindingResult) {
 		UserInfo cUser = this.utilService.getCurrentUser(request);
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
@@ -252,7 +303,10 @@ public class SysGroupUserController {
 		Map<String,Long> result = new HashMap<String,Long>();
 		Long aNum = this.sysTaskService.getAttrApplyNum(attrPara.getAttrId());
 		
-		result.put("applynum",aNum);
+		if(aNum!=null)
+			result.put("applynum",aNum);
+		else
+			result.put("applynum",0L);
 		return ResultUtil.success(result);
 	}
 	
@@ -306,22 +360,33 @@ public class SysGroupUserController {
 		try {
 			if(para.getIkey() == 0)
 			{
-				Page<TlGammaTask> tasklist = this.sysTaskService.getUserCreateTasks(cUser.getGroupGuid(),cUser.getUserName(),filterStr,pageInfo);
+				Page<ViewTask> tasklist = this.sysTaskService.getUserCreateTasks(cUser.getUserName(),filterStr,pageInfo);
 				if(tasklist!=null)
 				{
-					List<Map<String,String>> rtasks  = new LinkedList<Map<String,String>>();
+					List<Map<String,Object>> rtasks  = new LinkedList<Map<String,Object>>();
 					rtasks = tasklist.getContent().stream().map(item -> {
-						Map<String,String> tmp = new HashMap<String,String>();
+						Map<String,Object> tmp = new HashMap<String,Object>();
 						
 						tmp.put("taskId", item.getTaskGuid());
 						tmp.put("taskName", item.getTaskName());
-						tmp.put("terminalTime", df.format(item.getTerminalTime()));
-						tmp.put("startTime", df.format(item.getStartTime()));
+						tmp.put("taskDesc", item.getTaskDesc());
+						if(item.getTerminalTime()!=null)
+							tmp.put("terminalTime", df.format(item.getTerminalTime()));
+						if(item.getStartTime()!=null)
+							tmp.put("startTime", df.format(item.getStartTime()));
+						if(item.getCreateTime()!=null)
+							tmp.put("createTime", df.format(item.getCreateTime()));
+						tmp.put("busPassword", item.getBusinessPassword());
+						if(item.getUserNum()!=null)
+							tmp.put("userNum", item.getUserNum());
+						else
+							tmp.put("userNum", 0);
 						tmp.put("userName", item.getUserName());
+						tmp.put("className", item.getKernelClassname());
 						return tmp;
 					}).collect(Collectors.toList());
 					
-					Page<Map<String,String>> resPage = new PageImpl<Map<String,String>>(rtasks,pageInfo,tasklist.getTotalElements());
+					Page<Map<String,Object>> resPage = new PageImpl<Map<String,Object>>(rtasks,pageInfo,tasklist.getTotalElements());
 					return ResultUtil.success(resPage);
 				}
 			}
@@ -330,23 +395,34 @@ public class SysGroupUserController {
 			if(para.getIkey() == 1)
 				viewUserTask = this.sysTaskService.getByUserInvolveTasks(cUser.getUserName(),filterStr,pageInfo);
 			else if(para.getIkey() == 2)
-				viewUserTask = this.sysTaskService.getPasswordTasks(cUser.getGroupGuid(),cUser.getUserName(),filterStr,pageInfo);
+				viewUserTask = this.sysTaskService.getPasswordTasks(cUser.getUserName(),filterStr,pageInfo);
 			
 			if(viewUserTask!=null)
 			{
-				List<Map<String,String>> rtasks  = new LinkedList<Map<String,String>>();
+				List<Map<String,Object>> rtasks  = new LinkedList<Map<String,Object>>();
 				rtasks = viewUserTask.getContent().stream().map(item -> {
-					Map<String,String> tmp = new HashMap<String,String>();
+					Map<String,Object> tmp = new HashMap<String,Object>();
 					
 					tmp.put("taskId", item.getId().getTaskGuid());
 					tmp.put("taskName", item.getTaskName());
-					tmp.put("terminalTime", df.format(item.getTerminalTime()));
-					tmp.put("startTime", df.format(item.getStartTime()));
+					tmp.put("taskDesc", item.getTaskDesc());
+					if(item.getTerminalTime()!=null)
+						tmp.put("terminalTime", df.format(item.getTerminalTime()));
+					if(item.getStartTime()!=null)
+						tmp.put("startTime", df.format(item.getStartTime()));
+					if(item.getCreateTime()!=null)
+						tmp.put("createTime", df.format(item.getCreateTime()));
+					tmp.put("busPassword", item.getBusinessPassword());
+					if(item.getUserNum()!=null)
+						tmp.put("userNum", item.getUserNum());
+					else
+						tmp.put("userNum", 0);
+					tmp.put("className", item.getKernelClassname());
 					tmp.put("userName", item.getId().getUserName());
 					return tmp;
 				}).collect(Collectors.toList());
 				
-				Page<Map<String,String>> resPage = new PageImpl<Map<String,String>>(rtasks,pageInfo,viewUserTask.getTotalElements());
+				Page<Map<String,Object>> resPage = new PageImpl<Map<String,Object>>(rtasks,pageInfo,viewUserTask.getTotalElements());
 				return ResultUtil.success(resPage);
 			}
 		} catch (Exception e) {
@@ -356,19 +432,41 @@ public class SysGroupUserController {
 	}
 	
 	@PostMapping(value = "/task")
-	public Result<TaskParameter> queryTaskInfo(@RequestBody GAParameter para) {
-		Map<String,String> tMap = new HashMap<String,String>();
+	public Result<Map<String,Object>> queryTaskInfo(@RequestBody GAParameter para) {
+		Map<String,Object> tMap = new HashMap<String,Object>();
 
-		Optional<TlGammaTask> optionaltask = this.sysTaskService.getByGuid(para.getId());
+		Optional<ViewTask> optionaltask = this.sysTaskService.getViewTaskByGuid(para.getId());
 		if(optionaltask.isPresent())
 		{
-			TlGammaTask item = optionaltask.get();
+			ViewTask item = optionaltask.get();
 			tMap.put("taskId", item.getTaskGuid());
 			tMap.put("taskName", item.getTaskName());
-			tMap.put("startTime", df.format(item.getStartTime()));
-			tMap.put("terminalTime", df.format(item.getTerminalTime()));
+			tMap.put("taskDesc", item.getTaskDesc());
+			if(item.getTerminalTime()!=null)
+				tMap.put("terminalTime", df.format(item.getTerminalTime()));
+			if(item.getStartTime()!=null)
+				tMap.put("startTime", df.format(item.getStartTime()));
+			if(item.getCreateTime()!=null)
+				tMap.put("createTime", df.format(item.getCreateTime()));
 			tMap.put("userName", item.getUserName());
 			tMap.put("busPassword",item.getBusinessPassword());
+			tMap.put("classId",item.getKernelClassid());
+			tMap.put("className", item.getKernelClassname());
+			if(item.getUserNum()!= null)
+				tMap.put("userNum", item.getUserNum());
+			else
+				tMap.put("userNum", 0);
+			List<TlGammaTaskLayer> layerList = this.sysTaskService.getTaskLayerList(item.getTaskGuid(), 1);
+			try {
+				if(layerList!=null && layerList.size()>0)
+				{
+					tMap.put("extId",layerList.get(0).getExtGuid());
+					tMap.put("extName", layerList.get(0).getLayerName());
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return ResultUtil.success(tMap);
 	}
@@ -402,7 +500,7 @@ public class SysGroupUserController {
 			if(optionaltask.isPresent())
 			{
 				List<TlGammaKernelAttr>  attrList = null;
-				if( taskParam.getRefClassId() == null)
+				if( taskParam.getRefClassId() != null)
 				{
 					attrList = this.sysKernelService.getTaskAttrAvalialble(taskParam.getRefClassId(),cUser.getUserName(),taskParam.getTaskId());
 				}
@@ -464,7 +562,15 @@ public class SysGroupUserController {
 				TlGammaTask task = new TlGammaTask();
 				String taskGuid = UUID.randomUUID().toString();
 				task.setTaskGuid(taskGuid);
-				task.setTaskName(taskParam.getTaskName());
+				if(taskParam.getTaskName()!=null)
+				{
+					List<TlGammaTask> tasklist = this.sysTaskService.getByTaskNameExclude(taskGuid,cUser.getGroupGuid(),taskParam.getTaskName());
+					if(tasklist!=null && tasklist.size()>0)
+					{
+						return ResultUtil.error(400, ReturnDesc.TASK_NAME_IS_EXIST);
+					}
+					task.setTaskName(taskParam.getTaskName());
+				}
 				task.setStartTime(new Timestamp(dateformat.parse(taskParam.getStartTime()).getTime()));
 				task.setTerminalTime(new Timestamp(dateformat.parse(taskParam.getTerminalTime()).getTime()));
 				task.setUserName(cUser.getUserName());
@@ -476,7 +582,7 @@ public class SysGroupUserController {
 				taskLayer.setLayerGuid(UUID.randomUUID().toString());
 				if(taskParam.getExtId() != null && taskParam.getExtId().length()>0)
 				{
-					Optional<TlGammaKernelExt> optionalExt = this.sysKernelExtService.getExtById(taskParam.getExtId());
+					Optional<ViewKernelExt> optionalExt = this.sysKernelExtService.getExtById(taskParam.getExtId());
 					if(optionalExt.isPresent())
 					{
 						taskLayer.setExtGuid(taskParam.getExtId());
@@ -542,13 +648,11 @@ public class SysGroupUserController {
 	}
 
 	@PostMapping(value = "/task/update")
-	public Result<Map<String,Object>> updateTask(@RequestBody @Valid TaskParameter taskParam,BindingResult bindingResult) {
+	public Result<Map<String,Object>> updateTask(HttpServletRequest request,@RequestBody @Valid TaskParameter taskParam,BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
-		if (bindingResult.hasErrors()) {
-			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
-		}
+		UserInfo cUser = this.utilService.getCurrentUser(request);
 		Map<String,Object> resList = new HashMap<String ,Object>();
 		try {
 			if(taskParam.getTaskId()!= null)
@@ -559,7 +663,14 @@ public class SysGroupUserController {
 					TlGammaTask task = taskOptional.get();
 					
 					if(taskParam.getTaskName()!=null)
+					{
+						List<TlGammaTask> tasklist = this.sysTaskService.getByTaskNameExclude(task.getTaskGuid(),cUser.getGroupGuid(),taskParam.getTaskName());
+						if(tasklist!=null && tasklist.size()>0)
+						{
+							return ResultUtil.error(400, ReturnDesc.TASK_NAME_IS_EXIST);
+						}
 						task.setTaskName(taskParam.getTaskName());
+					}
 					if(taskParam.getTaskDesc()!=null)
 						task.setTaskDesc(taskParam.getTaskDesc());
 					if(taskParam.getStartTime()!=null)
@@ -578,7 +689,7 @@ public class SysGroupUserController {
 		} catch(Exception e){
 			throw new RuntimeException(e);
 		}
-		return ResultUtil.success(ReturnDesc.UNKNOW_ERROR);
+		return ResultUtil.error(400,ReturnDesc.UNKNOW_ERROR);
 	}
 	
 	@PostMapping(value = "/taskuser/add")
@@ -603,10 +714,10 @@ public class SysGroupUserController {
 			}
 			else
 			{
-				return ResultUtil.success(ReturnDesc.TASK_USER_IS_EXIST);
+				return ResultUtil.error(400,ReturnDesc.TASK_USER_IS_EXIST);
 			}
 		}
-		return ResultUtil.success(ReturnDesc.UNKNOW_ERROR);
+		return ResultUtil.error(400,ReturnDesc.UNKNOW_ERROR);
 	}
 	@PostMapping(value = "/taskuser/delete")
 	public Result<String> deleteTaskUser(@RequestBody @Valid TaskUserParameter taskUserParam,BindingResult bindingResult) {
@@ -619,7 +730,7 @@ public class SysGroupUserController {
 			return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
 		}
 		
-		return ResultUtil.success(ReturnDesc.UNKNOW_ERROR);
+		return ResultUtil.error(400,ReturnDesc.UNKNOW_ERROR);
 	}
 	
 	@PostMapping(value = "/taskuser/list")
@@ -674,30 +785,38 @@ public class SysGroupUserController {
 		int pageSize = para.getPageSize();
 
 		Sort sort = null;
+		String sortField = "updateTime";
 		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
-			sort = new Sort(Direction.ASC, para.getSortField());
+			sort = new Sort(Direction.ASC, sortField);
 		} else {
-			sort = new Sort(Direction.DESC, para.getSortField());
+			sort = new Sort(Direction.DESC, sortField);
 		}
 		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
 		
 		if(para.getSkey()!= null && para.getSkey().length()>0)
 		{
-			Page<ViewTaskAttr> tmpList = this.sysTaskService.getTaskFieldList(para.getSkey(), pageInfo);
-			for(ViewTaskAttr tattr: tmpList.getContent())
+			Page<ViewTaskAttr> tmpList ;
+			if(para.getId() == null || para.getId().length()<1)
+				tmpList = this.sysTaskService.getTaskFieldList(para.getSkey(), pageInfo);
+			else
+				tmpList = this.sysTaskService.getTaskFieldList(para.getSkey(),para.getId(), pageInfo);
+			if(tmpList!=null)
 			{
-				
-				Map<String,Object> resList = new HashMap<String ,Object>();
-				resList.put("attrId", tattr.getId().getAttrGuid());
-				resList.put("attrName",tattr.getAttrName());
-				resList.put("attrEnum",tattr.getAttrEnum());
-				resList.put("attrIsedit",tattr.getAttrIsedit());
-				resList.put("attrFgrade",tattr.getAttrFgrade());
-				resList.put("rankId", tattr.getRankGuid());
-				taskUserList.add(resList);
-			}
-			Page<Map<String,Object>> resPage = new PageImpl<Map<String,Object>>(taskUserList,pageInfo,tmpList.getTotalElements());
-			return ResultUtil.success(resPage);
+				for(ViewTaskAttr tattr: tmpList.getContent())
+				{
+					
+					Map<String,Object> resList = new HashMap<String ,Object>();
+					resList.put("attrId", tattr.getId().getAttrGuid());
+					resList.put("attrName",tattr.getAttrName());
+					resList.put("attrEnum",tattr.getAttrEnum());
+					resList.put("attrIsedit",tattr.getAttrIsedit());
+					resList.put("attrFgrade",tattr.getAttrFgrade());
+					resList.put("rankId", tattr.getRankGuid());
+					taskUserList.add(resList);
+				}
+				Page<Map<String,Object>> resPage = new PageImpl<Map<String,Object>>(taskUserList,pageInfo,tmpList.getTotalElements());
+				return ResultUtil.success(resPage);
+			}		
 		}
 		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
 	}
@@ -842,7 +961,7 @@ public class SysGroupUserController {
 					taskLayer.setLayerName(optionalkernel.get().getKernelClassname());
 					if(taskParam.getExtId()!= null)
 					{
-						Optional<TlGammaKernelExt> optionalext = this.sysKernelExtService.getExtById(taskParam.getExtId());
+						Optional<ViewKernelExt> optionalext = this.sysKernelExtService.getExtById(taskParam.getExtId());
 						if(optionalext.isPresent())
 						{
 							taskLayer.setExtGuid(taskParam.getExtId());
@@ -855,12 +974,13 @@ public class SysGroupUserController {
 					
 					fMap.put("refclassId", tmpExt.getKernelClassid());
 					fMap.put("taskId", tmpExt.getTaskGuid());
+					return ResultUtil.success(fMap);
 				}
 			}
 		} catch(Exception e){
-			throw new RuntimeException("error");
+			throw new RuntimeException(e);
 		}
-		return ResultUtil.success(fMap);
+		return ResultUtil.error(400,  ReturnDesc.UNKNOW_ERROR);
 	}
 	
 	@PostMapping(value = "/taskref/list")
@@ -876,8 +996,12 @@ public class SysGroupUserController {
 			{
 				Map<String,Object> layerMap = new HashMap<String,Object>();
 				layerMap.put("layerId", layer.getLayerGuid());
+				layerMap.put("classId", layer.getKernelClassid());
 				layerMap.put("layerName", layer.getLayerName());
-				layerMap.put("kernelNum", layer.getKernelNum());
+				if(layer.getKernelNum()!=null)
+					layerMap.put("kernelNum", layer.getKernelNum());
+				else
+					layerMap.put("kernelNum", 0);
 				resList.add(layerMap);
 			}
 		} catch(Exception e){
@@ -895,11 +1019,10 @@ public class SysGroupUserController {
 		try
 		{
 			this.sysTaskService.deleteTaskLayer(taskParam.getLayerId());
-			
+			return ResultUtil.success("ok");
 		} catch(Exception e){
 			throw new RuntimeException(e);
 		}
-		return ResultUtil.success("ok");
 	}
 	
 	@PostMapping(value = "/taskref/addattr")
@@ -919,8 +1042,82 @@ public class SysGroupUserController {
 			TlGammaTaskAttr tattr = this.sysTaskService.addTaskField(taskattr);
 			fieldMap.put("refattrId", tattr.getAttrGuid());
 			fieldMap.put("taskId", tattr.getTaskGuid());
+			return ResultUtil.success(fieldMap);
 		}
-		return ResultUtil.success(fieldMap);
+		return ResultUtil.error(400,  ReturnDesc.UNKNOW_ERROR);
+	}
+	
+	@PostMapping(value = "/taskcomment/save")
+	public Result<Map<String,Object>> taskCommentSave(HttpServletRequest request,@RequestBody @Valid CommentParameter para,BindingResult bindingResult) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		Map<String,Object>  fieldMap = new HashMap<String,Object>();
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		if(para.getTaskId()!= null && para.getComment()!=null)
+		{
+			TlGammaTaskComment  taskcomment = new TlGammaTaskComment();
+			taskcomment.setCommentText(para.getComment());
+			taskcomment.setTaskGuid(para.getTaskId());
+			taskcomment.setCommentTime(new Timestamp(System.currentTimeMillis()));
+			taskcomment.setUserName(cUser.getUserName());
+			
+			TlGammaTaskComment savecomment = this.sysTaskService.saveUserComment(taskcomment);
+			fieldMap.put("commentId", savecomment.getCommentId());
+			fieldMap.put("taskId", savecomment.getTaskGuid());
+			return ResultUtil.success(fieldMap);
+		}
+		return ResultUtil.error(400,  ReturnDesc.UNKNOW_ERROR);
+	}
+	
+	@PostMapping(value = "/taskcomment/list")
+	public Result<List<Map<String,Object>>> taskCommentList(@RequestBody @Valid RequestParameter para,BindingResult bindingResult) {
+		
+		List<Map<String, Object>> taskCommentList =  new LinkedList<Map<String, Object>>();
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		int pageNumber = para.getPage();
+		int pageSize = para.getPageSize();
+
+		Sort sort = null;
+		String sortField = "commentTime";
+		if (para.getSortDirection().equalsIgnoreCase("ASC")) {
+			sort = new Sort(Direction.ASC, sortField);
+		} else {
+			sort = new Sort(Direction.DESC, sortField);
+		}
+		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
+		
+		if(para.getSkey()!= null && para.getSkey().length()>0)
+		{
+			Page<TlGammaTaskComment> tmpList = this.sysTaskService.getTaskCommentList(para.getSkey(), pageInfo);
+			for(TlGammaTaskComment tattr: tmpList.getContent())
+			{
+				Map<String,Object> resList = new HashMap<String ,Object>();
+				resList.put("commentId", tattr.getCommentId());
+				resList.put("commentText",tattr.getCommentText());
+				resList.put("userName",tattr.getUserName());
+				resList.put("commentTime",df.format(tattr.getCommentTime()));
+				taskCommentList.add(resList);
+			}
+			Page<Map<String,Object>> resPage = new PageImpl<Map<String,Object>>(taskCommentList,pageInfo,tmpList.getTotalElements());
+			return ResultUtil.success(resPage);
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
+	}
+	
+	@PostMapping(value = "/task/delete")
+	public Result<String> taskDelete(@RequestBody @Valid TaskParameter para, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		if(para.getTaskId()!=null && para.getId().equalsIgnoreCase("TULIBJ_20140609"))
+		{
+			this.sysTaskService.deleteTask(para.getTaskId());
+		}
+		
+		return ResultUtil.success("ok");
 	}
 	
 	@PostMapping(value = "/closedtasks")
@@ -930,7 +1127,7 @@ public class SysGroupUserController {
 		}
 		logger.info("closedtasks");
 		
-		return ResultUtil.success("");
+		return ResultUtil.success("ok");
 	}
 	
 	@PostMapping(value = "/kernels")
@@ -959,15 +1156,21 @@ public class SysGroupUserController {
 			filterStr = para.getSkey();
 		}
 		PageRequest pageInfo = new PageRequest(pageNumber, pageSize, sort);
-		Page<TlGammaKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),filterStr,pageInfo);
-		for (TlGammaKernel eachKernel : mList) { 
+		Page<ViewKernel> mList = this.sysKernelService.getGroupKernelList(cUser.getGroupGuid(),filterStr,pageInfo);
+		for (ViewKernel eachKernel : mList) { 
 			Map<String, Object> tMap = new HashMap<String, Object>();
 			tMap.put("classId", eachKernel.getKernelClassid());
 			tMap.put("className", eachKernel.getKernelClassname());
 			tMap.put("descInfo", eachKernel.getKernelClassdesc());
 			tMap.put("geoType",eachKernel.getGeomType());
-			tMap.put("kernelnum","");
-			tMap.put("tasknum","");
+			if(eachKernel.getKernelNum()!=null)
+				tMap.put("kernelnum",eachKernel.getKernelNum());
+			else
+				tMap.put("kernelnum",0);
+			if(eachKernel.getTaskNum()!=null)
+				tMap.put("tasknum",eachKernel.getTaskNum());
+			else
+				tMap.put("tasknum",0);
 			list.add(tMap);
 		}
 		
@@ -977,48 +1180,56 @@ public class SysGroupUserController {
 	
 	@PostMapping(value = "/kernel")
 	public Result<Map<String,Object>> queryKernel(HttpServletRequest request ,@RequestBody @Valid GAParameter para) {
-		
 		Map<String,Object> result = new HashMap<String,Object>();
-		Optional<TlGammaKernel> kernel = this.sysKernelService.getByKernelClassid(para.getId());
-		if(!kernel.isPresent() )
+		if(para.getId()!=null&& para.getId().length()>0)
 		{
+			Optional<ViewKernel> optionalkernel = this.sysKernelService.getViewKernelByKernelClassid(para.getId());
+			if(optionalkernel.isPresent() )
+			{
+				ViewKernel kernel =optionalkernel.get();
+				result.put("classId",kernel.getKernelClassid());
+				result.put("className",kernel.getKernelClassname());
+				result.put("descInfo",kernel.getKernelClassdesc());
+				result.put("geoType",kernel.getGeomType());
+				if(kernel.getKernelNum()!=null)
+					result.put("kernelnum",kernel.getKernelNum());
+				else
+					result.put("kernelnum",0);
+				if(kernel.getTaskNum()!=null)
+					result.put("tasknum",kernel.getTaskNum());
+				else
+					result.put("tasknum",0);
+			
+				List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(para.getId());
+				
+				List<Map<String,Object>> fieldList = attrList.stream().map(item ->{
+					Map<String,Object> fieldMap = new HashMap<String,Object>();
+					fieldMap.put("attrId", item.getAttrGuid());
+					fieldMap.put("attrName",item.getAttrName());
+					fieldMap.put("attrType",item.getAttrType());
+					fieldMap.put("attrGrade",item.getAttrFgrade());
+					fieldMap.put("attrDesc",item.getAttrDesc());
+					fieldMap.put("minValue",item.getAttrMin());
+					fieldMap.put("maxValue",item.getAttrMax());
+		
+					if(item.getDictId()!=null)
+					{
+						Optional<TlGammaDict> opDict = this.sysDictService.getDictbyId(item.getDictId());
+						if(opDict.isPresent())
+						{
+							fieldMap.put("dictName",opDict.get().getDictName());
+							fieldMap.put("dictId",item.getDictId());
+						}
+					}
+					return fieldMap;
+				}).collect(Collectors.toList());
+				result.put("attrs", fieldList);
+				return ResultUtil.success(result);
+			}
 			return ResultUtil.error(400, ReturnDesc.KERNEL_IS_NOT_EXIST);
 		}
-		else
-		{
-			result.put("classId",kernel.get().getKernelClassid());
-			result.put("className",kernel.get().getKernelClassname());
-			result.put("descInfo",kernel.get().getKernelClassdesc());
-			result.put("geoType",kernel.get().getGeomType());
-		}
-		List<TlGammaKernelAttr>  attrList = this.sysKernelService.getKernelAttrList(para.getId());
-		
-		List<Map<String,Object>> fieldList = attrList.stream().map(item ->{
-			Map<String,Object> fieldMap = new HashMap<String,Object>();
-			fieldMap.put("attrId", item.getAttrGuid());
-			fieldMap.put("attrName",item.getAttrName());
-			fieldMap.put("attrType",item.getAttrType());
-			fieldMap.put("attrGrade",item.getAttrFgrade());
-			fieldMap.put("attrDesc",item.getAttrDesc());
-			fieldMap.put("minValue",item.getAttrMin());
-			fieldMap.put("maxValue",item.getAttrMax());
-			
-
-			if(item.getDictId()!=null)
-			{
-				Optional<TlGammaDict> opDict = this.sysDictService.getDictbyId(item.getDictId());
-				if(opDict.isPresent())
-				{
-					fieldMap.put("dictName",opDict.get().getDictName());
-					fieldMap.put("dictId",item.getDictId());
-				}
-			}
-			return fieldMap;
-		}).collect(Collectors.toList());
-		result.put("attrs", fieldList);
-		return ResultUtil.success(result);
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
 	}
-	
 	
 	@PostMapping(value = "/kernel/attrs")
 	public Result<Page<Map<String,Object>>> queryKernelAttrs(HttpServletRequest request ,@RequestBody RequestParameter para) {
@@ -1048,10 +1259,11 @@ public class SysGroupUserController {
 			fieldMap.put("attrId", item.getAttrGuid());
 			fieldMap.put("attrName",item.getAttrName());
 			fieldMap.put("attrType",item.getAttrType());
-			fieldMap.put("attrGrade",item.getAttrFgrade());
+			fieldMap.put("attrFgrade",item.getAttrFgrade());
 			fieldMap.put("attrDesc",item.getAttrDesc());
 			fieldMap.put("minValue",item.getAttrMin());
 			fieldMap.put("maxValue",item.getAttrMax());
+			fieldMap.put("shareGrade", item.getShareGrade());
 			if(item.getDictId()!=null)
 			{
 				Optional<TlGammaDict> opDict = this.sysDictService.getDictbyId(item.getDictId());
@@ -1067,7 +1279,37 @@ public class SysGroupUserController {
 
 		return ResultUtil.success(resPage);
 	}
+
+	@PostMapping(value = "/kernel/attr")
+	public Result<Map<String,Object>> queryKernelAttr(HttpServletRequest request ,@RequestBody GAParameter para) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
 		
+		Optional<TlGammaKernelAttr> optionalattr = this.sysKernelService.getAttrById(para.getId());
+		if(optionalattr.isPresent())
+		{
+			Map<String,Object> fieldMap = new HashMap<String,Object>();
+			TlGammaKernelAttr item = optionalattr.get();
+			fieldMap.put("attrId", item.getAttrGuid());
+			fieldMap.put("attrName",item.getAttrName());
+			fieldMap.put("attrType",item.getAttrType());
+			fieldMap.put("attrGrade",item.getAttrFgrade());
+			fieldMap.put("attrDesc",item.getAttrDesc());
+			fieldMap.put("minValue",item.getAttrMin());
+			fieldMap.put("maxValue",item.getAttrMax());
+			fieldMap.put("shareGrade", item.getShareGrade());
+			if(item.getDictId()!=null)
+			{
+				Optional<TlGammaDict> opDict = this.sysDictService.getDictbyId(item.getDictId());
+				if(opDict.isPresent())
+				{
+					fieldMap.put("dictName",opDict.get().getDictName());
+					fieldMap.put("dictId",item.getDictId());
+				}
+			}
+			return ResultUtil.success(fieldMap);
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
+	}
 	
 	@PostMapping(value = "/kernel/exttypes")
 	public Result<Page<Map<String ,String >>> listKernelExttypes(HttpServletRequest request ,@RequestBody RequestParameter para, BindingResult bindingResult) {
@@ -1101,23 +1343,33 @@ public class SysGroupUserController {
 		return ResultUtil.success(subList);
 	}
 	@PostMapping(value = "/kernel/exttype")
-	public Result<Page<Map<String ,String >>> kernelExttype(@RequestBody GAParameter para) {
+	public Result<Page<Map<String ,Object >>> kernelExttype(@RequestBody GAParameter para) {
 		
-		Map<String ,String >  subType = new HashMap<String ,String>();
+		Map<String ,Object >  subType = new HashMap<String ,Object>();
 		if(para.getId()!= null && para.getId().length()>0)
 		{
-			Optional<TlGammaKernelExt> optionalExt =  this.sysKernelExtService.getExtById(para.getId());
+			Optional<ViewKernelExt> optionalExt =  this.sysKernelExtService.getExtById(para.getId());
 			if(optionalExt.isPresent())
 			{
-				TlGammaKernelExt ext = optionalExt.get();
+				ViewKernelExt ext = optionalExt.get();
 				subType.put("extDesc", ext.getExtDesc());
 				subType.put("extId", ext.getExtGuid());
 				subType.put("classId", ext.getKernelClassid());
+				subType.put("className", ext.getKernelClassname());
 				subType.put("extName", ext.getExtName());
 				subType.put("extDesc", ext.getExtDesc());
-				subType.put("kernelNum", String.valueOf(ext.getKernelNum()));
-				subType.put("geoFilterNum", String.valueOf(ext.getGeofilterNum()));
-				subType.put("filterNum", String.valueOf(ext.getFilterNum()));
+				if(ext.getKernelNum()!=null)
+					subType.put("kernelNum", ext.getKernelNum());
+				else
+					subType.put("kernelNum", 0);
+				if(ext.getGeofilterNum()!=null)
+					subType.put("geoFilterNum", ext.getGeofilterNum());
+				else
+					subType.put("geoFilterNum", 0);
+				if(ext.getFilterNum()!=null)
+					subType.put("filterNum", ext.getFilterNum());
+				else
+					subType.put("filterNum",0);
 			}
 		}
 		return ResultUtil.success(subType);
@@ -1422,23 +1674,81 @@ public class SysGroupUserController {
 		return ResultUtil.success(list);
 	}
 	
+
+	@PostMapping(value = "/kernel/exttype/filter")
+	public Result<Map<String,String>> kernelExttypeFilter(HttpServletRequest request ,@RequestBody GAParameter para, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		List<Map<String,String>> list = new LinkedList<Map<String,String>>();
+		
+		Optional<TlGammaKernelFilter> optionalfilter = this.sysKernelExtService.getFilterById(para.getId());
+		if(optionalfilter.isPresent())
+		{
+			TlGammaKernelFilter filter =optionalfilter.get(); 
+			Optional<TlGammaKernelAttr> kernelAttr = this.sysKernelService.getAttrById(filter.getAttrGuid());
+			if(kernelAttr.isPresent())
+			{
+				Map<String,String> filterMap = new HashMap<String,String>();
+				filterMap.put("filterId", filter.getFilterGuid());
+				filterMap.put("attrId", filter.getAttrGuid());
+				filterMap.put("attrName", kernelAttr.get().getAttrName());
+				filterMap.put("attrType", kernelAttr.get().getAttrType());
+				filterMap.put("maxValue", filter.getMaxValue());
+				filterMap.put("minValue", filter.getMinValue());
+				filterMap.put("enumStr", filter.getEnumStr());
+				return ResultUtil.success(filterMap);
+			}
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
+	}
+	
 	@PostMapping(value = "/kernel/exttype/geofilterlist")
 	public Result<List<Map<String,Object>>> kernelExttypeGeoFilterList(HttpServletRequest request ,@RequestBody ExtTypeParameter extParam, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
 		}
 		List<Map<String,Object>> list = new LinkedList<Map<String,Object>>();
+		Optional<TlGammaKernelExt> optionalext = this.sysKernelExtService.getKernelExt(extParam.getExtId());
 		
-		List<TlGammaKernelGeoFilter> filterList = this.sysKernelExtService.getGeoFilter(extParam.getExtId());
-		for(TlGammaKernelGeoFilter filter : filterList)
+		if(optionalext.isPresent())
 		{
-				Map<String,Object> filterMap = new HashMap<String,Object>();
-				filterMap.put("filterId", filter.getFilterGuid());
-				filterMap.put("filterName", filter.getFilterName());
-				filterMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(filter.getFilterGeom())));
-				list.add(filterMap);
+			List<TlGammaKernelGeoFilter> filterList = this.sysKernelExtService.getGeoFilter(extParam.getExtId());
+			if(filterList!=null && filterList.size()>0)
+			{
+				for(TlGammaKernelGeoFilter filter : filterList)
+				{
+					Map<String,Object> filterMap = new HashMap<String,Object>();
+					filterMap.put("filterId", filter.getFilterGuid());
+					filterMap.put("filterName", filter.getFilterName());
+					filterMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(filter.getFilterGeom())));
+					list.add(filterMap);
+					return ResultUtil.success(list);
+				}
+			}
+			return ResultUtil.error(400, ReturnDesc.EXT_NO_ANY_GEO_FILTER);
 		}
-		return ResultUtil.success(list);
+		return ResultUtil.error(400, ReturnDesc.EXT_IS_NOT_EXIST);
+	}
+	
+	@PostMapping(value = "/kernel/exttype/geofilter")
+	public Result<Map<String,Object>> kernelExttypeGeoFilter(HttpServletRequest request ,@RequestBody GAParameter para, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return ResultUtil.error(1, bindingResult.getFieldError().getDefaultMessage());
+		}
+		List<Map<String,Object>> list = new LinkedList<Map<String,Object>>();
+		
+		Optional<TlGammaKernelGeoFilter> optionalfilter = this.sysKernelExtService.getGeoFilterById(para.getId());
+		if(optionalfilter.isPresent())
+		{
+			TlGammaKernelGeoFilter filter = optionalfilter.get();
+			Map<String,Object> filterMap = new HashMap<String,Object>();
+			filterMap.put("filterId", filter.getFilterGuid());
+			filterMap.put("filterName", filter.getFilterName());
+			filterMap.put("geometry", JSONValue.parse(new GeometryJSON(10).toString(filter.getFilterGeom())));
+			return ResultUtil.success(filterMap);
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
 	}
 	
 	@PostMapping(value = "/kernel/exttype/delete")
@@ -1476,5 +1786,36 @@ public class SysGroupUserController {
 		}
 	   
 		return ResultUtil.success(ReturnDesc.EXECUTION_SUCCESS);
+	}
+	
+	//用户，我的字段管理
+	//用户字段涉及的核 心对象
+	//用户字段
+	@PostMapping(value = "/relate/kernels")
+	public Result<List<Map<String,Object>>> relateKernels(HttpServletRequest request) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		
+		List<Map<String,Object>> list = new LinkedList<Map<String,Object>>();
+		
+		List<Map<String, String>> kernelList = this.sysKernelService.getUserRelateKernelList(cUser.getUserName());
+		if(kernelList!=null && kernelList.size()>0)
+		{
+			return ResultUtil.success(kernelList);
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
+	}
+	
+	@PostMapping(value = "/relate/attrs")
+	public Result<Map<String,Object>> relateKernels(HttpServletRequest request,@RequestBody GAParameter para) {
+		UserInfo cUser = this.utilService.getCurrentUser(request);
+		
+		List<Map<String,Object>> list = new LinkedList<Map<String,Object>>();
+		
+		List<Map<String,String>> attrList = this.sysKernelService.getUserRelateAttrList(para.getId(),cUser.getUserName());
+		if(attrList!=null && attrList.size()>0)
+		{
+			return ResultUtil.success(attrList);
+		}
+		return ResultUtil.error(400, ReturnDesc.UNKNOW_ERROR);
 	}
 }

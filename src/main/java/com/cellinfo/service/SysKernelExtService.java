@@ -166,8 +166,18 @@ public class SysKernelExtService {
 		
 	}
 
-	public Optional<TlGammaKernelExt> getExtById(String id) {
+	public Optional<ViewKernelExt> getExtById(String id) {
 		// TODO Auto-generated method stub
-		return this.tlGammaKernelExtRepository.findById(id);
+		return this.viewKernelExtRepository.findById(id);
+	}
+
+	public Optional<TlGammaKernelFilter> getFilterById(String id) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelFilterRepository.findById(id);
+	}
+
+	public Optional<TlGammaKernelGeoFilter> getGeoFilterById(String id) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelGeoFilterRepository.findById(id);
 	}
 }

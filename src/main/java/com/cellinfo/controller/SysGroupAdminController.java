@@ -132,7 +132,7 @@ public class SysGroupAdminController {
 			tmpKernel.setKernelClassdesc(kernel.getDescInfo());
 		if(kernel.getClassName()!=null)
 		{
-			List<TlGammaKernel> kernellist = this.sysKernelService.getByKernelClassname(kernel.getClassName());
+			List<TlGammaKernel> kernellist = this.sysKernelService.getByKernelClassnameExclude(kernel.getClassId(),kernel.getClassName());
 			if(kernellist!=null && kernellist.iterator().hasNext())
 			{
 				return ResultUtil.error(400, ReturnDesc.KERNEL_NAME_IS_EXIST);

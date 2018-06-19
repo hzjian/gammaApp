@@ -10,4 +10,6 @@ public interface TlGammaTaskAttrrankRepository extends PagingAndSortingRepositor
 
 	List<TlGammaTaskAttrrank> findByTaskGuid(String taskId);
 
+	void deleteByTaskGuid(String taskGuid);
+
 }

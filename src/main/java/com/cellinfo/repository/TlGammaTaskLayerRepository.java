@@ -12,4 +12,6 @@ public interface TlGammaTaskLayerRepository extends PagingAndSortingRepository<T
 	@Query("select u from TlGammaTaskLayer u where u.taskGuid = ?1 and u.layerGrade = ?2")
 	List<TlGammaTaskLayer> getLayerList(String taskId, Integer status);
 
+	void deleteByTaskGuid(String taskGuid);
+
 }

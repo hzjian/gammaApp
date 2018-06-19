@@ -26,5 +26,11 @@ public class ReturnDesc {
 	public static final String THIS_ATTR_IS_NOT_EXIST = "该字段不存在";
 	public static final String ATTR_NAME_IS_EXIST = "该属性字段名称已存在";
 	public static final String TASK_USER_IS_EXIST  ="此任务中用户已存在";
+	public static final String EXT_NO_ANY_GEO_FILTER = "此标签没有设置空间过滤条件";
+	public static final String EXT_IS_NOT_EXIST = "此标签不存在";
+	public static final String KERNEL_CLASS_NOT_EXIST = "该核心对象类别不存在";
+	public static final String TASK_NAME_IS_EXIST = "该任务名称已存在";
+	public static final String FILE_FORMART_IS_NOT_SUPPORT = "文件格式不支持";
+	public static final String FILE_EXCEED_MAX_SIZE = "文件大小超出范围";
 
 }

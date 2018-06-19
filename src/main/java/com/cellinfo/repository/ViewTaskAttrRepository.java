@@ -18,4 +18,8 @@ public interface ViewTaskAttrRepository extends PagingAndSortingRepository<ViewT
 	@Query("select a from ViewTaskAttr a  where a.id.taskGuid = ?1 and a.layerGrade = 1") 
 	public Page<ViewTaskAttr> getByTaskGuid(String taskGuid, Pageable pageInfo);
 	
+	@Query("select a from ViewTaskAttr a  where a.id.taskGuid = ?1 and a.kernelClassid =?2 and a.layerGrade = 0") 
+	public Page<ViewTaskAttr> getByTaskGuid(String taskGuid, String classId, Pageable pageInfo);
+	
+	
 }

@@ -14,22 +14,24 @@ import org.springframework.stereotype.Service;
 import com.cellinfo.entity.TlGammaTask;
 import com.cellinfo.entity.TlGammaTaskAttr;
 import com.cellinfo.entity.TlGammaTaskAttrrank;
+import com.cellinfo.entity.TlGammaTaskComment;
 import com.cellinfo.entity.TlGammaTaskLayer;
 import com.cellinfo.entity.TlGammaTaskUser;
+import com.cellinfo.entity.ViewTask;
 import com.cellinfo.entity.ViewTaskAttr;
 import com.cellinfo.entity.ViewTaskExt;
 import com.cellinfo.entity.ViewTaskUser;
 import com.cellinfo.entity.ViewTaskUserPK;
-import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaKernelFilterRepository;
-import com.cellinfo.repository.TlGammaKernelSubsetRepository;
 import com.cellinfo.repository.TlGammaTaskAttrRepository;
 import com.cellinfo.repository.TlGammaTaskAttrrankRepository;
+import com.cellinfo.repository.TlGammaTaskCommentRepository;
 import com.cellinfo.repository.TlGammaTaskLayerRepository;
 import com.cellinfo.repository.TlGammaTaskRepository;
 import com.cellinfo.repository.TlGammaTaskUserRepository;
 import com.cellinfo.repository.ViewTaskAttrRepository;
 import com.cellinfo.repository.ViewTaskExtRepository;
+import com.cellinfo.repository.ViewTaskRepository;
 import com.cellinfo.repository.ViewTaskUserRepository;
 
 
@@ -43,9 +45,6 @@ public class SysTaskService {
 	private TlGammaTaskAttrRepository  tlGammaTaskAttrRepository;
 	
 	@Autowired
-	private TlGammaKernelSubsetRepository tlGammaKernelSubsetRepository ;
-	
-	@Autowired
 	private ViewTaskAttrRepository viewTaskAttrRepository;
 	
 	@Autowired
@@ -55,7 +54,7 @@ public class SysTaskService {
 	private ViewTaskUserRepository  viewTaskUserRepository;
 	
 	@Autowired
-	private TlGammaKernelAttrRepository tlGammaKernelAttrRepository;
+	private ViewTaskRepository viewTaskRepository;
 	
 	@Autowired
 	private TlGammaTaskLayerRepository tlGammaTaskLayerRepository;
@@ -68,6 +67,9 @@ public class SysTaskService {
 	
 	@Autowired
 	private TlGammaTaskAttrrankRepository tlGammaTaskAttrrankRepository;
+	
+	@Autowired
+	private TlGammaTaskCommentRepository tlGammaTaskCommentRepository;
 	
 	
 	public Page<TlGammaTask> getAll(PageRequest pageInfo) {
@@ -90,9 +92,14 @@ public class SysTaskService {
 		return this.tlGammaTaskRepository.findById(taskGuid);
 	}
 
+	@Transactional
 	public void deleteTask(String taskGuid) {
 		// TODO Auto-generated method stub
 		this.tlGammaTaskRepository.deleteById(taskGuid);
+		this.tlGammaTaskAttrrankRepository.deleteByTaskGuid(taskGuid);
+		this.tlGammaTaskAttrRepository.deleteByTaskGuid(taskGuid);
+		this.tlGammaTaskLayerRepository.deleteByTaskGuid(taskGuid);
+		this.tlGammaTaskUserRepository.deleteByTaskGuid(taskGuid);
 	}
 
 	public TlGammaTask updateTask(TlGammaTask task) {
@@ -127,9 +134,9 @@ public class SysTaskService {
 		return this.tlGammaTaskRepository.findByUserName(userName,pageable);
 	}
 
-	public Page<TlGammaTask> getUserCreateTasks(String groupGuid,String userName,String strFilter,Pageable pageable) {
+	public Page<ViewTask> getUserCreateTasks(String userName,String strFilter,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return this.tlGammaTaskRepository.getUserCreateTasks(groupGuid,userName,strFilter,pageable);
+		return this.viewTaskRepository.getUserCreateTasks(userName,strFilter,pageable);
 	}
 
 	@Transactional
@@ -179,8 +186,7 @@ public class SysTaskService {
 		return this.viewTaskUserRepository.getUserTasks(userName,filterStr,pageInfo);
 	}
 
-	public Page<ViewTaskUser> getPasswordTasks(String groupGuid, String userName, String filterStr,
-			PageRequest pageInfo) {
+	public Page<ViewTaskUser> getPasswordTasks( String userName, String filterStr,	PageRequest pageInfo) {
 		// TODO Auto-generated method stub
 		return this.viewTaskUserRepository.getPasswordTasks(userName,filterStr,pageInfo);
 	}
@@ -238,6 +244,31 @@ public class SysTaskService {
 	public Optional<ViewTaskUser> getTaskUser(String taskId, String userName) {
 		// TODO Auto-generated method stub
 		return this.viewTaskUserRepository.findById(new ViewTaskUserPK(taskId,userName));
+	}
+
+	public List<TlGammaTask> getByTaskNameExclude(String taskId,String groupId,String taskName) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskRepository.getByTaskNameExclude(taskId,groupId,taskName);
+	}
+
+	public Optional<ViewTask> getViewTaskByGuid(String id) {
+		// TODO Auto-generated method stub
+		return this.viewTaskRepository.findById(id);
+	}
+
+	public Page<TlGammaTaskComment> getTaskCommentList(String taskId, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskCommentRepository.findByTaskGuid(taskId,pageable);
+	}
+
+	public TlGammaTaskComment saveUserComment(TlGammaTaskComment taskcomment) {
+		// TODO Auto-generated method stub
+		return this.tlGammaTaskCommentRepository.save(taskcomment);
+	}
+
+	public Page<ViewTaskAttr> getTaskFieldList(String taskGuid, String id, PageRequest pageInfo) {
+		// TODO Auto-generated method stub
+		return this.viewTaskAttrRepository.getByTaskGuid(taskGuid,id,pageInfo);
 	}
 	
 	

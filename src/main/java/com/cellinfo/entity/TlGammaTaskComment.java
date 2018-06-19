@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 
@@ -21,7 +23,8 @@ public class TlGammaTaskComment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="comment_id", nullable=false)
+	@SequenceGenerator(name="seq_task_comment", sequenceName="seq_task_comment",allocationSize=1)
+	@GeneratedValue(generator="seq_task_comment")
 	private Long commentId;
 
 	@Column(name="comment_text", length=512)
@@ -30,10 +33,10 @@ public class TlGammaTaskComment implements Serializable {
 	@Column(name="comment_time")
 	private Timestamp commentTime;
 
-	@Column(name="task_guid")
+	@Column(name="task_guid", length=36)
 	private String taskGuid;
 
-	@Column(name="user_guid")
+	@Column(name="user_guid", length=36)
 	private String userGuid;
 
 	@Column(name="user_name", length=128)

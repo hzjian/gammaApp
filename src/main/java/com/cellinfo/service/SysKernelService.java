@@ -1,7 +1,10 @@
 package com.cellinfo.service;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -12,8 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.cellinfo.entity.TlGammaDict;
 import com.cellinfo.entity.TlGammaKernel;
 import com.cellinfo.entity.TlGammaKernelAttr;
+import com.cellinfo.entity.ViewKernel;
+import com.cellinfo.entity.ViewKernelAttr;
+import com.cellinfo.repository.TlGammaDictRepository;
 import com.cellinfo.repository.TlGammaKernelAttrRepository;
 import com.cellinfo.repository.TlGammaKernelFilterRepository;
 import com.cellinfo.repository.TlGammaKernelGeoFilterRepository;
@@ -24,6 +31,8 @@ import com.cellinfo.repository.TlGammaLayerLineRepository;
 import com.cellinfo.repository.TlGammaLayerPointRepository;
 import com.cellinfo.repository.TlGammaLayerPolygonRepository;
 import com.cellinfo.repository.TlGammaTaskTmpRepository;
+import com.cellinfo.repository.ViewKernelAttrRepository;
+import com.cellinfo.repository.ViewKernelRepository;
 import com.cellinfo.repository.ViewLayerKernelRepository;
 
 @Service
@@ -62,6 +71,15 @@ public class SysKernelService {
 	
 	@Autowired
 	private TlGammaTaskTmpRepository tlGammaTaskTmpRepository;
+	
+	@Autowired
+	private ViewKernelAttrRepository viewKernelAttrRepository;
+	
+	@Autowired
+	private TlGammaDictRepository tlGammaDictRepository;
+	
+	@Autowired
+	private ViewKernelRepository viewKernelRepository;
 	
 	private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 	
@@ -105,14 +123,14 @@ public class SysKernelService {
 		return "删除成功";
 	}
 	
-	public Page<TlGammaKernel> getGroupKernelList(String groupGuid,String key,PageRequest pageInfo) {
+	public Page<ViewKernel> getGroupKernelList(String groupGuid,String key,PageRequest pageInfo) {
 		// TODO Auto-generated method stub
-		return this.tlGammaKernelRepository.findByGroupGuid(groupGuid,key,pageInfo);
+		return this.viewKernelRepository.findByGroupGuid(groupGuid,key,pageInfo);
 	}
 
-	public Optional<TlGammaKernel> getByKernelClassid(String kernelClassid) {
+	public Optional<ViewKernel> getViewKernelByKernelClassid(String kernelClassid) {
 		// TODO Auto-generated method stub
-		return this.tlGammaKernelRepository.findById(kernelClassid);
+		return this.viewKernelRepository.findById(kernelClassid);
 	}
 
 	public List<TlGammaKernel> getByKernelClassname(String kernelClassname) {
@@ -134,9 +152,14 @@ public class SysKernelService {
 		this.tlGammaKernelAttrRepository.save(attr);
 	}
 
-	public Page<TlGammaKernelAttr> getKernelAttrList(String classId,String userName, String filterStr,Pageable pageInfo) {
+	public Page<TlGammaKernelAttr> getKernelAttrList(String classId,String userName, String filterStr,Pageable pageable) {
 		// TODO Auto-generated method stub
-		return this.tlGammaKernelAttrRepository.getKernelAttrList(classId,userName,  filterStr,  pageInfo);
+		Page<TlGammaKernelAttr> attrList = null;
+		if(filterStr!= null && filterStr.length()>0)
+			attrList = this.tlGammaKernelAttrRepository.getKernelAttrList(classId,userName,filterStr,pageable);
+		else
+			attrList = this.tlGammaKernelAttrRepository.getKernelAttrList(classId,userName,pageable);
+		return attrList;
 	}
 
 	public List<TlGammaKernelAttr> getAttrByName(String classId,String attrName) {
@@ -153,5 +176,66 @@ public class SysKernelService {
 		// TODO Auto-generated method stub
 		return this.tlGammaKernelRepository.getTaskKernelAvaliable(groupId,taskId);
 		
+	}
+
+	public List<TlGammaKernel> getByKernelClassnameExclude(String classId, String className) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelRepository.getByKernelClassnameExclude(classId,className);
+	}
+	
+	public List<Map<String,String>> getUserRelateKernelList(String userName)
+	{
+		List<Map<String,String>> kernelList = new LinkedList<Map<String,String>>();
+		Map<String,String> kernels = new HashMap<String,String>();
+		List<ViewKernelAttr> viewkernellist = this.viewKernelAttrRepository.findByUserName(userName);
+		
+		for(ViewKernelAttr attr : viewkernellist)
+		{
+			if(!kernels.containsKey(attr.getKernelClassid()))
+			{
+				kernels.put(attr.getKernelClassid(), attr.getKernelClassname());
+				Map<String,String> fieldMap = new HashMap<String,String>();
+				fieldMap.put("classId", attr.getKernelClassid());
+				fieldMap.put("className", attr.getKernelClassname());
+				kernelList.add(fieldMap);
+			}
+		}
+		return kernelList;
+	}
+	
+	public List<Map<String,String>> getUserRelateAttrList(String classId,String userName)
+	{
+		List<Map<String,String>> attrList = new LinkedList<Map<String,String>>();
+		List<ViewKernelAttr> viewkernellist = this.viewKernelAttrRepository.findByKernelClassidAndUserName(classId,userName);
+		
+		for(ViewKernelAttr item : viewkernellist)
+		{
+			Map<String,String> fieldMap = new HashMap<String,String>();
+			
+			fieldMap.put("attrId", item.getAttrGuid());
+			fieldMap.put("attrName",item.getAttrName());
+			fieldMap.put("attrType",item.getAttrType());
+			fieldMap.put("attrFgrade",item.getAttrFgrade());
+			fieldMap.put("attrDesc",item.getAttrDesc());
+			fieldMap.put("minValue",item.getAttrMin());
+			fieldMap.put("maxValue",item.getAttrMax());
+			fieldMap.put("shareGrade", item.getShareGrade());
+			if(item.getDictId()!=null)
+			{
+				Optional<TlGammaDict> opDict = this.tlGammaDictRepository.findById(item.getDictId());
+				if(opDict.isPresent())
+				{
+					fieldMap.put("dictName",opDict.get().getDictName());
+					fieldMap.put("dictId",item.getDictId());
+				}
+			}
+			attrList.add(fieldMap);
+		}
+		return attrList;
+	}
+
+	public Optional<TlGammaKernel> getByKernelClassid(String classId) {
+		// TODO Auto-generated method stub
+		return this.tlGammaKernelRepository.findById(classId);
 	}
 }

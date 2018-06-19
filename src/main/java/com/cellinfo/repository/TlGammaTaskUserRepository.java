@@ -8,4 +8,6 @@ public interface TlGammaTaskUserRepository  extends PagingAndSortingRepository<T
 
 	void deleteByTaskGuidAndUserName(String taskGuid, String userName);
 
+	void deleteByTaskGuid(String taskGuid);
+
 }

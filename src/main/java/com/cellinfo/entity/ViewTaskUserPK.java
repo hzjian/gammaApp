@@ -16,6 +16,10 @@ public class ViewTaskUserPK implements Serializable{
 	@Column(name="user_name")
 	private String userName;
 
+	public ViewTaskUserPK()
+	{
+		
+	}
 	public ViewTaskUserPK(String taskId, String userName2) {
 		// TODO Auto-generated constructor stub
 		this.taskGuid = taskId;
